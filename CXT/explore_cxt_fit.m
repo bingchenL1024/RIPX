@@ -1,0 +1,136 @@
+% Bingchen Liu Aug 21, 2024 (should create it earlier)
+% this is exploratory code of cxt for testing of the fit 
+
+clear
+close all 
+load('/data1/bliu/data/cxt_alongct_t.mat')
+load('/data1/bliu/data/SS_raw.mat') 
+load('/data1/bliu/data/ind_of_diff_bath.mat')
+
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% fit cxt(t)
+
+
+domain_fit = 1:36; %0 ~3.5 s 
+t_itp_fit = t_itp(domain_fit);
+g=9.81;
+cxt_data = cxt_alongct_mean{1}(domain_fit);
+
+
+% %% 
+% ftt = strcat('a^(x)+b*exp(-x/c)*cos(x/d)');
+% ft = fittype( sprintf('%s',ftt));
+% opts = fitoptions( ft );
+% opts.Display = 'Off';
+% opts.Lower = [0 -20 -20 -20];
+% opts.StartPoint = [0.0003842 -0.11 1.74 0.57]; % beginning parameters - amp, mu, std.
+% opts.Upper = [20 20 20 20];
+% 
+% 
+% include = ~isnan(cxt_data);
+% [f,gof]=fit(t_itp_fit(include)',cxt_data(include),ft, opts);
+% 
+% cxt_fit = exp(-t_itp_fit(include)./f.a)+f.b.*exp(-t_itp_fit(include)./f.c).*cos(t_itp_fit(include)./f.d);
+% misfit = cxt_data-cxt_fit;
+
+%%
+
+ftt = strcat('a^(x)+real(b*exp(-(i*c+d)*x))');
+ft = fittype( sprintf('%s',ftt));
+opts = fitoptions( ft );
+opts.Display = 'Off';
+opts.Lower = [0 -20 -6 -20];
+opts.StartPoint = [0.0003842 -0.115 1.47 0.57]; % beginning parameters - amp, mu, std.
+opts.Upper = [20 20 -4 20];
+
+
+include = ~isnan(cxt_data);
+[f,gof]=fit(t_itp_fit(include)',cxt_data(include),ft, opts);
+
+cxt_fit = f.a.^(t_itp_fit(include))+real(f.b.*exp(-(i*f.c+f.d).*t_itp_fit(include)));
+%cxt_fit = real(f.b.*exp(-(i*f.c+f.d).*t_itp_fit(include)));
+misfit = cxt_data-cxt_fit';
+
+
+%%
+
+ftt = strcat('exp(-x/a)*cos(x/b+c)/cos(c)');
+ft = fittype( sprintf('%s',ftt));
+opts = fitoptions( ft );
+opts.Display = 'Off';
+opts.Lower = [-20 -0.24 -20];
+opts.StartPoint = [0.34 -0.2 -0.3]; % beginning parameters - amp, mu, std.
+opts.Upper = [20 -0.15 20];
+
+
+include = ~isnan(cxt_data);
+[f,gof]=fit(t_itp_fit(include)',cxt_data(include),ft, opts);
+
+cxt_fit = exp(-t_itp_fit(include)./f.a).*cos(t_itp_fit(include)./f.b+f.c)./cos(f.c);
+%cxt_fit = cos(t_itp_fit(include)./f.b+f.c)./cos(f.c);
+misfit = cxt_data-cxt_fit';
+
+figure()
+plot(t_itp_fit(include),cxt_data,'k','LineWidth',2)
+hold on 
+plot(t_itp_fit(include),cxt_fit,'b','LineWidth',2)
+hold on 
+plot(t_itp_fit(include),misfit,'r','LineWidth',2)
+legend('data','fit','misfit')
+xlabel('Time Lag (s)--along x=ct')
+ylabel('Cross Correlation')
+hold off 
+niceplot_nobold_nomintick(20)
+
+
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% fit cxt(x)
+clear
+close all 
+load('/data1/bliu/data/cxt_alongct_x.mat')
+load('/data1/bliu/data/SS_raw.mat') 
+load('/data1/bliu/data/ind_of_diff_bath.mat')
+
+
+
+runnum = 1;
+
+cxt_data_all = cxt_alongct_x_ALL{runnum};
+x_nond = x_nond_All{runnum};
+dim = size(cxt_data_all);
+for i = 1: 5:dim(2)
+    cxt_data = cxt_data_all(:,i);
+    ftt = strcat('exp(-x/a)*cos(x/b-c)/cos(c)');
+    ft = fittype( sprintf('%s',ftt));
+    opts = fitoptions( ft );
+    opts.Display = 'Off';
+    opts.Lower = [0 -20 -20];
+    opts.StartPoint = [0.5 0.25 0.4 ]; % beginning parameters - amp, mu, std.
+    opts.Upper = [20 20 20];
+    include = ~isnan(cxt_data);
+    [f,gof]=fit(x_itp(include)',cxt_data(include),ft, opts);
+    cxt_fit = exp(-x_itp(include)./f.a).*cos(x_itp(include)/(f.b)-f.c)/(cos(f.c));
+    misfit = cxt_data-cxt_fit';
+
+    figure(1)
+    plot(x_itp(include),cxt_data,'k','LineWidth',2)
+    hold on 
+    plot(x_itp(include),cxt_fit,'b','LineWidth',2)
+    hold on 
+    plot(x_itp(include),misfit,'r','LineWidth',2)
+    legend('data','fit','misfit')
+    xlabel('Space Lag (x)--along x=ct')
+    ylabel('Cross Correlation')
+    title(['Nond sz loc: ',num2str(x_nond(i))])
+    hold off 
+    xlim([0,8])
+    ylim([-0.5,1])
+    niceplot_nobold_nomintick(20)
+    
+    pause(1)
+end 
+
+
+
+
+
+
+

@@ -1,0 +1,31 @@
+%Bingchen Liu Jan 9, 2025
+% This is the master code for analyze and selecting proper expo only 
+
+%% analysis 
+clear 
+
+expo = 1.35; % Choose the exponent
+
+get_Sky_weibul_fits_log_BL 
+
+get_weibul_qced
+
+get_nond_spectra 
+
+%% get RMSE of diff expo
+clear
+rmse_diffexp=[];
+diffexpo = 1.15:0.025:1.4;
+for expo = diffexpo
+expo
+get_Sky_weibul_fits_log_BL
+
+rmse_diffexp = [rmse_diffexp;rmse_tot];
+
+end 
+
+save('/data1/bliu/data/WBfit_rmseVSexpo','rmse_diffexp','diffexpo')
+
+%% plot 
+
+plot_Sky_expo_choice

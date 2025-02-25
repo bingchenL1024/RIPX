@@ -1,0 +1,43 @@
+% Bingchen Liu Nov 6, 2024
+% This code calculate the freq spectrum of curlFbr 
+
+clear all
+
+run = 1;
+i = 130;
+
+%%
+%for rnum = 1:rnum_tot,
+%    disp(sprintf('starting rnum = %d',rnum));
+  
+    fname=sprintf('/data1/nkumar/RIPX/M_Files/RIPX_psi_curlF/RIPX_psi_curlF_%04d',run);
+
+    load(fname,'curlF')
+
+
+
+%end
+
+for iy = 1:1200
+    G1_temp = squeeze(curlF(i,iy,:)); %time series at given (x,y)
+    [f_G1(iy,:),spec_G1(iy,:)]= fft_data(G1_temp,1);  
+
+end 
+spec_mean = mean(spec_G1);
+%% plot
+figure()
+plot(1:4801,G1_temp)
+xlabel('Time (s)')
+ylabel('$\nabla \times F_{br} (s^{-2})$','Interpreter','latex')
+niceplot(22)
+
+
+figure()
+loglog(f_G1(1,:),spec_mean)
+%% test
+test = zeros(4800,1);
+ind = 1:480;
+test(10*ind) = 3+rand(480,1)*2;
+
+
+

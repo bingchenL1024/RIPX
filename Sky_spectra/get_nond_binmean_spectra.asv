@@ -1,0 +1,88 @@
+% Bingchen Liu Jan 14, 2025
+% This code is used to get the bin mean from nond spectra for picking best
+% expo for Weibull fit
+ 
+
+
+% ky2_nond VS Sky2_nond_kym_S0
+
+clearvars -except expo
+
+expo_name_temp = num2str(expo);
+expo_name  = [expo_name_temp(1),'p',expo_name_temp(3:end)];
+
+load(['/data1/bliu/data/Sky_nond_',expo_name])
+
+
+
+
+%% take the bin mean
+binnum = 8;
+indbin = 1:(binnum+1);
+cutoffnondky = [0.03,10];
+
+ky_all =[ky2_nond(:);ky3_nond(:);ky4_nond(:)];
+Sky_all = [Sky2_nond_kym_S0(:);Sky3_nond_kym_S0(:);Sky4_nond_kym_S0(:)];
+
+ky_all(ky_all>cutoffnondky(2)) = nan;
+ky_all(ky_all<cutoffnondky(1)) = nan;
+
+Sky_all(ky_all>cutoffnondky(2)) = nan; 
+Sky_all(ky_all<cutoffnondky(1)) = nan; 
+
+edge_input = min(log10(ky_all))+(indbin-1).*(max(log10(ky_all))-min(log10(ky_all)))/binnum;
+[ind_bin,edge_bin] = discretize(log10(ky_all),edge_input);
+
+for i = 1:binnum
+    Sky_binmean(i) = mean(Sky_all(ind_bin == i),'omitmissing');
+    error_binmean(i) = std(Sky_all(ind_bin == i),'omitnan');%/sqrt(length(Sky_all(ind_bin == i)));
+    ky_bincenter(i) =10^((edge_bin(i+1)+edge_bin(i))/2); %(10^edge_bin(i+1)+10^edge_bin(i))/2;
+end 
+
+% self similar Weibull solution
+ky_nond = 0.03:0.001:10;
+A = ((expo-1)/expo)^(1/expo);
+Sky_nond_analyt= A*expo*(ky_nond*A).^(expo-1).*exp(-(ky_nond*A).^expo);
+
+Sky_pred =  A*expo*(ky_nond*A).^(expo-1).*exp(-(ky_nond*A).^expo);
+
+% evaluate the r-square
+
+
+
+
+save(['/data1/bliu/data/Sky_binmean_',expo_name])
+
+% %% test plot 
+% figure()
+% errorbar(ky_bincenter,Sky_binmean,error_binmean/2,'s','LineWidth',2,'MarkerSize',9,'MarkerFaceColor','auto')
+% set(gca,'XScale','log','YScale','log')
+% 
+% hold on 
+% for N =1:24
+% h2=loglog(squeeze(ky2_nond_wb(N,:,:))',squeeze(Sky2_nond_kym_wb_S0(N,:,:))','LineWidth',3,'Color','r','LineStyle','--');
+% hold on
+% loglog(squeeze(ky3_nond_wb(N,:,:))',squeeze(Sky3_nond_kym_wb_S0(N,:,:))','LineWidth',3,'Color','r','LineStyle','--')
+% hold on 
+% loglog(squeeze(ky4_nond_wb(N,:,:))',squeeze(Sky4_nond_kym_wb_S0(N,:,:))','LineWidth',3,'Color','r','LineStyle','--')
+% hold on 
+% end
+% 
+% % plot bin edge 
+% % for i = 1:length(edge_bin)
+% %     xline(10.^(edge_bin(i)))
+% % end 
+% 
+% ylabel('$S_{\nabla \times \mathbf{F}_{\mathrm{br}}} \, k_{y0}/ {\int_{0}^{\infty} \, S_{WB} \, dk_{y}}$','Interpreter','latex')
+% xlabel('$k_{y}/k_{y0}$','Interpreter','latex')
+% title(['Expo = ',expo_name])
+% %xlim([-inf 10])
+% %title(['Expo = ',expo_name])
+% set(gca,'XTick',[0.001,0.01,0.1,1,10])
+% axis([0.03 10 0.01 1])
+% niceplot_nobold(23)
+% grid on 
+
+
+
+

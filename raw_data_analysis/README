@@ -1,0 +1,2 @@
+In this folder we have estimated the time averaged wavenumber spectra of the curl of wave breaking force. Averaging was done considering every 3rd time stamp.  
+The .m files used to generate these "matfiles" are in the same directory, starting with "calculate_curlF_wvno_freq_spec_mean.m".  
