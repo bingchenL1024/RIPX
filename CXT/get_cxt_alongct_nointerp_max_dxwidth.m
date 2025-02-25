@@ -95,7 +95,7 @@ for runnum = 1:120
                         dist2ct(j,i) = dx_aroundct(ind_max)-ct(j);
                         dx_max(j,i) = dx_aroundct(ind_max);
                         dx_ct(j,i) = ct(j);
-                    end %s
+                    end %test 
                     cxt_dxwidth_pm1_temp = nan(3,1);
                     cxt_dxwidth_pm2_temp = nan(5,1);
 
