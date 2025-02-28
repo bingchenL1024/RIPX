@@ -79,41 +79,45 @@ for runnum = 1:120
             
             cxt_alongct_pm1dx{j,i} = nan(1,3);
             cxt_alongct_pm2dx{j,i} = nan(1,5);
+            cxt_alongct_pm1dx_nond{j,i}= nan(1,3);
+            cxt_alongct_pm2dx_nond{j,i}= nan(1,5);
+
             if ct(j)<x_lag(end) % make sure the pt is in the domain
-                if j ==1 && val_max>CXT_threshold% at 0 tlag 
+                if val_max>CXT_threshold% at 0 tlag 
                     cxt_alongct(j,i) = val_max;
                     if ~isnan(cxt_alongct(j,i)) % only record location when cxt is not NaN
                         dist2ct(j,i) = dx_aroundct(ind_max)-ct(j);
                         dx_max(j,i) = dx_aroundct(ind_max);
                         dx_ct(j,i) = ct(j);
-                    end 
-                    cxt_alongct_pm1dx{j,i}(2:end) = cxt_atx(1:2,t_center+j); % 2 is center in dx coord
-                    cxt_alongct_pm2dx{j,i}(3:end) = cxt_atx(1:3,t_center+j);% 3 is center in dx coord
-                elseif val_max>CXT_threshold
-                    cxt_alongct(j,i) = val_max;
-                    if ~isnan(cxt_alongct(j,i)) % only record location when cxt is not NaN
-                        dist2ct(j,i) = dx_aroundct(ind_max)-ct(j);
-                        dx_max(j,i) = dx_aroundct(ind_max);
-                        dx_ct(j,i) = ct(j);
-                    end %test 
+                    end  
                     cxt_dxwidth_pm1_temp = nan(3,1);
                     cxt_dxwidth_pm2_temp = nan(5,1);
-
-                    cxt_dxwidth_pm1_temp = cxt_atx(ind_max_fulldxdomain-1:min(ind_max_fulldxdomain+1,dim(2)),t_center+j);
-                    cxt_dxwidth_pm2_temp = cxt_atx(ind_max_fulldxdomain-2:min(ind_max_fulldxdomain+2,dim(2)),t_center+j);
-                    cxt_alongct_pm1dx{j,i}(1:length(cxt_dxwidth_pm1_temp)) = cxt_dxwidth_pm1_temp;
-                    cxt_alongct_pm2dx{j,i}(1:length(cxt_dxwidth_pm2_temp)) = cxt_dxwidth_pm2_temp;
                     
+                    
+                    cxt_dxwidth_pm1_temp = extract_pm1(cxt_atx(:,t_center+j),ind_max_fulldxdomain);
+                    cxt_dxwidth_pm2_temp = extract_pm2(cxt_atx(:,t_center+j),ind_max_fulldxdomain);
+                    cxt_alongct_pm1dx{j,i} = cxt_dxwidth_pm1_temp;
+                    cxt_alongct_pm2dx{j,i} = cxt_dxwidth_pm2_temp;
+
+
+                    cxt_alongct_pm1dx_nond{j,i} = cxt_dxwidth_pm1_temp./cxt_dxwidth_pm1_temp(2);
+                    cxt_alongct_pm2dx_nond{j,i} = cxt_dxwidth_pm2_temp./cxt_dxwidth_pm2_temp(3);                                    
+
                     clear cxt_dxwidth_pm1_temp cxt_dxwidth_pm2_temp
                 end 
-            end 
+            end
             clear cxt_aroundct dx_aroundct val_max ind_max
         end 
     end 
     cxt_alongct_ALL{runnum} = cxt_alongct;
     
-    cxt_alongct_pm1dx_ALL{runnum} = cxt_alongct_pm1dx;   
-    cxt_alongct_pm2dx_ALL{runnum} = cxt_alongct_pm2dx;
+    cxt_pm1dx_ALL{runnum} = cxt_alongct_pm1dx;   
+    cxt_pm2dx_ALL{runnum} = cxt_alongct_pm2dx;
+
+    cxt_pm1dx_nond_ALL{runnum} = cxt_alongct_pm1dx_nond;
+    cxt_pm2dx_nond_ALL{runnum} = cxt_alongct_pm2dx_nond;
+
+
     
     dist2ct_All{runnum} = dist2ct;
     %MSE_dist(runnum) = var(dist2ct(:),'omitmissing');
@@ -133,6 +137,7 @@ for runnum = 1:120
 
 end 
 
+%test 
 dxwidth_cxtcoord_pm1= [-1,0,1];
 dxwidth_cxtcoord_pm2= [-2,-1,0,1,2];
 RMSE_dist = sqrt(mean(MSE_dist(goodrunnum)));
@@ -143,5 +148,5 @@ RMSE_dist = sqrt(mean(MSE_dist(goodrunnum)));
 %cxt_alongct_mean = cxt_alongct_mean';
 %ind_good_All = ind_good_All';
 
-save('/data1/bliu/data/cxt_alongct_nointerp_max_dxwidth','cxt_alongct_ALL','cxt_alongct_pm1dx_ALL','cxt_alongct_pm2dx_ALL', ...
-    'dist2ct_All','t_itp','x_nond_All','RMSE_dist','dxwidth_cxtcoord_pm1','dxwidth_cxtcoord_pm2')
+save('/data1/bliu/data/cxt_alongct_nointerp_max_dxwidth','cxt_alongct_ALL','cxt_pm1dx_ALL','cxt_pm2dx_ALL', ...
+    'dist2ct_All','t_itp','x_nond_All','RMSE_dist','dxwidth_cxtcoord_pm1','dxwidth_cxtcoord_pm2','cxt_pm1dx_nond_ALL','cxt_pm2dx_nond_ALL')
