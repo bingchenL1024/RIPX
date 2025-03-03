@@ -19,6 +19,7 @@ load('/data1/bliu/data/cxt_ind_good')
 %%
 
 CXT_threshold = 0.025;
+t_itp = 0:1:5; % HARD CODED
 
 for runnum = 1:120
     g = 9.81;
@@ -39,7 +40,6 @@ for runnum = 1:120
     t_lag = -10:10; %in seconds  HARD CODED
     t_center = (length(t_lag)-1)/2;
     [dt,dx] = meshgrid(t_lag,x_lag);
-    t_itp = 0:1:5; % HARD CODED
     cxt_alongct= NaN(length(t_itp),length(ind_good));
     ct_all = NaN(length(t_itp),length(ind_good));
     dist2ct = NaN(length(t_itp),length(ind_good));
@@ -49,6 +49,7 @@ for runnum = 1:120
         xind = ind_good(i);
         h_xloc = h(xind);
         c = sqrt(g*h_xloc);
+        c_tot{runnum}(1,i) = c; 
         ct = c.*t_itp;
         ct_all(:,i) = ct;
         cxt_atx = squeeze(cxt(xind,:,:));
@@ -64,7 +65,7 @@ for runnum = 1:120
 
         for j=1:length(t_itp)
         % begug ================================
-        % if runnum==98&&i ==35 && j ==6
+        % if runnum==97&&i ==1 %&& j ==6
         %     plot_CXT_dxdt_function(cxt_atx,c)
         %     keyboard
         % 
@@ -137,7 +138,6 @@ for runnum = 1:120
 
 end 
 
-%test 
 dxwidth_cxtcoord_pm1= [-1,0,1];
 dxwidth_cxtcoord_pm2= [-2,-1,0,1,2];
 RMSE_dist = sqrt(mean(MSE_dist(goodrunnum)));
@@ -149,4 +149,5 @@ RMSE_dist = sqrt(mean(MSE_dist(goodrunnum)));
 %ind_good_All = ind_good_All';
 
 save('/data1/bliu/data/cxt_alongct_nointerp_max_dxwidth','cxt_alongct_ALL','cxt_pm1dx_ALL','cxt_pm2dx_ALL', ...
-    'dist2ct_All','t_itp','x_nond_All','RMSE_dist','dxwidth_cxtcoord_pm1','dxwidth_cxtcoord_pm2','cxt_pm1dx_nond_ALL','cxt_pm2dx_nond_ALL')
+    'dist2ct_All','t_itp','x_nond_All','RMSE_dist','dxwidth_cxtcoord_pm1','dxwidth_cxtcoord_pm2', ...
+    'cxt_pm1dx_nond_ALL','cxt_pm2dx_nond_ALL','c_tot')
