@@ -22,14 +22,14 @@ for N = 1:24
         % Sky3_nond(N,xx,:) = Sky3_cutoff_runmean(N,xx,:)./magspec3(N,xx);
         % Sky4_nond(N,xx,:) = Sky4_cutoff_runmean(N,xx,:)./magspec4(N,xx);
         
-        Sky2_nond_maxsky(N,xx,:) = Sky2_cutoff_runmean(N,xx,:)./Skym2(N,xx);
-        Sky3_nond_maxsky(N,xx,:) = Sky3_cutoff_runmean(N,xx,:)./Skym3(N,xx);
-        Sky4_nond_maxsky(N,xx,:) = Sky4_cutoff_runmean(N,xx,:)./Skym4(N,xx);
-
-        Sky2_nond_kym(N,xx,:) = Sky2_cutoff_runmean(N,xx,:).*kym2(N,xx)./magspec2(N,xx);
-        Sky3_nond_kym(N,xx,:) = Sky3_cutoff_runmean(N,xx,:).*kym3(N,xx)./magspec3(N,xx);
-        Sky4_nond_kym(N,xx,:) = Sky4_cutoff_runmean(N,xx,:).*kym4(N,xx)./magspec4(N,xx);
-    
+        % Sky2_nond_maxsky(N,xx,:) = Sky2_cutoff_runmean(N,xx,:)./Skym2(N,xx);
+        % Sky3_nond_maxsky(N,xx,:) = Sky3_cutoff_runmean(N,xx,:)./Skym3(N,xx);
+        % Sky4_nond_maxsky(N,xx,:) = Sky4_cutoff_runmean(N,xx,:)./Skym4(N,xx);
+        % 
+        % Sky2_nond_kym(N,xx,:) = Sky2_cutoff_runmean(N,xx,:).*kym2(N,xx)./magspec2(N,xx);
+        % Sky3_nond_kym(N,xx,:) = Sky3_cutoff_runmean(N,xx,:).*kym3(N,xx)./magspec3(N,xx);
+        % Sky4_nond_kym(N,xx,:) = Sky4_cutoff_runmean(N,xx,:).*kym4(N,xx)./magspec4(N,xx);
+        % 
         % Sky2_nond_kym_S0(N,xx,:) = Sky2_cutoff_runmean(N,xx,:).*kym2(N,xx)./wfit2.So(N,xx);
         % Sky3_nond_kym_S0(N,xx,:) = Sky2_cutoff_runmean(N,xx,:).*kym3(N,xx)./wfit3.So(N,xx); 
         % Sky4_nond_kym_S0(N,xx,:) = Sky2_cutoff_runmean(N,xx,:).*kym4(N,xx)./wfit4.So(N,xx);
@@ -42,19 +42,19 @@ for N = 1:24
         ky3_nond(N,xx,:) = ky3_cutoff(N,xx,:)/kym3(N,xx);
         ky4_nond(N,xx,:) = ky4_cutoff(N,xx,:)/kym4(N,xx);
 
-        Sky2_nond_kym_wb(N,xx,:) = Sky2_wb(N,xx,:).*wkym2(N,xx)./mag_wb2(N,xx);
-        Sky3_nond_kym_wb(N,xx,:) = Sky3_wb(N,xx,:).*wkym3(N,xx)./mag_wb3(N,xx);
-        Sky4_nond_kym_wb(N,xx,:) = Sky4_wb(N,xx,:).*wkym4(N,xx)./mag_wb4(N,xx);
+        % Sky2_nond_kym_wb(N,xx,:) = Sky2_wb(N,xx,:).*wkym2(N,xx)./mag_wb2(N,xx);
+        % Sky3_nond_kym_wb(N,xx,:) = Sky3_wb(N,xx,:).*wkym3(N,xx)./mag_wb3(N,xx);
+        % Sky4_nond_kym_wb(N,xx,:) = Sky4_wb(N,xx,:).*wkym4(N,xx)./mag_wb4(N,xx);
+        % 
+        % Sky2_nond_kym_wb_S0(N,xx,:) = Sky2_wb(N,xx,:).*wkym2(N,xx)./wfit2.So(N,xx);
+        % Sky3_nond_kym_wb_S0(N,xx,:) = Sky3_wb(N,xx,:).*wkym3(N,xx)./wfit3.So(N,xx);
+        % Sky4_nond_kym_wb_S0(N,xx,:) = Sky4_wb(N,xx,:).*wkym4(N,xx)./wfit4.So(N,xx);
 
-        Sky2_nond_kym_wb_S0(N,xx,:) = Sky2_wb(N,xx,:).*wkym2(N,xx)./wfit2.So(N,xx);
-        Sky3_nond_kym_wb_S0(N,xx,:) = Sky3_wb(N,xx,:).*wkym3(N,xx)./wfit3.So(N,xx);
-        Sky4_nond_kym_wb_S0(N,xx,:) = Sky4_wb(N,xx,:).*wkym4(N,xx)./wfit4.So(N,xx);
 
 
-
-        ky2_nond_wb(N,xx,:) = ky2_wb(N,xx,:)/wkym2(N,xx);
-        ky3_nond_wb(N,xx,:) = ky3_wb(N,xx,:)/wkym3(N,xx);
-        ky4_nond_wb(N,xx,:) = ky4_wb(N,xx,:)/wkym4(N,xx);
+        % ky2_nond_wb(N,xx,:) = ky2_wb(N,xx,:)/wkym2(N,xx);
+        % ky3_nond_wb(N,xx,:) = ky3_wb(N,xx,:)/wkym3(N,xx);
+        % ky4_nond_wb(N,xx,:) = ky4_wb(N,xx,:)/wkym4(N,xx);
 
     end 
 end 

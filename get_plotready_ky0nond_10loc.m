@@ -81,6 +81,11 @@ ky0_nond.slp2 = A.wkym2./sk_ky0.Sk2_h_beta_div;
 ky0_nond.slp3 = A.wkym3./sk_ky0.Sk3_h_beta_div;
 ky0_nond.slp4 = A.wkym4./sk_ky0.Sk4_h_beta_div;
 
+ky0_data.slp2 = A.wkym2;
+ky0_data.slp3 = A.wkym3;
+ky0_data.slp4 = A.wkym4;
+
+
 ky0_nond_all = [ky0_nond.slp2(:); ky0_nond.slp3(:); ky0_nond.slp4(:)];
 ds_all = [repmat(ds.sigtb2',loc_num,1);repmat(ds.sigtb3',loc_num,1);repmat(ds.sigtb4',loc_num,1)];
 
@@ -107,6 +112,6 @@ README = [README "Plot ready data, including AFTER qc 'ed'SS','A','ds','sk_ky0'(
 README = splitlines(README)';
 
 
-save('/data1/bliu/data/plotready_ky0_nond_10loc_2025','README','ky0_nond','ky0_nond_all','ds','ds_all','ds_model','ky0_model','f','gof')
+save('/data1/bliu/data/plotready_ky0_nond_10loc_2025','README','ky0_nond','ky0_nond_all','ds','ds_all','ds_model','ky0_model','f','gof',"ky0_data")
 
 %save('/data1/bliu/data/plotready_ky0_nond_3loc','README','SS','ds','A','sk_ky0')

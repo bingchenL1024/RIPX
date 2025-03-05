@@ -171,7 +171,9 @@ G0_nond.slp2 = sqrt(A.wfit2.intw)./Sk.Sk2_hb_Ir_div;
 G0_nond.slp3 = sqrt(A.wfit3.intw)./Sk.Sk3_hb_Ir_div;
 G0_nond.slp4 = sqrt(A.wfit4.intw)./Sk.Sk4_hb_Ir_div;
 
-% G0_nond.slp2 = sqrt(A.wfit2.intw)./Sk.Sk2_hb_Ir_div_solit;
+G0_data.slp2 = sqrt(A.wfit2.intw);
+G0_data.slp3 = sqrt(A.wfit3.intw);
+G0_data.slp4 = sqrt(A.wfit4.intw);% G0_nond.slp2 = sqrt(A.wfit2.intw)./Sk.Sk2_hb_Ir_div_solit;
 % G0_nond.slp3 = sqrt(A.wfit3.intw)./Sk.Sk3_hb_Ir_div_solit;
 % G0_nond.slp4 = sqrt(A.wfit4.intw)./Sk.Sk4_hb_Ir_div_solit;
 % 
@@ -202,5 +204,5 @@ README = splitlines(README)';
 
 
 
-save('/data1/bliu/data/plotready_G0_nond_10loc_2025','README','G0_nond','G0_nond_all','G0_model','ds','ds_all','ds_model','f','gof')
+save('/data1/bliu/data/plotready_G0_nond_10loc_2025','README','G0_nond','G0_nond_all','G0_model','ds','ds_all','ds_model','f','gof','G0_data')
 save('/data1/bliu/data/G0_nond_10loc_allsk_2025','README','SS','ds','A','Sk','kh')
