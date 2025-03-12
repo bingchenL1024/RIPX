@@ -57,5 +57,5 @@ for i = 1:24
 
 end 
 
-
-save('/data1/bliu/data/cxt_alongct_nointerp_fitpara_qced_3loc','fitpara_3loc')
+head = 'data generated in get_cxt_3loc.m';
+save('/data1/bliu/data/cxt_alongct_nointerp_fitpara_qced_3loc','fitpara_3loc','head')

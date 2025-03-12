@@ -75,12 +75,19 @@ for ind_slp2 = 1:24
         fitpara.slp2{ind_slp2,1}.kw(j,1) = kw(i);  
 
         %fitpara.slp2{ind_slp2,1}.Hs(j,1) = Hs(i);          
-        fitpara.slp2{ind_slp2,1}.a(j,1) = f.a;
-        fitpara.slp2{ind_slp2,1}.rsq(j,1) = gof.rsquare;        
         fitpara.slp2{ind_slp2,1}.t_itp{j,1} = t_itp(include)';        
         fitpara.slp2{ind_slp2,1}.cxt_data{j,1} = cxt_data_fit(include);        
         fitpara.slp2{ind_slp2,1}.cxt_fit{j,1} = cxt_fit';        
-        fitpara.slp2{ind_slp2,1}.runnum{j,1} = runnum;           
+        fitpara.slp2{ind_slp2,1}.runnum{j,1} = runnum; 
+
+        if sum(~isnan(cxt_data_fit))>=3 % only include fit tau if there are more than 3 data pt
+            fitpara.slp2{ind_slp2,1}.a(j,1) = f.a;
+            fitpara.slp2{ind_slp2,1}.rsq(j,1) = gof.rsquare;        
+        else 
+            fitpara.slp2{ind_slp2,1}.a(j,1) = NaN;
+            fitpara.slp2{ind_slp2,1}.rsq(j,1) = NaN;        
+        end 
+
         clear f cxt_data_fit cxt_fit
         
         

@@ -16,6 +16,8 @@ load ('/data1/bliu/data/raw/CXT_ALL_norm_and_var_21dx10dt_Bingchen_qced.mat')
 load('/data1/bliu/data/runnum_72run')
 load('/data1/bliu/data/SS_raw.mat')
 load('/data1/bliu/data/cxt_ind_good')
+load('/data1/bliu/data/ind_of_diff_bath.mat')
+
 %%
 
 CXT_threshold = 0.025;
@@ -26,7 +28,10 @@ for runnum = 1:120
     dim = size(cell2mat(CXT_ALL(runnum)));
     SS = S(runnum);
     x = SS.X;
+    x2= SS.X2;
     h = SS.h;
+    Hs = SS.Hs;
+    Hs_interp = interp1(x2,Hs,x);
     cxt = cell2mat(CXT_ALL(runnum));
     cxt_upbd=cell2mat(CXT_upbd_ALL(runnum));
     cxt_lowbd=cell2mat(CXT_lowbd_ALL(runnum));
@@ -48,7 +53,12 @@ for runnum = 1:120
     for i=1:length(ind_good) %cross shore dim
         xind = ind_good(i);
         h_xloc = h(xind);
+        Hs_xloc= Hs_interp(xind);
         c = sqrt(g*h_xloc);
+        c_nonlin_temp = sqrt(g*(h_xloc+Hs_xloc));
+        c_modelh{runnum}(1,i) = c; 
+        c_modelhHs{runnum}(1,i) = c_nonlin_temp; 
+
         ct = c.*t_itp;
         ct_all(:,i) = ct;
         cxt_atx = squeeze(cxt(xind,:,:));
@@ -63,13 +73,7 @@ for runnum = 1:120
     
 
         for j=1:length(t_itp)
-        % begug ================================
-        % if runnum==98&&i ==35 && j ==6
-        %     plot_CXT_dxdt_function(cxt_atx,c)
-        %     keyboard
-        % 
-        % end 
-        % begug ================================
+
          
             [~,rowind_ct] = min(abs(dx(:,t_center+j)-ct(j))); % find index of row that is closest to x=ct
             cxt_aroundct = cxt_atx(max(rowind_ct-range_maxcxt,1):min(rowind_ct+range_maxcxt,max(x_lag)+1),t_center+j); %get cxt at given time and cross-shore loc around x=ct
@@ -83,7 +87,7 @@ for runnum = 1:120
             cxt_alongct_pm2dx_nond{j,i}= nan(1,5);
 
             if ct(j)<x_lag(end) % make sure the pt is in the domain
-                if val_max>CXT_threshold% at 0 tlag 
+                if val_max>CXT_threshold %only record if CXT exceed threshold
                     cxt_alongct(j,i) = val_max;
                     if ~isnan(cxt_alongct(j,i)) % only record location when cxt is not NaN
                         dist2ct(j,i) = dx_aroundct(ind_max)-ct(j);
@@ -107,7 +111,28 @@ for runnum = 1:120
                 end 
             end
             clear cxt_aroundct dx_aroundct val_max ind_max
+        end
+        
+        cfit_ind = ~isnan(dx_max(:,i));
+        dx_cfit = dx_max(cfit_ind,i);
+        dt_cfit = t_itp(cfit_ind)';
+        if length(dx_cfit)>=3
+            c_fit_temp = dt_cfit\dx_cfit;
+        else
+            c_fit_temp= NaN;
         end 
+        % begug ================================
+        % if runnum==2&&i ==2 %&& j ==6
+        %     plot_CXT_dxdt_function(cxt_atx,c)
+        %     dt_cfit
+        %     dx_cfit
+        %     keyboard
+        % 
+        % end 
+        % begug ================================
+        c_fit{runnum}(1,i) = c_fit_temp;
+        
+
     end 
     cxt_alongct_ALL{runnum} = cxt_alongct;
     
@@ -122,6 +147,7 @@ for runnum = 1:120
     dist2ct_All{runnum} = dist2ct;
     %MSE_dist(runnum) = var(dist2ct(:),'omitmissing');
     dx_max_All{runnum} = dx_max; %location of max CXT
+    dx_max_it
     dx_ct_All{runnum} = dx_ct; % location of ct 
     ind_nonan = ~isnan(dx_max)&~isnan(dx_ct);
     MSE_dist(runnum) = immse(dx_max(ind_nonan),dx_ct(ind_nonan));
@@ -141,11 +167,41 @@ dxwidth_cxtcoord_pm1= [-1,0,1];
 dxwidth_cxtcoord_pm2= [-2,-1,0,1,2];
 RMSE_dist = sqrt(mean(MSE_dist(goodrunnum)));
 
+%% extract all parameters at 5 surfzone location
+loc5 = linspace(-0.75,-0.25,5);
 
+for i = 1:24
+    for j = 1:5
+        runnum = indbath.slp2(i);
+        [~,ind_5loc_temp(j)] = min(abs(x_nond_All{runnum} - loc5(j)));
+        c_phase_5loc.slp2(i).c_fit(j) = c_fit{runnum}(ind_5loc_temp(j));
+        c_phase_5loc.slp2(i).c_modelh(j) = c_modelh{runnum}(ind_5loc_temp(j));
+        c_phase_5loc.slp2(i).c_modelhHs(j) = c_modelhHs{runnum}(ind_5loc_temp(j));
+    end 
+
+    for j = 1:5
+        runnum = indbath.slp3(i);
+        [~,ind_5loc_temp(j)] = min(abs(x_nond_All{runnum} - loc5(j)));
+        c_phase_5loc.slp3(i).c_fit(j) = c_fit{runnum}(ind_5loc_temp(j));
+        c_phase_5loc.slp3(i).c_modelh(j) = c_modelh{runnum}(ind_5loc_temp(j));
+        c_phase_5loc.slp3(i).c_modelhHs(j) = c_modelhHs{runnum}(ind_5loc_temp(j));
+    end 
+
+    for j = 1:5
+        runnum = indbath.slp4(i);
+        [~,ind_5loc_temp(j)] = min(abs(x_nond_All{runnum} - loc5(j)));
+        c_phase_5loc.slp4(i).c_fit(j) = c_fit{runnum}(ind_5loc_temp(j));
+        c_phase_5loc.slp4(i).c_modelh(j) = c_modelh{runnum}(ind_5loc_temp(j));
+        c_phase_5loc.slp4(i).c_modelhHs(j) = c_modelhHs{runnum}(ind_5loc_temp(j));
+    end 
+
+end 
 
 %cxt_alongct_ALL = cxt_alongct_ALL';
 %cxt_alongct_mean = cxt_alongct_mean';
 %ind_good_All = ind_good_All';
 
 save('/data1/bliu/data/cxt_alongct_nointerp_max_dxwidth','cxt_alongct_ALL','cxt_pm1dx_ALL','cxt_pm2dx_ALL', ...
-    'dist2ct_All','t_itp','x_nond_All','RMSE_dist','dxwidth_cxtcoord_pm1','dxwidth_cxtcoord_pm2','cxt_pm1dx_nond_ALL','cxt_pm2dx_nond_ALL')
+    'dist2ct_All','t_itp','x_nond_All','RMSE_dist','dxwidth_cxtcoord_pm1','dxwidth_cxtcoord_pm2', ...
+    'cxt_pm1dx_nond_ALL','cxt_pm2dx_nond_ALL','c_modelh','c_fit','c_modelhHs','c_phase_5loc', ...
+    'dx_max_All')

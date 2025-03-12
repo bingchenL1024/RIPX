@@ -5,7 +5,7 @@
 
 clear
 close all 
-load('/data1/bliu/data/cxt_alongct_nointerp_max_dxwidth.mat')
+load('/data1/bliu/data/cxt_alongct_nointerp_max_dxwidth')
 %load('/data1/bliu/data/cxt_alongct_x_maxvar.mat')
 load('/data1/bliu/data/SS_raw.mat') 
 load('/data1/bliu/data/ind_of_diff_bath.mat')
@@ -43,7 +43,6 @@ for ind_slp2 = 1:24
     ind_good = ind_good_All{runnum};
     cxt_alongct_1run  = cxt_alongct_ALL{runnum};
     dim_cxt= size(cxt_alongct_1run);
-    if_interp = if_interp_All{runnum};%ifinterp
     
     SS = S(runnum);
     x = SS.X(ind_good);
@@ -76,12 +75,18 @@ for ind_slp2 = 1:24
         fitpara.slp2{ind_slp2,1}.kw(j,1) = kw(i);  
 
         %fitpara.slp2{ind_slp2,1}.Hs(j,1) = Hs(i);          
-        fitpara.slp2{ind_slp2,1}.a(j,1) = f.a;
         fitpara.slp2{ind_slp2,1}.rsq(j,1) = gof.rsquare;        
         fitpara.slp2{ind_slp2,1}.t_itp{j,1} = t_itp(include)';        
         fitpara.slp2{ind_slp2,1}.cxt_data{j,1} = cxt_data_fit(include);        
         fitpara.slp2{ind_slp2,1}.cxt_fit{j,1} = cxt_fit';        
-        fitpara.slp2{ind_slp2,1}.runnum{j,1} = runnum;           
+        fitpara.slp2{ind_slp2,1}.runnum{j,1} = runnum; 
+
+        if ~isnan(cxt_data_fit)>=3 % only include fit tau if there are more than 3 data pt
+            fitpara.slp2{ind_slp2,1}.a(j,1) = f.a;
+        else 
+            fitpara.slp2{ind_slp2,1}.a(j,1) = NaN;
+        end 
+
         clear f cxt_data_fit cxt_fit
         
         
@@ -101,7 +106,6 @@ for ind_slp3 = 1:24
     ind_good = ind_good_All{runnum};
     cxt_alongct_1run  = cxt_alongct_ALL{runnum};
     dim_cxt= size(cxt_alongct_1run);
-    if_interp = if_interp_All{runnum};%ifinterp
 
     SS = S(runnum);
     x = SS.X(ind_good);
@@ -117,7 +121,7 @@ for ind_slp3 = 1:24
     
     
     j = 0;
-    for i = 1:5:dim_cxt(2) %fit every 5 meter
+    for i = 1:xskip:dim_cxt(2) 
         j = j+1;
         cxt_data_fit = cxt_alongct_1run(:,i);
         %cxt_data_fit = cxt_alongct_1run(domain_fit,i);
@@ -163,7 +167,6 @@ for ind_slp4 = 1:24
     ind_good = ind_good_All{runnum};
     cxt_alongct_1run  = cxt_alongct_ALL{runnum};
     dim_cxt= size(cxt_alongct_1run);
-    if_interp = if_interp_All{runnum};%ifinterp
 
 
     SS = S(runnum);
@@ -179,7 +182,7 @@ for ind_slp4 = 1:24
     
     
     j = 0;
-    for i = 1:5:dim_cxt(2) %fit every 5 meter
+    for i = 1:xskip:dim_cxt(2) 
         j = j+1;
         cxt_data_fit = cxt_alongct_1run(:,i);
         %cxt_data_fit = cxt_alongct_1run(domain_fit,i);
@@ -224,4 +227,4 @@ fitpara.slp3  = cell2mat(fitpara.slp3);
 fitpara.slp4  = cell2mat(fitpara.slp4);
 
 readme = 'created in get_cxt_fit_nointerp_max_dxwidth (fit cxt(dx))';
-save('/data1/bliu/data/cxt_alongct_nointerp_fitpara_1mres','fitpara','readme')
+save('/data1/bliu/data/cxt_alongct_nointerp_fitpara_max_dxwidth','fitpara','readme')

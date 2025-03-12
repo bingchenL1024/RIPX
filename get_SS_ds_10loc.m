@@ -68,6 +68,11 @@ SS.Ir2(N,:) = SS2.Irbo;
 SS.Ir3(N,:) = SS3.Irbo;
 SS.Ir4(N,:) = SS4.Irbo;
 
+SS.Irb2(N,:) = 0.02/(SS2.stpb)^0.5;
+SS.Irb3(N,:) = 0.03/(SS3.stpb)^0.5;
+SS.Irb4(N,:) = 0.04/(SS4.stpb)^0.5;
+
+
 % Grab the directional spread:
 ds.sigtb2(N) = SS2.sigma_b;
 ds.sigtb3(N) = SS3.sigma_b;

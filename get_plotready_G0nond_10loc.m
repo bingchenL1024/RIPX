@@ -163,9 +163,9 @@ kh.slp2 = SS.h2.*SS.kl2pm;
 kh.slp3 = SS.h3.*SS.kl3pm;
 kh.slp4 = SS.h4.*SS.kl4pm;
 
-Sk.Sk2_hb_Ir_div = (SS.Dw2./(SS.hb2.^2.*((g.*(SS.h2)).^0.5)))./SS.Ir2;
-Sk.Sk3_hb_Ir_div = (SS.Dw3./(SS.hb3.^2.*((g.*(SS.h3)).^0.5)))./SS.Ir3;
-Sk.Sk4_hb_Ir_div = (SS.Dw4./(SS.hb4.^2.*((g.*(SS.h4)).^0.5)))./SS.Ir4;
+Sk.Sk2_hb_Ir_div = (SS.Dw2./(SS.hb2.^2.*((g.*(SS.h2)).^0.5)))./SS.Irb2;
+Sk.Sk3_hb_Ir_div = (SS.Dw3./(SS.hb3.^2.*((g.*(SS.h3)).^0.5)))./SS.Irb3;
+Sk.Sk4_hb_Ir_div = (SS.Dw4./(SS.hb4.^2.*((g.*(SS.h4)).^0.5)))./SS.Irb4;
 
 G0_nond.slp2 = sqrt(A.wfit2.intw)./Sk.Sk2_hb_Ir_div;
 G0_nond.slp3 = sqrt(A.wfit3.intw)./Sk.Sk3_hb_Ir_div;

@@ -1,5 +1,6 @@
-%Bingchen Liu March 3, 2025
+% Bingchen Liu March 3, 2025
 % This code qc the cxt fit data with max dxwidth extraction method 
+% it is based on the rsquare in the fit 
 
 
 
@@ -187,7 +188,7 @@ for runind = 1:24
 
 end 
         
-
+head = 'generated in get_cxtfit_qc_max_dxwidth';
 save('/data1/bliu/data/cxt_alongct_max_dxwidth_fitpara_qced.mat','fitpara')
 
 
