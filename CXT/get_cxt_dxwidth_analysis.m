@@ -18,6 +18,7 @@ for ind = 1:24
     a_decotscale = fitpara.slp2(ind).a;
     for xloc = 1:length(a_decotscale)
         cxt_dxwidth.slp2{ind,1}.dx_nond1{1,xloc} = dx_width/(c_tot{runnum}(xloc)*fitpara.slp2(ind).a(xloc));
+        cxt_dxwidth.slp2{ind,1}.dx_nond2{1,xloc} = dx_width/(c_tot{runnum}(xloc));
         cxt_dxwidth.slp2{ind,1}.cxt_nond{1,xloc} = cxt_pm2dx_nond_ALL{runnum}{1,xloc};
         cxt_dxwidth.slp2{ind,1}.cxt{1,xloc} = cxt_pm2dx_ALL{runnum}{1,xloc};
 
@@ -30,6 +31,7 @@ for ind = 1:24
     a_decotscale = fitpara.slp3(ind).a;
     for xloc = 1:length(a_decotscale)
         cxt_dxwidth.slp3{ind,1}.dx_nond1{1,xloc} = dx_width/(c_tot{runnum}(xloc)*fitpara.slp3(ind).a(xloc));
+        cxt_dxwidth.slp3{ind,1}.dx_nond2{1,xloc} = dx_width/(c_tot{runnum}(xloc));
         cxt_dxwidth.slp3{ind,1}.cxt_nond{1,xloc} = cxt_pm2dx_nond_ALL{runnum}{1,xloc};
         cxt_dxwidth.slp3{ind,1}.cxt{1,xloc} = cxt_pm2dx_ALL{runnum}{1,xloc};
 
@@ -41,6 +43,7 @@ for ind = 1:24
     a_decotscale = fitpara.slp4(ind).a;
     for xloc = 1:length(a_decotscale)
         cxt_dxwidth.slp4{ind,1}.dx_nond1{1,xloc} = dx_width/(c_tot{runnum}(xloc)*fitpara.slp4(ind).a(xloc));
+        cxt_dxwidth.slp4{ind,1}.dx_nond2{1,xloc} = dx_width/(c_tot{runnum}(xloc)*fitpara.slp4(ind).a(xloc));
         cxt_dxwidth.slp4{ind,1}.cxt_nond{1,xloc} = cxt_pm2dx_nond_ALL{runnum}{1,xloc};
         cxt_dxwidth.slp4{ind,1}.cxt{1,xloc} = cxt_pm2dx_ALL{runnum}{1,xloc};
 

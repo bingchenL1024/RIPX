@@ -6,42 +6,53 @@
 %dx_nond2 = dx/(c dt(time lag))
 
 clear
-load('/data1/bliu/data/cxt_alongct_nointerp_max_dxwidth')
+%load('/data1/bliu/data/cxt_alongct_nointerp_max_dxwidth')
+load('/data1/bliu/data/cxt_alongct_max_dxwidth_qced.mat')
 load('/data1/bliu/data/runnum_72run.mat')
-load('/data1/bliu/data/cxt_alongct_max_dxwidth_fitpara_qced.mat')
 load('/data1/bliu/data/ind_of_diff_bath.mat')
+
+load('/data1/bliu/data/cxt_fitanalysis_max_dxwidth')
+
 
 dx_width = -2:1:2;
 
+
+%% data for 1 m resolution
 for ind = 1:24
     runnum = indbath.slp2(ind);
-    a_decotscale = fitpara.slp2(ind).a;
+    a_decotscale = cxt_dxwidth.slp2(ind).a;
     for xloc = 1:length(a_decotscale)
-        cxt_dxwidth.slp2{ind,1}.dx_nond1{1,xloc} = dx_width/(c_tot{runnum}(xloc)*fitpara.slp2(ind).a(xloc));
+        cxt_dxwidth.slp2{ind,1}.dx_nond1{1,xloc} = dx_width/(c_modelh{runnum}(xloc)*cxt_dxwidth.slp2(ind).a(xloc));
+        cxt_dxwidth.slp2{ind,1}.dx_nond2{1,xloc} = dx_width/(c_modelh{runnum}(xloc));
         cxt_dxwidth.slp2{ind,1}.cxt_nond{1,xloc} = cxt_pm2dx_nond_ALL{runnum}{1,xloc};
         cxt_dxwidth.slp2{ind,1}.cxt{1,xloc} = cxt_pm2dx_ALL{runnum}{1,xloc};
-
     end 
+    cxt_dxwidth.slp2{ind,1}.x_nond=x_nond_All{runnum};
+
 end 
 
 
 for ind = 1:24
     runnum = indbath.slp3(ind);
-    a_decotscale = fitpara.slp3(ind).a;
+    a_decotscale = cxt_dxwidth.slp3(ind).a;
     for xloc = 1:length(a_decotscale)
-        cxt_dxwidth.slp3{ind,1}.dx_nond1{1,xloc} = dx_width/(c_tot{runnum}(xloc)*fitpara.slp3(ind).a(xloc));
+        cxt_dxwidth.slp3{ind,1}.dx_nond1{1,xloc} = dx_width/(c_modelh{runnum}(xloc)*cxt_dxwidth.slp3(ind).a(xloc));
+        cxt_dxwidth.slp3{ind,1}.dx_nond2{1,xloc} = dx_width/(c_modelh{runnum}(xloc));
         cxt_dxwidth.slp3{ind,1}.cxt_nond{1,xloc} = cxt_pm2dx_nond_ALL{runnum}{1,xloc};
-        cxt_dxwidth.slp2{ind,1}.cxt{1,xloc} = cxt_pm2dx_ALL{runnum}{1,xloc};
+        cxt_dxwidth.slp3{ind,1}.cxt{1,xloc} = cxt_pm2dx_ALL{runnum}{1,xloc};
 
     end 
 end 
 
 for ind = 1:24
     runnum = indbath.slp4(ind);
-    a_decotscale = fitpara.slp4(ind).a;
+    a_decotscale = cxt_dxwidth.slp4(ind).a;
     for xloc = 1:length(a_decotscale)
-        cxt_dxwidth.slp4{ind,1}.dx_nond1{1,xloc} = dx_width/(c_tot{runnum}(xloc)*fitpara.slp4(ind).a(xloc));
+        cxt_dxwidth.slp4{ind,1}.dx_nond1{1,xloc} = dx_width/(c_modelh{runnum}(xloc)*cxt_dxwidth.slp4(ind).a(xloc));
+        cxt_dxwidth.slp4{ind,1}.dx_nond2{1,xloc} = dx_width/(c_modelh{runnum}(xloc));
         cxt_dxwidth.slp4{ind,1}.cxt_nond{1,xloc} = cxt_pm2dx_nond_ALL{runnum}{1,xloc};
+        cxt_dxwidth.slp4{ind,1}.cxt{1,xloc} = cxt_pm2dx_ALL{runnum}{1,xloc};
+
     end 
 end 
 
@@ -49,6 +60,48 @@ end
 cxt_dxwidth.slp2  = cell2mat(cxt_dxwidth.slp2);
 cxt_dxwidth.slp3  = cell2mat(cxt_dxwidth.slp3);
 cxt_dxwidth.slp4  = cell2mat(cxt_dxwidth.slp4);
+
+%% 
+
+loc5 = linspace(-0.75,-0.25,5);
+
+for i = 1:24
+    for j = 1:5
+        [~,ind_5loc_temp(j)] = min(abs(cxt_dxwidth.slp2(i).x_nond - loc5(j))); %ind out of 68*1
+    
+        cxt_dxwidth_5loc.slp2(i).x_nond(j) = cxt_dxwidth.slp2(i).dx_nond1(ind_5loc_temp(j));
+        cxt_dxwidth_5loc.slp2(i).a(j) = cxt_dxwidth.slp2(i).a(ind_5loc_temp(j));
+        cxt_dxwidth_5loc.slp2(i).t_itp{j} = cell2mat(cxt_dxwidth.slp2(i).t_itp(ind_5loc_temp(j)));
+        cxt_dxwidth_5loc.slp2(i).t_nond_diva{j} = cell2mat(cxt_dxwidth.slp2(i).t_itp(ind_5loc_temp(j)))./cxt_dxwidth.slp2(i).a(ind_5loc_temp(j));
+        cxt_dxwidth_5loc.slp2(i).cxt_data{j} = cell2mat(cxt_dxwidth.slp2(i).cxt_data(ind_5loc_temp(j)));
+        cxt_dxwidth_5loc.slp2(i).cxt_fit{j} = cell2mat(cxt_dxwidth.slp2(i).cxt_fit(ind_5loc_temp(j)));
+    end 
+
+    for j = 1:5
+        [~,ind_5loc_temp(j)] = min(abs(cxt_dxwidth.slp3(i).x_nond - loc5(j)));
+    
+        cxt_dxwidth_5loc.slp3(i).x_nond(j) = cxt_dxwidth.slp3(i).x_nond(ind_5loc_temp(j));
+        cxt_dxwidth_5loc.slp3(i).a(j) = cxt_dxwidth.slp3(i).a(ind_5loc_temp(j));
+        cxt_dxwidth_5loc.slp3(i).t_itp{j} = cell2mat(cxt_dxwidth.slp3(i).t_itp(ind_5loc_temp(j)));
+        cxt_dxwidth_5loc.slp3(i).t_nond_diva{j} = cell2mat(cxt_dxwidth.slp3(i).t_itp(ind_5loc_temp(j)))./cxt_dxwidth.slp3(i).a(ind_5loc_temp(j));
+        cxt_dxwidth_5loc.slp3(i).cxt_data{j} = cell2mat(cxt_dxwidth.slp3(i).cxt_data(ind_5loc_temp(j)));
+        cxt_dxwidth_5loc.slp3(i).cxt_fit{j} = cell2mat(cxt_dxwidth.slp3(i).cxt_fit(ind_5loc_temp(j)));
+    end 
+
+    for j = 1:5
+        [~,ind_5loc_temp(j)] = min(abs(cxt_dxwidth.slp4(i).x_nond - loc5(j)));
+    
+        cxt_dxwidth_5loc.slp4(i).x_nond(j) = cxt_dxwidth.slp4(i).x_nond(ind_5loc_temp(j));
+        cxt_dxwidth_5loc.slp4(i).a(j) = cxt_dxwidth.slp4(i).a(ind_5loc_temp(j));
+        cxt_dxwidth_5loc.slp4(i).t_itp{j} = cell2mat(cxt_dxwidth.slp4(i).t_itp(ind_5loc_temp(j)));
+        cxt_dxwidth_5loc.slp4(i).t_nond_diva{j} = cell2mat(cxt_dxwidth.slp4(i).t_itp(ind_5loc_temp(j)))./cxt_dxwidth.slp4(i).a(ind_5loc_temp(j));
+        cxt_dxwidth_5loc.slp4(i).cxt_data{j} = cell2mat(cxt_dxwidth.slp4(i).cxt_data(ind_5loc_temp(j)));
+        cxt_dxwidth_5loc.slp4(i).cxt_fit{j} = cell2mat(cxt_dxwidth.slp4(i).cxt_fit(ind_5loc_temp(j)));
+    end 
+
+
+
+end 
 
 
 save('/data1/bliu/data/cxt_dxwidth',"cxt_dxwidth")

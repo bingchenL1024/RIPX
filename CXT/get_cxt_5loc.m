@@ -7,9 +7,8 @@ clear
 load('/data1/bliu/data/cxt_ind_good.mat')
 load('/data1/bliu/data/SS_raw.mat')
 load('/data1/bliu/data/cxt_ind_good')
-load('/data1/bliu/data/cxt_alongct_max_dxwidth_fitpara_qced_1mres.mat')
+load('/data1/bliu/data/cxt_alongct_max_dxwidth_fitpara_withscaling.mat')
 load('/data1/bliu/data/ind_of_diff_bath.mat')
-
 
 
 

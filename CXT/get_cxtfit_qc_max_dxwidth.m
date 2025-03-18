@@ -190,5 +190,5 @@ end
         
 head = 'generated in get_cxtfit_qc_max_dxwidth';
 save('/data1/bliu/data/cxt_alongct_max_dxwidth_fitpara_qced.mat','fitpara')
-
+save('/data1/bliu/data/cxt_alongct_max_dxwidth_fitpara_qced_1mres.mat','fitpara')
 

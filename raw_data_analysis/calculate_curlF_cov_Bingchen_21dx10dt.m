@@ -73,10 +73,10 @@ for i=1:nx %-nx_lag % 1--- xdim-15 --------> crosshore ---> BL modified Feb 13,2
           if i+j-1<=nx %BL modified Feb 18, 2025
               G2 = squeeze(curlF(i+(j-1),iy,:)); %time series at given (x+xlag,y)
           else
-              G2 = nan(1,4801);
+              G2 = nan(4801,1); %BL modified 
           end
           
-          G1 = G1-mean(G1); % ------------> curlF(x1,y1,t)
+          G1 = G1-mean(G1,'omitmissing'); % ------------> curlF(x1,y1,t)
           G2 = G2-mean(G2,'omitmissing'); %--------------> curlF(x1+dx,y1,t+dt)
           [cxt,~] = xcorr(G2,G1,nt_lag); %BL modified
           r_11=xcorr(G1,G1,nt_lag);
@@ -126,6 +126,7 @@ CXT_std_ALL{rnum} = CXT_std;
 %CXT_ALL_var{rnum} = CXT_var;
 disp(sprintf('finished w rnum = %d',rnum));
 end;
-README = ['xcorr(G2,G1) and normalized using Bingchen sum convention and also include variance and this increased dx domain (20m) and decreased dt domain (10s), this also include upper and lower bound for CXT'];
+README = ['generated in calculate_curlF_cov_Bingchen_21dx10dt, xcorr(G2,G1) and normalized using Bingchen sum convention and also include variance and this increased dx domain (20m) and decreased dt domain (10s), this also include upper and lower bound for CXT'];
 
 save('/data1/bliu/data/raw/CXT_ALL_norm_and_var_21dx10dt_Bingchen_includeshore.mat', 'CXT_ALL','CXT_lowbd_ALL','CXT_upbd_ALL','CXT_std_ALL','CXT_uncert_ALL','README')
+%save('/data1/bliu/data/raw/CXT_ALL_norm_and_var_21dx10dt_Bingchen.mat', 'CXT_ALL','CXT_lowbd_ALL','CXT_upbd_ALL','CXT_std_ALL','CXT_uncert_ALL','README')

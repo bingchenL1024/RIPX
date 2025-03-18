@@ -4,7 +4,7 @@
 
 
 clear
-load('/data1/bliu/data/cxt_alongct_max_dxwidth_fitpara_qced.mat')
+load('/data1/bliu/data/cxt_alongct_max_dxwidth_fitpara_withscaling.mat')
 %load('/data1/bliu/data/cxt_alongct_x_maxvar_fitpara_qced.mat')
 load('/data1/bliu/data/SS_raw.mat') 
 

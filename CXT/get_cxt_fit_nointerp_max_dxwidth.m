@@ -70,7 +70,7 @@ for ind_slp2 = 1:24
         fitpara.slp2{ind_slp2,1}.G0_nond(j,1) = G0_nond(i); 
         fitpara.slp2{ind_slp2,1}.xb(j,1) = xb;  
         fitpara.slp2{ind_slp2,1}.Tp(j,1) = Tp;        
-        fitpara.slp2{ind_slp2,1}.t_scale(j,1) = t_scale(i);    
+        %fitpara.slp2{ind_slp2,1}.t_scale(j,1) = t_scale(i);    
         fitpara.slp2{ind_slp2,1}.h(j,1) = h(i);  
         fitpara.slp2{ind_slp2,1}.kw(j,1) = kw(i);  
 
@@ -143,17 +143,24 @@ for ind_slp3 = 1:24
         fitpara.slp3{ind_slp3,1}.G0_nond(j,1) = G0_nond(i); 
         fitpara.slp3{ind_slp3,1}.xb(j,1) = xb;  
         fitpara.slp3{ind_slp3,1}.Tp(j,1) = Tp;        
-        fitpara.slp3{ind_slp3,1}.t_scale(j,1) = t_scale(i);   
+        %fitpara.slp3{ind_slp3,1}.t_scale(j,1) = t_scale(i);   
         fitpara.slp3{ind_slp3,1}.h(j,1) = h(i);   
-        fitpara.slp3{ind_slp3,1}.kw(j,1) = kw(i);  
-        fitpara.slp3{ind_slp3,1}.a(j,1) = f.a;
-        fitpara.slp3{ind_slp3,1}.rsq(j,1) = gof.rsquare;        
+        fitpara.slp3{ind_slp3,1}.kw(j,1) = kw(i);         
         fitpara.slp3{ind_slp3,1}.t_itp{j,1} = t_itp(include)';        
         fitpara.slp3{ind_slp3,1}.cxt_data{j,1} = cxt_data_fit(include);        
         fitpara.slp3{ind_slp3,1}.cxt_fit{j,1} = cxt_fit';        
         fitpara.slp3{ind_slp3,1}.runnum{j,1} = runnum;        
 
-    clear f cxt_data_fit cxt_fit
+
+        if sum(~isnan(cxt_data_fit))>=3 % only include fit tau if there are more than 3 data pt
+            fitpara.slp3{ind_slp3,1}.a(j,1) = f.a;
+            fitpara.slp3{ind_slp3,1}.rsq(j,1) = gof.rsquare;        
+        else 
+            fitpara.slp3{ind_slp3,1}.a(j,1) = NaN;
+            fitpara.slp3{ind_slp3,1}.rsq(j,1) = NaN;        
+        end 
+            
+        clear f cxt_data_fit cxt_fit
         
     end 
 fitpara.slp3{ind_slp3,1}.Hs_interp = interp1(SS.X2,SS.Hs,fitpara.slp3{ind_slp3,1}.x); 
@@ -200,18 +207,22 @@ for ind_slp4 = 1:24
         fitpara.slp4{ind_slp4,1}.G0_nond(j,1) = G0_nond(i); 
         fitpara.slp4{ind_slp4,1}.xb(j,1) = xb; 
         fitpara.slp4{ind_slp4,1}.Tp(j,1) = Tp;                
-        fitpara.slp4{ind_slp4,1}.t_scale(j,1) = t_scale(i);
+        %fitpara.slp4{ind_slp4,1}.t_scale(j,1) = t_scale(i);
         fitpara.slp4{ind_slp4,1}.h(j,1) = h(i);
-        fitpara.slp4{ind_slp4,1}.kw(j,1) = kw(i);  
-        fitpara.slp4{ind_slp4,1}.a(j,1) = f.a; 
-        fitpara.slp4{ind_slp4,1}.rsq(j,1) = gof.rsquare;        
+        fitpara.slp4{ind_slp4,1}.kw(j,1) = kw(i);        
         fitpara.slp4{ind_slp4,1}.t_itp{j,1} = t_itp(include)';        
         fitpara.slp4{ind_slp4,1}.cxt_data{j,1} = cxt_data_fit(include);        
         fitpara.slp4{ind_slp4,1}.cxt_fit{j,1} = cxt_fit';     
         fitpara.slp4{ind_slp4,1}.runnum{j,1} = runnum;        
 
-   
-    clear f cxt_data_fit cxt_fit
+        if sum(~isnan(cxt_data_fit))>=3 % only include fit tau if there are more than 3 data pt
+            fitpara.slp4{ind_slp4,1}.a(j,1) = f.a;
+            fitpara.slp4{ind_slp4,1}.rsq(j,1) = gof.rsquare;        
+        else 
+            fitpara.slp4{ind_slp4,1}.a(j,1) = NaN;
+            fitpara.slp4{ind_slp4,1}.rsq(j,1) = NaN;        
+        end 
+        clear f cxt_data_fit cxt_fit
         
     end 
 fitpara.slp4{ind_slp4,1}.Hs_interp = interp1(SS.X2,SS.Hs,fitpara.slp4{ind_slp4,1}.x); 
@@ -229,3 +240,4 @@ fitpara.slp4  = cell2mat(fitpara.slp4);
 
 readme = 'created in get_cxt_fit_nointerp_max_dxwidth (fit cxt(dx))';
 save('/data1/bliu/data/cxt_alongct_nointerp_fitpara_max_dxwidth','fitpara','readme')
+save('/data1/bliu/data/cxt_alongct_nointerp_fitpara_max_dxwidth_1mres','fitpara','readme')
