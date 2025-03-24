@@ -21,6 +21,7 @@ for i = 1:24
         [~,ind_5loc_temp(j)] = min(abs(fitpara.slp2(i).x_nond - loc5(j))); %ind out of 68*1
     
         fitpara_5loc.slp2(i).x_nond(j) = fitpara.slp2(i).x_nond(ind_5loc_temp(j));
+        fitpara_5loc.slp2(i).Tp(j) = fitpara.slp2(i).Tp(ind_5loc_temp(j));
         fitpara_5loc.slp2(i).a(j) = fitpara.slp2(i).a(ind_5loc_temp(j));
         fitpara_5loc.slp2(i).t_itp{j} = cell2mat(fitpara.slp2(i).t_itp(ind_5loc_temp(j)));
         fitpara_5loc.slp2(i).t_nond_diva{j} = cell2mat(fitpara.slp2(i).t_itp(ind_5loc_temp(j)))./fitpara.slp2(i).a(ind_5loc_temp(j));
@@ -32,6 +33,7 @@ for i = 1:24
         [~,ind_5loc_temp(j)] = min(abs(fitpara.slp3(i).x_nond - loc5(j)));
     
         fitpara_5loc.slp3(i).x_nond(j) = fitpara.slp3(i).x_nond(ind_5loc_temp(j));
+        fitpara_5loc.slp3(i).Tp(j) = fitpara.slp3(i).Tp(ind_5loc_temp(j));        
         fitpara_5loc.slp3(i).a(j) = fitpara.slp3(i).a(ind_5loc_temp(j));
         fitpara_5loc.slp3(i).t_itp{j} = cell2mat(fitpara.slp3(i).t_itp(ind_5loc_temp(j)));
         fitpara_5loc.slp3(i).t_nond_diva{j} = cell2mat(fitpara.slp3(i).t_itp(ind_5loc_temp(j)))./fitpara.slp3(i).a(ind_5loc_temp(j));
@@ -43,6 +45,7 @@ for i = 1:24
         [~,ind_5loc_temp(j)] = min(abs(fitpara.slp4(i).x_nond - loc5(j)));
     
         fitpara_5loc.slp4(i).x_nond(j) = fitpara.slp4(i).x_nond(ind_5loc_temp(j));
+        fitpara_5loc.slp4(i).Tp(j) = fitpara.slp4(i).Tp(ind_5loc_temp(j));        
         fitpara_5loc.slp4(i).a(j) = fitpara.slp4(i).a(ind_5loc_temp(j));
         fitpara_5loc.slp4(i).t_itp{j} = cell2mat(fitpara.slp4(i).t_itp(ind_5loc_temp(j)));
         fitpara_5loc.slp4(i).t_nond_diva{j} = cell2mat(fitpara.slp4(i).t_itp(ind_5loc_temp(j)))./fitpara.slp4(i).a(ind_5loc_temp(j));

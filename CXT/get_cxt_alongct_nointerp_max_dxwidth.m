@@ -85,9 +85,13 @@ for runnum = 1:120
             [~,ind_max_fulldxdomain] = min(abs(cxt_atx(:,t_center+j)-val_max)); % find the index of the CXT we pick relative to whole cxt_atx domain (given t)
             
             cxt_alongct_pm1dx{j,i} = nan(1,3);
-            cxt_alongct_pm2dx{j,i} = nan(1,5);
+            %cxt_alongct_pm2dx{j,i} = nan(5,1);
+            cxt_alongct_pm2dx{j,i} = nan(9,1); % BL change dx to 0:4
+
             cxt_alongct_pm1dx_nond{j,i}= nan(1,3);
-            cxt_alongct_pm2dx_nond{j,i}= nan(1,5);
+            % cxt_alongct_pm2dx_nond{j,i}= nan(1,5);%original
+            cxt_alongct_pm2dx_nond{j,i}= nan(9,1); % BL change dx to 0:4
+
 
             if ct(j)<x_lag(end) % make sure the pt is in the domain
                 if val_max>CXT_threshold %only record if CXT exceed threshold
@@ -98,7 +102,8 @@ for runnum = 1:120
                         dx_ct(j,i) = ct(j);
                     end  
                     cxt_dxwidth_pm1_temp = nan(3,1);
-                    cxt_dxwidth_pm2_temp = nan(5,1);
+                    % cxt_dxwidth_pm2_temp = nan(5,1); %original 
+                    cxt_dxwidth_pm2_temp = nan(9,1); % BL change dx to 0:4
                     
                     
                     cxt_dxwidth_pm1_temp = extract_pm1(cxt_atx(:,t_center+j),ind_max_fulldxdomain);
@@ -108,7 +113,8 @@ for runnum = 1:120
 
 
                     cxt_alongct_pm1dx_nond{j,i} = cxt_dxwidth_pm1_temp./cxt_dxwidth_pm1_temp(2);
-                    cxt_alongct_pm2dx_nond{j,i} = cxt_dxwidth_pm2_temp./cxt_dxwidth_pm2_temp(3);                                    
+                    % cxt_alongct_pm2dx_nond{j,i} = cxt_dxwidth_pm2_temp./cxt_dxwidth_pm2_temp(3);  %original                                  
+                    cxt_alongct_pm2dx_nond{j,i} = cxt_dxwidth_pm2_temp./cxt_dxwidth_pm2_temp(5);   % BL change dx to 0:4                                 
 
                     clear cxt_dxwidth_pm1_temp cxt_dxwidth_pm2_temp
                 end 
@@ -119,7 +125,7 @@ for runnum = 1:120
         cfit_ind = ~isnan(dx_max(:,i));
         dx_cfit = dx_max(cfit_ind,i);
         dt_cfit = t_itp(cfit_ind)';
-        if length(dx_cfit)>=3
+        if length(dx_cfit)>=3 %only fit if we have more than 3 pt 
             c_fit_temp = dt_cfit\dx_cfit;
         else
             c_fit_temp= NaN;
@@ -166,7 +172,7 @@ for runnum = 1:120
 end 
 
 dxwidth_cxtcoord_pm1= [-1,0,1];
-dxwidth_cxtcoord_pm2= [-2,-1,0,1,2];
+dxwidth_cxtcoord_pm2= -4:1:4;
 RMSE_dist = sqrt(mean(MSE_dist(goodrunnum)));
 
 %% extract all parameters at 5 surfzone location

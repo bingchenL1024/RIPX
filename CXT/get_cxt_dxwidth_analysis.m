@@ -10,16 +10,21 @@ load('/data1/bliu/data/cxt_alongct_nointerp_max_dxwidth')
 load('/data1/bliu/data/runnum_72run.mat')
 load('/data1/bliu/data/cxt_alongct_max_dxwidth_fitpara_qced.mat')
 load('/data1/bliu/data/ind_of_diff_bath.mat')
+load('/data1/bliu/data/cxt_alongct_max_dxwidth_fitpara_qced_5loc')
 
-dx_width = -2:1:2;
+dx_width = -4:1:4;
+g= 9.81;
+alpha = 1/3;
 
 for ind = 1:24
     runnum = indbath.slp2(ind);
     a_decotscale = fitpara.slp2(ind).a;
     for xloc = 1:length(a_decotscale)
-        cxt_dxwidth.slp2{ind,1}.dx_nond1{1,xloc} = dx_width/(c_modelh{runnum}(xloc)*fitpara.slp2(ind).a(xloc));
-        cxt_dxwidth.slp2{ind,1}.dx_nond2{1,xloc} = dx_width/(c_modelh{runnum}(xloc));
+        %cxt_dxwidth.slp2{ind,1}.dx_nond1{1,xloc} = dx_width/((fitpara.slp2(ind).h(xloc)))^alpha;
+        cxt_dxwidth.slp2{ind,1}.dx_nond1{1,xloc} = dx_width/(c_modelh{runnum}(xloc));
+        cxt_dxwidth.slp2{ind,1}.dx_nond2{1,xloc} = dx_width/(c_modelh{runnum}(xloc)*fitpara.slp2(ind).a(xloc));
         cxt_dxwidth.slp2{ind,1}.cxt_nond{1,xloc} = cxt_pm2dx_nond_ALL{runnum}{1,xloc};
+        
         cxt_dxwidth.slp2{ind,1}.cxt{1,xloc} = cxt_pm2dx_ALL{runnum}{1,xloc};
 
     end 
@@ -31,8 +36,9 @@ for ind = 1:24
     runnum = indbath.slp3(ind);
     a_decotscale = fitpara.slp3(ind).a;
     for xloc = 1:length(a_decotscale)
-        cxt_dxwidth.slp3{ind,1}.dx_nond1{1,xloc} = dx_width/(c_modelh{runnum}(xloc)*fitpara.slp3(ind).a(xloc));
-        cxt_dxwidth.slp3{ind,1}.dx_nond2{1,xloc} = dx_width/(c_modelh{runnum}(xloc));
+        %cxt_dxwidth.slp3{ind,1}.dx_nond1{1,xloc} = dx_width/((fitpara.slp2(ind).h(xloc)))^alpha;
+        cxt_dxwidth.slp3{ind,1}.dx_nond1{1,xloc} = dx_width/(c_modelh{runnum}(xloc));
+        cxt_dxwidth.slp3{ind,1}.dx_nond2{1,xloc} = dx_width/(c_modelh{runnum}(xloc)*fitpara.slp3(ind).a(xloc));
         cxt_dxwidth.slp3{ind,1}.cxt_nond{1,xloc} = cxt_pm2dx_nond_ALL{runnum}{1,xloc};
         cxt_dxwidth.slp3{ind,1}.cxt{1,xloc} = cxt_pm2dx_ALL{runnum}{1,xloc};
 
@@ -45,8 +51,9 @@ for ind = 1:24
     runnum = indbath.slp4(ind);
     a_decotscale = fitpara.slp4(ind).a;
     for xloc = 1:length(a_decotscale)
-        cxt_dxwidth.slp4{ind,1}.dx_nond1{1,xloc} = dx_width/(c_modelh{runnum}(xloc)*fitpara.slp4(ind).a(xloc));
-        cxt_dxwidth.slp4{ind,1}.dx_nond2{1,xloc} = dx_width/(c_modelh{runnum}(xloc));
+        %cxt_dxwidth.slp4{ind,1}.dx_nond1{1,xloc} = dx_width/((fitpara.slp2(ind).h(xloc)))^alpha;
+        cxt_dxwidth.slp4{ind,1}.dx_nond1{1,xloc} = dx_width/(c_modelh{runnum}(xloc));
+        cxt_dxwidth.slp4{ind,1}.dx_nond2{1,xloc} = dx_width/(c_modelh{runnum}(xloc)*fitpara.slp4(ind).a(xloc));
         cxt_dxwidth.slp4{ind,1}.cxt_nond{1,xloc} = cxt_pm2dx_nond_ALL{runnum}{1,xloc};
         cxt_dxwidth.slp4{ind,1}.cxt{1,xloc} = cxt_pm2dx_ALL{runnum}{1,xloc};
 
@@ -74,7 +81,6 @@ for i = 1:24
         cxt_dxwidth_5loc.slp2(i).dx_nond1(j,:) = cxt_dxwidth.slp2(i).dx_nond1{ind_5loc_temp(j)}; %note: diff row rep diff xnond
         cxt_dxwidth_5loc.slp2(i).dx_nond2(j,:) = cxt_dxwidth.slp2(i).dx_nond2{ind_5loc_temp(j)};
         cxt_dxwidth_5loc.slp2(i).cxt(j,:) = cxt_dxwidth.slp2(i).cxt{ind_5loc_temp(j)};
-        cxt_dxwidth_5loc.slp2(i).cxt_nond(j,:) = cxt_dxwidth.slp2(i).cxt_nond{ind_5loc_temp(j)};
 
     end 
 
@@ -85,7 +91,6 @@ for i = 1:24
         cxt_dxwidth_5loc.slp3(i).dx_nond1(j,:) = cxt_dxwidth.slp3(i).dx_nond1{ind_5loc_temp(j)};
         cxt_dxwidth_5loc.slp3(i).dx_nond2(j,:) = cxt_dxwidth.slp3(i).dx_nond2{ind_5loc_temp(j)};
         cxt_dxwidth_5loc.slp3(i).cxt(j,:) = cxt_dxwidth.slp3(i).cxt{ind_5loc_temp(j)};
-        cxt_dxwidth_5loc.slp3(i).cxt_nond(j,:) = cxt_dxwidth.slp3(i).cxt_nond{ind_5loc_temp(j)};
 
     end 
 
@@ -96,7 +101,6 @@ for i = 1:24
         cxt_dxwidth_5loc.slp4(i).dx_nond1(j,:) = cxt_dxwidth.slp4(i).dx_nond1{ind_5loc_temp(j)};
         cxt_dxwidth_5loc.slp4(i).dx_nond2(j,:) = cxt_dxwidth.slp4(i).dx_nond2{ind_5loc_temp(j)};
         cxt_dxwidth_5loc.slp4(i).cxt(j,:) = cxt_dxwidth.slp4(i).cxt{ind_5loc_temp(j)};
-        cxt_dxwidth_5loc.slp4(i).cxt_nond(j,:) = cxt_dxwidth.slp4(i).cxt_nond{ind_5loc_temp(j)};
 
     end 
 
