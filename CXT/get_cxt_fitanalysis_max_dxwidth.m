@@ -163,6 +163,9 @@ kw_all=[kw.slp2;kw.slp3;kw.slp4];
 t_scale_all = [t_scale.slp2;t_scale.slp3;t_scale.slp4];
 x_nond_all = [x_nond_tot.slp2;x_nond_tot.slp3;x_nond_tot.slp4];
 G0_nond_all = [G0_nond.slp2;G0_nond.slp3;G0_nond.slp4];
+t_deco_1mres_stats.mean = mean(a_tot_all,'omitmissing');
+t_deco_1mres_stats.std = std(a_tot_all,'omitmissing');
+
 
 a_nond = a_tot_all./t_scale_all;
 
@@ -176,66 +179,7 @@ nond_Hshslp.slp4= Hs_interp.slp4./h.slp4;
 %nond= h_all./(g.*Tp_all.^2);
 
 
-%% get index for plot purpose (i.e. for diff Tp) optional
-%get_runinfo_4plot_nointerp
-%load('/data1/bliu/data/cxt_nointerp_runinfo_G0lim0p15.mat')
-% 
-% % ================================================= Tp
-% for i = 1:length(runinfo_tot)
-%     ind_Tp8(i,1)=  contains(runinfo_tot(i).wave,'Tp8.0');
-% end 
-% 
-% for i = 1:length(runinfo_tot)
-%     ind_Tp14(i,1)=  contains(runinfo_tot(i).wave,'Tp14.0');
-% end 
-% 
-% % ================================================= Hs
-% for i = 1:length(runinfo_tot)
-%     ind_Hs0p5(i,1)=  contains(runinfo_tot(i).wave,'Hs0.5');
-% end 
-% 
-% for i = 1:length(runinfo_tot)
-%     ind_Hs0p8(i,1)=  contains(runinfo_tot(i).wave,'Hs0.8');
-% end 
-% 
-% for i = 1:length(runinfo_tot)
-%     ind_Hs1p1(i,1)=  contains(runinfo_tot(i).wave,'Hs1.1');
-% end 
-% 
-% % ================================================= ds
-% for i = 1:length(runinfo_tot)
-%     ind_ds2p5(i,1)=  contains(runinfo_tot(i).wave,'ds2.5');
-% end 
-% 
-% for i = 1:length(runinfo_tot)
-%     ind_ds5(i,1)=  contains(runinfo_tot(i).wave,'ds5.0');
-% end 
-% 
-% for i = 1:length(runinfo_tot)
-%     ind_ds10(i,1)=  contains(runinfo_tot(i).wave,'ds10.0');
-% end 
-% 
-% for i = 1:length(runinfo_tot)
-%     ind_ds20(i,1)=  contains(runinfo_tot(i).wave,'ds20.0');
-% end 
-% 
-% 
-% % ================================================= bathy
-% for i = 1:length(runinfo_tot)
-%     ind_slp2(i,1)=  contains(runinfo_tot(i).bath,'002');
-% end 
-% 
-% for i = 1:length(runinfo_tot)
-%     ind_slp3(i,1)=  contains(runinfo_tot(i).bath,'003');
-% end 
-% 
-% for i = 1:length(runinfo_tot)
-%     ind_slp4(i,1)=  contains(runinfo_tot(i).bath,'004');
-% end 
-% 
-% 
-% 
-% 
+
 
 
 
@@ -278,6 +222,9 @@ a_tot_all(~isnan(a_tot_all))./t_scale_all(~isnan(a_tot_all)),ft, opts);
 nond_G0_model = 0.15:0.05:1;
 %a_nond_model_G0 = f_a_nond_G0.A*exp(nond_G0_model*f_a_nond_G0.B)+f_a_nond_G0.C;
 a_nond_model_G0 = f_a_nond_G0.A*nond_G0_model.^f_a_nond_G0.B+f_a_nond_G0.C;
+
+
+
 %%
 save('/data1/bliu/data/cxt_fitanalysis_max_dxwidth')
 

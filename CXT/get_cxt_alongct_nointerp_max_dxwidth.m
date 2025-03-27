@@ -173,7 +173,7 @@ end
 
 dxwidth_cxtcoord_pm1= [-1,0,1];
 dxwidth_cxtcoord_pm2= -4:1:4;
-RMSE_dist = sqrt(mean(MSE_dist(goodrunnum)));
+RMSE.dist = sqrt(mean(MSE_dist(goodrunnum)));
 
 %% extract all parameters at 5 surfzone location
 loc5 = linspace(-0.75,-0.25,5);
@@ -214,11 +214,23 @@ for i = 1:24
 
 end 
 
+
+c_fit_tot=[];
+c_modelh_tot=[];
+for i= 1:24
+    c_fit_tot= [c_fit_tot, c_phase_5loc.slp2(i).c_fit, c_phase_5loc.slp3(i).c_fit, c_phase_5loc.slp4(i).c_fit];
+    c_modelh_tot= [c_modelh_tot, c_phase_5loc.slp2(i).c_modelh, c_phase_5loc.slp3(i).c_modelh, c_phase_5loc.slp4(i).c_modelh];
+
+end 
+
+nonan = ~isnan(c_fit_tot)&~isnan(c_modelh_tot);
+RMSE.vel = rmse(c_fit_tot(nonan),c_modelh_tot(nonan));
+
 %cxt_alongct_ALL = cxt_alongct_ALL';
 %cxt_alongct_mean = cxt_alongct_mean';
 %ind_good_All = ind_good_All';
 
 save('/data1/bliu/data/cxt_alongct_nointerp_max_dxwidth','cxt_alongct_ALL','cxt_pm1dx_ALL','cxt_pm2dx_ALL', ...
-    'dist2ct_All','t_itp','x_nond_All','RMSE_dist','dxwidth_cxtcoord_pm1','dxwidth_cxtcoord_pm2', ...
+    'dist2ct_All','t_itp','x_nond_All','RMSE','dxwidth_cxtcoord_pm1','dxwidth_cxtcoord_pm2', ...
     'cxt_pm1dx_nond_ALL','cxt_pm2dx_nond_ALL','c_modelh','c_fit','c_modelhHs','c_phase_5loc', ...
     'dx_max_All')

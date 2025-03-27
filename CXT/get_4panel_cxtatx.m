@@ -12,7 +12,7 @@ load('/data1/bliu/data/cxt_ind_good')
 load('/data1/bliu/data/ind_of_diff_bath.mat')
 load('/data1/bliu/data/cxt_alongct_nointerp_max_dxwidth')
 %%
-runnum=1;
+runnum=14;
 x_nond_ind = linspace(-0.625,-0.25,4);
 
 

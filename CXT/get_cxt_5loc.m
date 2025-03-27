@@ -56,6 +56,15 @@ for i = 1:24
 
 
 end 
+%% put t at 5 loc in a vector for pdf plot 
+t_decoscal_tot_5loc = []; 
+for ind = 1:24
+    t_decoscal_tot_5loc = [t_decoscal_tot_5loc, fitpara_5loc.slp2(ind).a,fitpara_5loc.slp3(ind).a,fitpara_5loc.slp4(ind).a];
+end 
+fitpara_5loc.t_deco = t_decoscal_tot_5loc;
+fitpara_5loc.t_mean = mean(t_decoscal_tot_5loc,'omitmissing');
+fitpara_5loc.t_std = std(t_decoscal_tot_5loc,'omitmissing');
+
 
 head = 'data generated in get_cxt_5loc.m';
-save('/data1/bliu/data/cxt_alongct_max_dxwidth_fitpara_qced_5loc','fitpara_5loc','head')
+save('/data1/bliu/data/cxt_alongct_max_dxwidth_fitpara_qced_5loc','fitpara_5loc','t_decoscal_tot_5loc','head')
