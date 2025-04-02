@@ -51,6 +51,7 @@ for ind_slp2 = 1:24
     t_scale = sqrt(h/g);
     xb = SS.xb;
     Tp = SS.Tp_T;
+    ds  = SS.sigma_b;
     kw = get_wavenum(2*pi/(Tp),h);
     G0_nond = abs(SS.curlF_std(ind_good))./abs(max(SS.curlF_std(ind_good)));%G0 modification
     

@@ -31,6 +31,7 @@ for runnum = 1:120
     x2= SS.X2;
     h = SS.h;
     Hs = SS.Hs;
+    ds_b= SS.sigma_b;
     Hs_interp = interp1(x2,Hs,x);
     cxt = cell2mat(CXT_ALL(runnum));
     cxt_upbd=cell2mat(CXT_upbd_ALL(runnum));
@@ -53,10 +54,11 @@ for runnum = 1:120
     for i=1:length(ind_good) %cross shore dim
         xind = ind_good(i);
         h_xloc = h(xind);
+        dirspr_b{runnum}(1,i) = ds_b;
         Hs_xloc= Hs_interp(xind);
         c = sqrt(g*h_xloc);
         c_nonlin_temp = sqrt(g*(h_xloc+Hs_xloc));
-        c_modelh{runnum}(1,i) = c; 
+        c_modelh{runnum}(1,i) = c;
         c_modelhHs{runnum}(1,i) = c_nonlin_temp; 
         Hs_h{runnum}(1,i) = Hs_xloc/h_xloc; 
         Hs_h_1psqrt{runnum}(1,i) = sqrt(1+Hs_xloc/h_xloc);
@@ -173,7 +175,7 @@ end
 
 dxwidth_cxtcoord_pm1= [-1,0,1];
 dxwidth_cxtcoord_pm2= -4:1:4;
-RMSE.dist = sqrt(mean(MSE_dist(goodrunnum)));
+Stats.RMSE_dist = sqrt(mean(MSE_dist(goodrunnum)));
 
 %% extract all parameters at 5 surfzone location
 loc5 = linspace(-0.75,-0.25,5);
@@ -182,6 +184,8 @@ for i = 1:24
     for j = 1:5
         runnum = indbath.slp2(i);
         [~,ind_5loc_temp(j)] = min(abs(x_nond_All{runnum} - loc5(j)));
+        c_phase_5loc.slp2(i).dirspr_b(j) = dirspr_b{runnum}(ind_5loc_temp(j));
+
         c_phase_5loc.slp2(i).c_fit(j) = c_fit{runnum}(ind_5loc_temp(j));
         c_phase_5loc.slp2(i).c_modelh(j) = c_modelh{runnum}(ind_5loc_temp(j));
         c_phase_5loc.slp2(i).c_modelhHs(j) = c_modelhHs{runnum}(ind_5loc_temp(j));
@@ -193,6 +197,8 @@ for i = 1:24
     for j = 1:5
         runnum = indbath.slp3(i);
         [~,ind_5loc_temp(j)] = min(abs(x_nond_All{runnum} - loc5(j)));
+        c_phase_5loc.slp3(i).dirspr_b(j) = dirspr_b{runnum}(ind_5loc_temp(j));
+
         c_phase_5loc.slp3(i).c_fit(j) = c_fit{runnum}(ind_5loc_temp(j));
         c_phase_5loc.slp3(i).c_modelh(j) = c_modelh{runnum}(ind_5loc_temp(j));
         c_phase_5loc.slp3(i).c_modelhHs(j) = c_modelhHs{runnum}(ind_5loc_temp(j));
@@ -204,6 +210,8 @@ for i = 1:24
     for j = 1:5
         runnum = indbath.slp4(i);
         [~,ind_5loc_temp(j)] = min(abs(x_nond_All{runnum} - loc5(j)));
+        c_phase_5loc.slp4(i).dirspr_b(j) = dirspr_b{runnum}(ind_5loc_temp(j));
+
         c_phase_5loc.slp4(i).c_fit(j) = c_fit{runnum}(ind_5loc_temp(j));
         c_phase_5loc.slp4(i).c_modelh(j) = c_modelh{runnum}(ind_5loc_temp(j));
         c_phase_5loc.slp4(i).c_modelhHs(j) = c_modelhHs{runnum}(ind_5loc_temp(j));
@@ -224,13 +232,13 @@ for i= 1:24
 end 
 
 nonan = ~isnan(c_fit_tot)&~isnan(c_modelh_tot);
-RMSE.vel = rmse(c_fit_tot(nonan),c_modelh_tot(nonan));
-
+Stats.RMSE_vel = rmse(c_fit_tot(nonan),c_modelh_tot(nonan));
+Stats.c_corr= corrcoef(c_fit_tot(nonan),c_modelh_tot(nonan));
 %cxt_alongct_ALL = cxt_alongct_ALL';
 %cxt_alongct_mean = cxt_alongct_mean';
 %ind_good_All = ind_good_All';
 
 save('/data1/bliu/data/cxt_alongct_nointerp_max_dxwidth','cxt_alongct_ALL','cxt_pm1dx_ALL','cxt_pm2dx_ALL', ...
-    'dist2ct_All','t_itp','x_nond_All','RMSE','dxwidth_cxtcoord_pm1','dxwidth_cxtcoord_pm2', ...
+    'dist2ct_All','t_itp','x_nond_All','Stats','dxwidth_cxtcoord_pm1','dxwidth_cxtcoord_pm2', ...
     'cxt_pm1dx_nond_ALL','cxt_pm2dx_nond_ALL','c_modelh','c_fit','c_modelhHs','c_phase_5loc', ...
     'dx_max_All')
