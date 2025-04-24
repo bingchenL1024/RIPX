@@ -54,7 +54,7 @@ P4 = load_RIPX_curlF_Sky( ip4 );
 [iss4] = get_10locs(SS4);
 
 %Grab the spectra:
-Sky2 = P2.Sckm(iss2,:);Sky3 = P3.Sckm(iss3,:);Sky4 = P4.Sckm(iss4,:);
+Sky2 = P2.Sckm(iss2,:);Sky3 = P3.Sckm(iss3,:);Sky4 = P4.Sckm(iss4,:); % cross-shore loc*kyy dim (601 in kyy)
 kyy = P2.fck/(2*pi); % kyy (CPM)
 xlim2 = [0.0008 0.2];
 
@@ -71,12 +71,22 @@ xlim2 = [0.0008 0.2];
 
 
 % 2. Get the total variance in Sky and its integration out to 0.2:
-iS2tot(N,xx) = (sum(Sky2(xx,:)).*diff(kyy(1:2))); % integrate the whole thing
+%============> original <=================
+iS2tot(N,xx) = (sum(Sky2(xx,:)).*diff(kyy(1:2))); % Sky2 (kyy) (601*1) --raw spectra; kyy [0,0.5]
 iS3tot(N,xx) = (sum(Sky3(xx,:)).*diff(kyy(1:2)));
 iS4tot(N,xx) = (sum(Sky4(xx,:)).*diff(kyy(1:2)));
-iS2s(N,xx) = (nansum(S2.Skyi).*diff(S2.kyy(1:2))); % only to 0.2
+iS2s(N,xx) = (nansum(S2.Skyi).*diff(S2.kyy(1:2))); % original S2.Skyi(S2.kyy) (239*1); S2.kyy [0.0017,0.2]
 iS3s(N,xx) = (nansum(S3.Skyi).*diff(S3.kyy(1:2)));
 iS4s(N,xx) = (nansum(S4.Skyi).*diff(S4.kyy(1:2)));
+
+%============> BL modified for manuscript  <============
+% [iS2tot(N,xx),iS2(N,xx)]  = spec_int(S2_plot.sSkyl,S2_plot.lky); % Sky2 (kyy) (601*1); kyy [0,0.5]
+% iS3tot(N,xx) = (Sky3(xx,:));
+% iS4tot(N,xx) = (Sky4(xx,:));
+% iS2(N,xx) = (nansum(S2_plot.Skyi(3:end)).*diff(S2_plot.kyy(1:2))); % S2.Skyi(S2.kyy) (239*1); S2.kyy [0.0017,0.2]
+% iS3(N,xx) = (nansum(S3_plot.Skyi(3:end)).*diff(S3_plot.kyy(1:2)));
+% iS4(N,xx) = (nansum(S4_plot.Skyi(3:end)).*diff(S4_plot.kyy(1:2)));
+
 
 magspec2_temp(xx) = (nansum(S2.Skyi).*diff(S2.kyy(1:2))); % just for saving in different format for plot purpose
 magspec3_temp(xx) = (nansum(S3.Skyi).*diff(S3.kyy(1:2))); 
@@ -105,7 +115,7 @@ kyy4_wb_temp(xx,:) = S4.lky;
 
 ky_full=kyy;
 % Do the Weibul fits:
-[FP2] = rayleigh_fitAS2(S2.lky,S2.sSkyl,expo);
+[FP2] = rayleigh_fitAS2(S2.lky,S2.sSkyl,expo); %ky [0.001 0.2] -fit spectra wvnumber domain same as S2.lky
 [FP3] = rayleigh_fitAS2(S3.lky,S3.sSkyl,expo);
 [FP4] = rayleigh_fitAS2(S4.lky,S4.sSkyl,expo);
 

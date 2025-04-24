@@ -41,13 +41,16 @@ ky0_tot_data = [A.kym2(:);A.kym3(:);A.kym4(:)];
 ky0_tot_WBfit = [A.wkym2(:);A.wkym3(:);A.wkym4(:)];
 
 r_G0var = corrcoef(G0_tot_data,G0_tot_fulldata);
-rsquare_G0var= r_G0var(1,2).^2;
+stats.rsquare_G0var= r_G0var(1,2).^2;
+stats.rmse_G0var = rmse(G0_tot_data,G0_tot_fulldata,'all');
 
 r_G0 = corrcoef(G0_tot_data,G0_tot_WBfit);
-rsquare_G0 = r_G0(1,2).^2;
+stats.rsquare_G0 = r_G0(1,2).^2;
+stats.rmse_G0 = rmse(G0_tot_data,G0_tot_WBfit,'all');
 
 r_ky0 = corrcoef(ky0_tot_data,ky0_tot_WBfit);
-rsquare_ky0 = r_ky0(1,2).^2;
+stats.rsquare_ky0 = r_ky0(1,2).^2;
+stats.rmse_ky0 = rmse(ky0_tot_data,ky0_tot_WBfit,'all');
 %%
 [p2,v2] = get_sampled_ripx_spread_index(0.1, 2, 0.01, 0.5, 0.02);
 [p3,v3] = get_sampled_ripx_spread_index(0.1, 2, 0.01, 0.5, 0.03);
@@ -96,7 +99,7 @@ bla4 = find(A.wskil4(:)<=qc_sk);
 % parsf.tp3 = v3(indf.i3,2);
 % parsf.tp4 = v4(indf.i4,2);
 
-%% actual QC (turn on)
+%% actual QC (turn on/off)
 % Resave everything:
 % K.h2(indf.i2,:) = NaN;K.h3(indf.i3,:) = NaN;K.h4(indf.i4,:) = NaN;
 % K.kl2(indf.i2,:) = NaN;K.kl3(indf.i3,:) = NaN;K.kl4(indf.i4,:) = NaN;
@@ -171,4 +174,4 @@ head = 'get_weibul_qced.m';
 %save('/data1/bliu/data/edited_Wall','A','SS','head')
 
 save(['/data1/bliu/data/Sky_withWBfit_10loc_qced_',expo_name],'A','SS','Sky2_cutoff_runmean','Sky3_cutoff_runmean','Sky4_cutoff_runmean','magspec2','magspec3','magspec4','Skym2','Skym3','Skym4','ky2_cutoff','ky3_cutoff',"ky4_cutoff",'kym2','kym3','kym4', ...
-    'Sky2_wb','Sky3_wb','Sky4_wb','mag_wb2','mag_wb3','mag_wb4','wkym2','wkym3','wkym4','ky2_wb','ky3_wb','ky4_wb','wfit2','wfit3','wfit4','Sky2_raw','Sky3_raw','Sky4_raw','ky_full','Sky2_full_runmean','Sky3_full_runmean','Sky4_full_runmean','rsquare_G0','rsquare_ky0','rsquare_G0var','head')
+    'Sky2_wb','Sky3_wb','Sky4_wb','mag_wb2','mag_wb3','mag_wb4','wkym2','wkym3','wkym4','ky2_wb','ky3_wb','ky4_wb','wfit2','wfit3','wfit4','Sky2_raw','Sky3_raw','Sky4_raw','ky_full','Sky2_full_runmean','Sky3_full_runmean','Sky4_full_runmean','head','stats')

@@ -135,58 +135,58 @@ end
 save('/data1/bliu/data/cxt_badfit_nointerp.mat','badfit')
 
 
-%% %%%%%%%%%%%%%%%%%% QC bad fit
+%% %%%%%%%%%%%%%%%%%% QC bad fit (turn on or off)
 
-for runind = 1:24
-    A = fitpara.slp2(runind);
-    xind_length = length(fitpara.slp2(runind).x);
-    rsq  = A.rsq;
-    badfit_temp = find(rsq<rsqlim);
-    
-    if ~isempty(badfit_temp)
-        for i = 1:length(badfit_temp)
-        %%%%%%%%%%%%% NaN the original data
-            fitpara.slp2(runind).cxt_fit{badfit_temp(i)}(:) = NaN;
-            fitpara.slp2(runind).a(badfit_temp(i)) = NaN;
-        end 
-    end 
-    
-
-end 
-
-for runind = 1:24
-    A = fitpara.slp3(runind);
-    xind_length = length(fitpara.slp3(runind).x);
-    rsq  = A.rsq;
-    badfit_temp = find(rsq<rsqlim);
-    
-    if ~isempty(badfit_temp)
-        for i = 1:length(badfit_temp)
-        %%%%%%%%%%%%% NaN the original data
-            fitpara.slp3(runind).cxt_fit{badfit_temp(i)}(:) = NaN;
-            fitpara.slp3(runind).a(badfit_temp(i)) = NaN;
-        end 
-    end 
-    
-
-end 
-        
-for runind = 1:24
-    A = fitpara.slp4(runind);
-    xind_length = length(fitpara.slp4(runind).x);
-    rsq  = A.rsq;
-    badfit_temp = find(rsq<rsqlim);
-    
-    if ~isempty(badfit_temp)
-        for i = 1:length(badfit_temp)
-        %%%%%%%%%%%%% NaN the original data
-            fitpara.slp4(runind).cxt_fit{badfit_temp(i)}(:) = NaN;
-            fitpara.slp4(runind).a(badfit_temp(i)) = NaN;
-        end 
-    end 
-    
-
-end 
+% for runind = 1:24
+%     A = fitpara.slp2(runind);
+%     xind_length = length(fitpara.slp2(runind).x);
+%     rsq  = A.rsq;
+%     badfit_temp = find(rsq<rsqlim);
+% 
+%     if ~isempty(badfit_temp)
+%         for i = 1:length(badfit_temp)
+%         %%%%%%%%%%%%% NaN the original data
+%             fitpara.slp2(runind).cxt_fit{badfit_temp(i)}(:) = NaN;
+%             fitpara.slp2(runind).a(badfit_temp(i)) = NaN;
+%         end 
+%     end 
+% 
+% 
+% end 
+% 
+% for runind = 1:24
+%     A = fitpara.slp3(runind);
+%     xind_length = length(fitpara.slp3(runind).x);
+%     rsq  = A.rsq;
+%     badfit_temp = find(rsq<rsqlim);
+% 
+%     if ~isempty(badfit_temp)
+%         for i = 1:length(badfit_temp)
+%         %%%%%%%%%%%%% NaN the original data
+%             fitpara.slp3(runind).cxt_fit{badfit_temp(i)}(:) = NaN;
+%             fitpara.slp3(runind).a(badfit_temp(i)) = NaN;
+%         end 
+%     end 
+% 
+% 
+% end 
+% 
+% for runind = 1:24
+%     A = fitpara.slp4(runind);
+%     xind_length = length(fitpara.slp4(runind).x);
+%     rsq  = A.rsq;
+%     badfit_temp = find(rsq<rsqlim);
+% 
+%     if ~isempty(badfit_temp)
+%         for i = 1:length(badfit_temp)
+%         %%%%%%%%%%%%% NaN the original data
+%             fitpara.slp4(runind).cxt_fit{badfit_temp(i)}(:) = NaN;
+%             fitpara.slp4(runind).a(badfit_temp(i)) = NaN;
+%         end 
+%     end 
+% 
+% 
+% end 
         
 head = 'generated in get_cxtfit_qc_max_dxwidth';
 save('/data1/bliu/data/cxt_alongct_max_dxwidth_fitpara_qced.mat','fitpara')
