@@ -8,6 +8,8 @@
 % include RMSE of dx-c*dt
 % include dx width 
 
+% April 28, 2025 update
+% add interp using fit velocity c and interp around c*dt 
 
 clear
 close all
@@ -20,7 +22,7 @@ load('/data1/bliu/data/ind_of_diff_bath.mat')
 
 %%
 
-CXT_threshold = 0.025;
+CXT_threshold = 0.025; %0.025 previously 
 t_itp = 0:1:5; % HARD CODED
 
 for runnum = 1:120
@@ -47,6 +49,7 @@ for runnum = 1:120
     t_center = (length(t_lag)-1)/2;
     [dt,dx] = meshgrid(t_lag,x_lag);
     cxt_alongct= NaN(length(t_itp),length(ind_good));
+    cxt_alongct_interp= NaN(length(t_itp),length(ind_good));
     ct_all = NaN(length(t_itp),length(ind_good));
     dist2ct = NaN(length(t_itp),length(ind_good));
     dx_max = NaN(length(t_itp),length(ind_good));
@@ -74,7 +77,7 @@ for runnum = 1:120
 
         cxt_interp(:,i)= interp2(dt,dx,cxt_atx,t_itp,ct);
         threshold_cxt = ceil(c*0.5); % threshold on how close the data needs to be close to x=ct (include c variation since 1s cover diff distance),otherwise, use interpolation.
-        range_maxcxt = ceil(c*5); %the range where we look for the max CXT around x= ct
+        range_maxcxt = ceil(c*5); %the range where we look for the max CXT around x= ct -- t = 5 so basically everywhere
     
 
         for j=1:length(t_itp)
@@ -143,6 +146,11 @@ for runnum = 1:120
         % begug ================================
         c_fit{runnum}(1,i) = c_fit_temp;
         
+        % April 28, 2025 update, use fit c to obtain cxt_alongct_interp
+        % with interp 
+        ct_itp = c_fit_temp.*t_itp;
+        cxt_alongct_interp(:,i)= interp2(dt,dx,cxt_atx,t_itp,ct_itp);
+
 
     end 
     cxt_alongct_ALL{runnum} = cxt_alongct;
