@@ -1,5 +1,6 @@
 % Bingchen Liu Mar 14, 2025
-% This code compute the scaling for the fit parameter \tau 
+% This code compute the scaling for the fit parameter \tau and add it to
+% variable 'fitpara'
 
 
 clear

@@ -22,7 +22,7 @@ load('/data1/bliu/data/ind_of_diff_bath.mat')
 
 %%
 
-CXT_threshold = 0.025; %0.025 previously 
+CXT_threshold = 0; %0.025 previously 
 t_itp = 0:1:5; % HARD CODED
 
 for runnum = 1:120
@@ -32,6 +32,7 @@ for runnum = 1:120
     x = SS.X;
     x2= SS.X2;
     h = SS.h;
+    hb = SS.hb;
     Hs = SS.Hs;
     ds_b= SS.sigma_b;
     Hs_interp = interp1(x2,Hs,x);
@@ -64,6 +65,7 @@ for runnum = 1:120
         c_modelh{runnum}(1,i) = c;
         c_modelhHs{runnum}(1,i) = c_nonlin_temp; 
         Hs_h{runnum}(1,i) = Hs_xloc/h_xloc; 
+        h_hb_nond{runnum}(1,i) = h_xloc/hb;
         Hs_h_1psqrt{runnum}(1,i) = sqrt(1+Hs_xloc/h_xloc);
         
 
@@ -145,15 +147,22 @@ for runnum = 1:120
         % end 
         % begug ================================
         c_fit{runnum}(1,i) = c_fit_temp;
-        
+        ct_itp = c_fit_temp.*t_itp;
+
         % April 28, 2025 update, use fit c to obtain cxt_alongct_interp
         % with interp 
-        ct_itp = c_fit_temp.*t_itp;
-        cxt_alongct_interp(:,i)= interp2(dt,dx,cxt_atx,t_itp,ct_itp);
-
-
+       
+        % for j=1:length(t_itp)
+        %     t_ind = t_center+j;
+        %     cxt_alongct_interp(j,i)= interp1(x_lag,cxt_atx(:,t_ind),ct_itp(j));
+        % end 
+        % %     if i==2
+        % %         keyboard
+        % %     end 
     end 
     cxt_alongct_ALL{runnum} = cxt_alongct;
+    cxt_alongct_itp_ALL{runnum} = cxt_alongct_interp;
+
     
     cxt_pm1dx_ALL{runnum} = cxt_alongct_pm1dx;   
     cxt_pm2dx_ALL{runnum} = cxt_alongct_pm2dx;
@@ -200,6 +209,8 @@ for i = 1:24
         c_phase_5loc.slp2(i).c_nond(j) = c_fit{runnum}(ind_5loc_temp(j))/c_modelh{runnum}(ind_5loc_temp(j));
         c_phase_5loc.slp2(i).Hs_h(j) = Hs_h{runnum}(ind_5loc_temp(j));
         c_phase_5loc.slp2(i).Hs_h_sqrt(j) = Hs_h_1psqrt{runnum}(ind_5loc_temp(j));
+        c_phase_5loc.slp2(i).h_hb_nond(j) = h_hb_nond{runnum}(ind_5loc_temp(j));
+
     end 
 
     for j = 1:5
@@ -213,6 +224,8 @@ for i = 1:24
         c_phase_5loc.slp3(i).c_nond(j) = c_fit{runnum}(ind_5loc_temp(j))/c_modelh{runnum}(ind_5loc_temp(j));
         c_phase_5loc.slp3(i).Hs_h(j) = Hs_h{runnum}(ind_5loc_temp(j));
         c_phase_5loc.slp3(i).Hs_h_sqrt(j) = Hs_h_1psqrt{runnum}(ind_5loc_temp(j));
+        c_phase_5loc.slp3(i).h_hb_nond(j) = h_hb_nond{runnum}(ind_5loc_temp(j));
+
     end 
 
     for j = 1:5
@@ -226,6 +239,8 @@ for i = 1:24
         c_phase_5loc.slp4(i).c_nond(j) = c_fit{runnum}(ind_5loc_temp(j))/c_modelh{runnum}(ind_5loc_temp(j));
         c_phase_5loc.slp4(i).Hs_h(j) = Hs_h{runnum}(ind_5loc_temp(j));
         c_phase_5loc.slp4(i).Hs_h_sqrt(j) = Hs_h_1psqrt{runnum}(ind_5loc_temp(j));
+        c_phase_5loc.slp4(i).h_hb_nond(j) = h_hb_nond{runnum}(ind_5loc_temp(j));
+
     end 
 
 end 

@@ -10,7 +10,7 @@ load('/data1/bliu/data/cxt_ind_good')
 load('/data1/bliu/data/cxt_alongct_max_dxwidth_fitpara_withscaling.mat')
 load('/data1/bliu/data/ind_of_diff_bath.mat')
 
-
+%%
 
 ind_slp234 = [indbath.slp2;indbath.slp3;indbath.slp4];
 
@@ -24,6 +24,7 @@ for i = 1:24
         fitpara_5loc.slp2(i).Tp(j) = fitpara.slp2(i).Tp(ind_5loc_temp(j));
         fitpara_5loc.slp2(i).dirspr(j) = fitpara.slp2(i).dirspr(ind_5loc_temp(j));
         fitpara_5loc.slp2(i).a(j) = fitpara.slp2(i).a(ind_5loc_temp(j));
+        fitpara_5loc.slp2(i).t_scale{j} = fitpara.slp2(i).t_scale(ind_5loc_temp(j));
         fitpara_5loc.slp2(i).t_itp{j} = cell2mat(fitpara.slp2(i).t_itp(ind_5loc_temp(j)));
         fitpara_5loc.slp2(i).t_nond_diva{j} = cell2mat(fitpara.slp2(i).t_itp(ind_5loc_temp(j)))./fitpara.slp2(i).a(ind_5loc_temp(j));
         fitpara_5loc.slp2(i).cxt_data{j} = cell2mat(fitpara.slp2(i).cxt_data(ind_5loc_temp(j)));
@@ -37,6 +38,7 @@ for i = 1:24
         fitpara_5loc.slp3(i).Tp(j) = fitpara.slp3(i).Tp(ind_5loc_temp(j));  
         fitpara_5loc.slp3(i).dirspr(j) = fitpara.slp3(i).dirspr(ind_5loc_temp(j));
         fitpara_5loc.slp3(i).a(j) = fitpara.slp3(i).a(ind_5loc_temp(j));
+        fitpara_5loc.slp3(i).t_scale{j} = fitpara.slp3(i).t_scale(ind_5loc_temp(j));
         fitpara_5loc.slp3(i).t_itp{j} = cell2mat(fitpara.slp3(i).t_itp(ind_5loc_temp(j)));
         fitpara_5loc.slp3(i).t_nond_diva{j} = cell2mat(fitpara.slp3(i).t_itp(ind_5loc_temp(j)))./fitpara.slp3(i).a(ind_5loc_temp(j));
         fitpara_5loc.slp3(i).cxt_data{j} = cell2mat(fitpara.slp3(i).cxt_data(ind_5loc_temp(j)));
@@ -50,6 +52,7 @@ for i = 1:24
         fitpara_5loc.slp4(i).Tp(j) = fitpara.slp4(i).Tp(ind_5loc_temp(j));  
         fitpara_5loc.slp4(i).dirspr(j) = fitpara.slp4(i).dirspr(ind_5loc_temp(j));
         fitpara_5loc.slp4(i).a(j) = fitpara.slp4(i).a(ind_5loc_temp(j));
+        fitpara_5loc.slp4(i).t_scale{j} = fitpara.slp4(i).t_scale(ind_5loc_temp(j));
         fitpara_5loc.slp4(i).t_itp{j} = cell2mat(fitpara.slp4(i).t_itp(ind_5loc_temp(j)));
         fitpara_5loc.slp4(i).t_nond_diva{j} = cell2mat(fitpara.slp4(i).t_itp(ind_5loc_temp(j)))./fitpara.slp4(i).a(ind_5loc_temp(j));
         fitpara_5loc.slp4(i).cxt_data{j} = cell2mat(fitpara.slp4(i).cxt_data(ind_5loc_temp(j)));
