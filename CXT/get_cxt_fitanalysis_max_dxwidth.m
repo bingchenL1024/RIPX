@@ -1,6 +1,7 @@
 % Bingchen Liu Mar 3, 2025
 % This code analysis a b c fit from fit of cxt that didn't use
 % interpolation 
+% it combines all runs into one single vector 
 
 
 clear

@@ -5,8 +5,8 @@ clear
 load ('/data1/bliu/data/raw/CXT_ALL_norm_and_var_21dx10dt_Bingchen.mat')
 
 
-cxt_null = erfinv(0.95).*sqrt(2./(4801*12/3)) % 4800 is time series length,12 is number of alognshore locations, 3 is roughly the decorrelation time scale
-
+%cxt_null = erfinv(0.95).*sqrt(2./(4801*12/(3))) % 4800 is time series length,12 is number of alognshore locations, 3 is roughly the decorrelation time scale, 12 alongshore loc
+cxt_null=erfinv(0.95).*sqrt(2./(4801*12/(3*2))) % 6 DOF for alongshore loc --> 200 m decorrelation length scale alongshore
 for runnum =1:120
     CXT_ALL{runnum}(abs(CXT_ALL{runnum})<=cxt_null) = NaN; 
 end 
