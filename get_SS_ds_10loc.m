@@ -63,6 +63,12 @@ SS.curlFstd2(N,:) = SS2.curlF_std(iss2_1);
 SS.curlFstd3(N,:) = SS3.curlF_std(iss3_1);
 SS.curlFstd4(N,:) = SS4.curlF_std(iss4_1);
 
+% grab wave steepness at breaking
+SS.stpb2(N,:) = SS2.stpb;
+SS.stpb3(N,:) = SS3.stpb;
+SS.stpb4(N,:) = SS4.stpb;
+
+
 %Grab Iribarren number
 SS.Ir2(N,:) = SS2.Irbo;
 SS.Ir3(N,:) = SS3.Irbo;

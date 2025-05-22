@@ -24,7 +24,7 @@ ky=ky/Ly;
 dky=ky(2)-ky(1);
 
 %%
-ky0=.02;
+ky0=.02;%peak alongshore wavenumber
 beta= 1.2;
 lam = ky0*beta/(beta-1)^(1/beta);
 Aky = abs(ky).^(beta-1)/(lam^beta) .* exp(-(abs(ky/lam)).^(beta));
@@ -43,11 +43,11 @@ varpsi=var(psi0); % the total variance I actually get, this is now 1
 
 subplot(3,1,1)
 plot(y,psi0)
-[ky2,Syy]=my_mtm(dy,psi0,5);
-subplot(3,1,2)
-plot(ky,Aky,ky2,Syy)
-subplot(3,1,3)
-loglog(ky,2*Aky,ky2,Syy)
+%[ky2,Syy]=my_mtm(dy,psi0,5);
+% subplot(3,1,2)
+% plot(ky,Aky,ky2,Syy)
+% subplot(3,1,3)
+% loglog(ky,2*Aky,ky2,Syy)
 
 
 %%
@@ -131,7 +131,7 @@ end
 Psi=Psim1.*Psim2.*Psi0;
 
 %%
-paperfigure;
+%paperfigure;
 subplot(1,2,1)
 contour(x,y,Psi,24)
 axis equal
@@ -144,7 +144,7 @@ axis xy
 colorbar
 
 %%
-paperfigure;
+%paperfigure;
 subplot(2,2,1)
 pcolor(x,y,Psi0)
 mxx2=max(max(abs(Psi0)));
@@ -184,7 +184,7 @@ set(gca,'xlim',[0 400],'ylim',[0 1.5e3])
 title('$G = \nabla \times F_{\mathrm{br}}$')
 
 %%
-paperfigure;
+%paperfigure;
 x00=.15;
 y00=.35;
 ly2=.225;
@@ -201,13 +201,13 @@ set(gca,'xlim',[-200 0],'ylim',[0 .08],'layer','top','xticklabel',[])
 ylabel('$G_0$ [s$^{-2}$]')
 rxl=.03;
 ryl=.85;
-txth=label_panel('(a)',rxl,ryl);
+%txth=label_panel('(a)',rxl,ryl);
 axh(2)=axes('position',axp(2,:));
 plot(-x,Psim2(1,:),'k')
 set(gca,'xlim',[-200 0],'ylim',[0 (wlength/pi^.5/lxx)^.5*1.1],'layer','top')
 ylabel('$W$')
 xlabel('$x$ [m]')
-txth=label_panel('(b)',rxl,ryl);
+%txth=label_panel('(b)',rxl,ryl);
 axh(3)=axes('position',axp(3,:));
 pcolor(-x,y,Psi)
 caxis([-.25 .25])
@@ -219,7 +219,7 @@ xlabel('$x$ [m]')
 title('$G = \nabla \times F_{\mathrm{br}}$')
 set(gca,'xlim',[-200 0],'ylim',[0 250],'layer','top')
 grid on
-txth=label_panel('(c)',rxl,.92);
+%txth=label_panel('(c)',rxl,.92);
 
 return
 
