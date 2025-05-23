@@ -29,31 +29,35 @@ plot(lags,acf)
 close all
 clear all 
 
-tau = 1; % decorrelation time scale in autocrr of e^{-t/tau}
+tau = 2; % decorrelation time scale in autocrr of e^{-t/tau}
 sig = 0.3;
-dt = 1e-2;
+dt = 1e-3;
 tmax = 20;
 t = 0:dt:tmax;             % Time vector
 x = zeros(1,length(t)); % Allocate output vector, set initial condition
-rng(1);                 % Set random seed
+%rng(1);                 % Set random seed
 for i = 1:length(t)-1
-    x(i+1) = x(i)-(dt/tau)*x(i)+(dt/tau)*randn;
+    x(i+1) = x(i)-(dt/tau)*x(i)+(dt/tau)*randn(1,1);
 end
-x_mean =ones(length(t),1)*mean(x);
+
+xmean = mean(x);
+x_mean_plot =ones(length(t),1)*xmean;
 
 t_lag = 0:dt:tmax;
 auto_pred = exp(-t_lag/tau);
 
-[acf,lags] = autocorr(x);
-
+[acf,lags_num] = autocorr(x,'NumLags',2*(tau/dt));
+lags = lags_num*dt;
 %%
 figure()
 subplot(121)
 plot(t,x);
 hold on 
-plot(t,x_mean,'r','LineWidth',5)
+plot(t,x_mean_plot,'LineWidth',5)
 hold off 
+
 subplot(122)
 plot(lags,acf)
 hold on 
 plot(t_lag,auto_pred)
+hold off 
