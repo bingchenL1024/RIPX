@@ -103,7 +103,16 @@ tau_nond_fit.tau_nond_fit = f_nond_tau_scale.a*exp(f_nond_tau_scale.b*tau_nond_f
 tau_nond_fit.f = f_nond_tau_scale;
 tau_nond_fit.gof= gof_nond_tau_scale;
 
-% fit --> not necessary just for test purpose 
+% fit using linear fit to compare with exp fit 
+ftt = strcat('a*x+b');
+ft = fittype( sprintf('%s',ftt));
+opts = fitoptions( ft );
+opts.Display = 'Off';
+opts.StartPoint = [2 1]; % beginning parameters - amp, mu, std.
+[f_linear,gof_linear]=fit(G0_nond_tot_5loc(ind_nonan),tau_decoscale_nond_tot_5loc(ind_nonan),ft, opts);
+
+
+% fit --> test  
 ftt = strcat('exp(-x/a)');
 ft = fittype( sprintf('%s',ftt));
 opts = fitoptions( ft );

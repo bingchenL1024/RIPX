@@ -233,10 +233,24 @@ plot(x)
 close all
 clear all 
 
-a1 = 0.5; % decorrelation time scale in autocrr of e^{-t/tau}
-a2 = -0.1;
+% =======================> result from fit 
+ct=3; % convert factor for nond x coordinate to actual x coordinate (fit is done is nond-x coordinate)
+R_fit = 0.03171^(1/ct); %input from data fit results 
+omega_fit = 1.785/ct;
+phi_fit = -1.246;
+x_test= 0:0.1:5;
+rho_xx_c123 = R_fit.^x_test.*cos(omega_fit.*x_test-phi_fit)/cos(phi_fit);
+plot(x_test,rho_xx_c123)
+
+
+
+%% =======================> use the fit to derive a1 and a2 
+% a2 = -R_fit^2;
+% a1 = 2*(-a2)^(0.5)*cos(omega_fit);
+a2 = -0.5;
+a1 = 1;
 dt = 1;
-tmax = 500;
+tmax = 10000;
 t = 0:dt:tmax;             % Time vector
 N = length(t);
 N_half= (N-1)/2;
@@ -256,11 +270,18 @@ x= detrend(x); %demean the data
 lags = lags_num;
 R = (-a2)^0.5;
 omega = acos(a1/(2*R));
+%phi = -1.246;
 phi = atan((1-R^2)/(1+R^2))*tan(omega);
 rho_xx = R.^(lags).*cos(omega.*lags-phi)./cos(phi);
-x_test= 0:0.1:5;
-rho_xx_c123 = exp(-x_test/0.84).*cos(x_test/1.65+1.23)./cos(1.23);
-plot(x_test,rho_xx_c123)
+
+% ct=3; % convert factor for nond x coordinate to actual x coordinate (fit is done is nond-x coordinate)
+% R_fit = 0.03171^(1/ct); %input from data fit results 
+% omega_fit = 1.785/ct;
+% phi_fit = -1.246;
+% x_test= 0:0.1:5;
+% rho_xx_c123 = R_fit.^x_test.*cos(omega_fit.*x_test-phi_fit)/cos(phi_fit);
+% %rho_xx_c123 = exp(-x_test/0.84).*cos(x_test/1.65+1.23)./cos(1.23);
+% plot(x_test,rho_xx_c123)
 
 figure()
 subplot(211)
@@ -268,7 +289,7 @@ plot(x)
 hold on
 yline(0)
 hold off
-%xlim([0,50])
+xlim([0,50])
 subplot(212)
 plot(lags_num,acf)
 hold on 
