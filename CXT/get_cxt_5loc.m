@@ -81,13 +81,27 @@ end
 [t_decoscal_tot_5loc] = get_combine_3slp_24run(fitpara_5loc,'a',1);
 [t_nond_diva_tot_5loc] = get_combine_3slp_24run(fitpara_5loc,'t_nond_diva',2);
 [cxt_data_5loc_tot] = get_combine_3slp_24run(fitpara_5loc,'cxt_data',2);
-
+[G0_nond_tot_5loc] = get_combine_3slp_24run(fitpara_5loc,'G0_nond',1);
+[tau_decoscale_nond_tot_5loc] = t_decoscal_tot_5loc./(get_combine_3slp_24run(fitpara_5loc,'t_scale',1));
 
 fitpara_5loc.t_deco = t_decoscal_tot_5loc;
 fitpara_5loc.t_mean = mean(t_decoscal_tot_5loc,'omitmissing');
 fitpara_5loc.t_std = std(t_decoscal_tot_5loc,'omitmissing');
 fitpara_5loc.t_med = median(t_decoscal_tot_5loc,'omitmissing');
 
+
+%fit of nond tau VS nondG0 plot 
+ind_nonan= ~isnan(G0_nond_tot_5loc)&~isnan(tau_decoscale_nond_tot_5loc);
+ftt = strcat('a*exp(b*x)+c');
+ft = fittype( sprintf('%s',ftt));
+opts = fitoptions( ft );
+opts.Display = 'Off';
+opts.StartPoint = [0.0024, 6.85,1.39]; % beginning parameters - amp, mu, std.
+[f_nond_tau_scale,gof_nond_tau_scale]=fit(G0_nond_tot_5loc(ind_nonan),tau_decoscale_nond_tot_5loc(ind_nonan),ft, opts);
+tau_nond_fit.G0_nond_fit = 0.1:0.001:1;
+tau_nond_fit.tau_nond_fit = f_nond_tau_scale.a*exp(f_nond_tau_scale.b*tau_nond_fit.G0_nond_fit)+f_nond_tau_scale.c;
+tau_nond_fit.f = f_nond_tau_scale;
+tau_nond_fit.gof= gof_nond_tau_scale;
 
 % fit --> not necessary just for test purpose 
 ftt = strcat('exp(-x/a)');
@@ -100,4 +114,4 @@ ind_nonan= ~isnan(cxt_data_5loc_tot)&~isnan(t_nond_diva_tot_5loc);
 
 
 head = 'data generated in get_cxt_5loc.m';
-save('/data1/bliu/data/cxt_alongct_max_dxwidth_fitpara_qced_5loc','fitpara_5loc','t_decoscal_tot_5loc','head')
+save('/data1/bliu/data/cxt_alongct_max_dxwidth_fitpara_qced_5loc','fitpara_5loc','t_decoscal_tot_5loc','tau_nond_fit','head')

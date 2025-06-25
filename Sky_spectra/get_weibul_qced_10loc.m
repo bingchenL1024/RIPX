@@ -40,9 +40,9 @@ G0_tot_WBfit = [A.wfit2.intw(:);A.wfit3.intw(:);A.wfit4.intw(:)].^(0.5);
 ky0_tot_data = [A.kym2(:);A.kym3(:);A.kym4(:)];
 ky0_tot_WBfit = [A.wkym2(:);A.wkym3(:);A.wkym4(:)];
 
-r_G0var = corrcoef(G0_tot_data,G0_tot_fulldata);
-stats.rsquare_G0var= r_G0var(1,2).^2;
-stats.rmse_G0var = rmse(G0_tot_data,G0_tot_fulldata,'all');
+r_G0full = corrcoef(G0_tot_data,G0_tot_fulldata);
+stats.rsquare_G0full= r_G0full(1,2).^2;
+stats.rmse_G0full = rmse(G0_tot_data,G0_tot_fulldata,'all');
 
 r_G0 = corrcoef(G0_tot_data,G0_tot_WBfit);
 stats.rsquare_G0 = r_G0(1,2).^2;

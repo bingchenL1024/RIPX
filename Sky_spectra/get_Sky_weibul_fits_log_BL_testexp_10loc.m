@@ -17,6 +17,7 @@
 %
 % Step 1: Get all the Weibul fits
 warning off
+
 %clearvars -except expo badfit_num diffexpo rmse_diffexp rmse_diffexp_log rmse_diffexp_weight
 
 addpath('/home/ffeddersen/matlab')
@@ -72,9 +73,9 @@ xlim2 = [0.0008 0.2];
 
 % 2. Get the total variance in Sky and its integration out to 0.2:
 %============> original <=================
-iS2tot(N,xx) = (sum(Sky2(xx,:)).*diff(kyy(1:2))); % Sky2 (kyy) (601*1) --raw spectra; kyy [0,0.5]
-iS3tot(N,xx) = (sum(Sky3(xx,:)).*diff(kyy(1:2)));
-iS4tot(N,xx) = (sum(Sky4(xx,:)).*diff(kyy(1:2)));
+iS2tot(N,xx) = (sum(Sky2(xx,3:end)).*diff(kyy(1:2))); % Sky2 (kyy) (601*1) --raw spectra; kyy [0,0.5]
+iS3tot(N,xx) = (sum(Sky3(xx,3:end)).*diff(kyy(1:2)));
+iS4tot(N,xx) = (sum(Sky4(xx,3:end)).*diff(kyy(1:2)));
 iS2s(N,xx) = (nansum(S2.Skyi).*diff(S2.kyy(1:2))); % original S2.Skyi(S2.kyy) (239*1); S2.kyy [0.0017,0.2]
 iS3s(N,xx) = (nansum(S3.Skyi).*diff(S3.kyy(1:2)));
 iS4s(N,xx) = (nansum(S4.Skyi).*diff(S4.kyy(1:2)));
@@ -154,14 +155,15 @@ wfit3.a(N,xx) = FP3.a;wfit3.b(N,xx) = FP3.b;
 wfit4.a(N,xx) = FP4.a;wfit4.b(N,xx) = FP4.b;
 
 % Integrate the Weibul:
+ky_lowlim = 219; %0.0017 cpm limit
 df = diff(S2.lky);
-wfit2.intw(N,xx) = nansum(FP2.line.*[0 df]');
+wfit2.intw(N,xx) = nansum(FP2.line(ky_lowlim:end).*[df(ky_lowlim-1:end)]'); %219 is the 0.0017 cpm cutoff
 df = diff(S3.lky);
-wfit3.intw(N,xx) = nansum(FP3.line.*[0 df]');
+wfit3.intw(N,xx) = nansum(FP3.line(ky_lowlim:end).*[df(ky_lowlim-1:end)]');%219 is the 0.0017 cpm cutoff
 df = diff(S4.lky);
-wfit4.intw(N,xx) = nansum(FP4.line.*[0 df]');
+wfit4.intw(N,xx) = nansum(FP4.line(ky_lowlim:end).*[df(ky_lowlim-1:end)]');%219 is the 0.0017 cpm cutoff
 
-mag_wb2_temp(xx) = nansum(FP2.line.*[0 df]');
+mag_wb2_temp(xx) = nansum(FP2.line.*[0 df]'); 
 mag_wb3_temp(xx) = nansum(FP3.line.*[0 df]');
 mag_wb4_temp(xx) = nansum(FP4.line.*[0 df]');
 % If the whole Weibul part integrates to 1, then the variance should be:

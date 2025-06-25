@@ -77,13 +77,13 @@ sk_ky0.Sk4_kw_Ir_div=SS.kl4pm./SS.Ir4;
 
 % pick the good scaling using Sk2_h_beta_div
 
-% ky0_nond.slp2 = A.wkym2./sk_ky0.Sk2_h_beta_div;
-% ky0_nond.slp3 = A.wkym3./sk_ky0.Sk3_h_beta_div;
-% ky0_nond.slp4 = A.wkym4./sk_ky0.Sk4_h_beta_div;
+ky0_nond.slp2 = A.wkym2./sk_ky0.Sk2_h_beta_div;
+ky0_nond.slp3 = A.wkym3./sk_ky0.Sk3_h_beta_div;
+ky0_nond.slp4 = A.wkym4./sk_ky0.Sk4_h_beta_div;
 
-ky0_nond.slp2 = A.wkym2./sk_ky0.Sk2_h_Ir_div;
-ky0_nond.slp3 = A.wkym3./sk_ky0.Sk3_h_Ir_div;
-ky0_nond.slp4 = A.wkym4./sk_ky0.Sk4_h_Ir_div;
+% ky0_nond.slp2 = A.wkym2./sk_ky0.Sk2_h_Ir_div;
+% ky0_nond.slp3 = A.wkym3./sk_ky0.Sk3_h_Ir_div;
+% ky0_nond.slp4 = A.wkym4./sk_ky0.Sk4_h_Ir_div;
 
 ky0_data.slp2 = A.wkym2;
 ky0_data.slp3 = A.wkym3;

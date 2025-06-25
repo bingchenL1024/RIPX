@@ -150,7 +150,8 @@ for a=1:length(x000)
 end
 Psi=Psim1.*Psim2.*Psi0; %final field. 
 % Psi0: background forcing with given Swb
-% Psi1: 
+% Psim1: magnitude from G0
+% Psim2: width/envolope function 
 
 %%
 %paperfigure;

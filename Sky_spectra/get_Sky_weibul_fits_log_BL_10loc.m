@@ -63,9 +63,9 @@ loc_num = length(iss2);
 [S4] = interpSky(Sky4(xx,:),kyy,91);
 
 % 2. Get the total variance in Sky and its integration out to 0.2:
-iS2tot(N,xx) = (sum(Sky2(xx,:)).*diff(kyy(1:2))); % integrate the whole thing
-iS3tot(N,xx) = (sum(Sky3(xx,:)).*diff(kyy(1:2)));
-iS4tot(N,xx) = (sum(Sky4(xx,:)).*diff(kyy(1:2)));
+iS2tot(N,xx) = (sum(Sky2(xx,3:end)).*diff(kyy(1:2))); % integrate the whole thing
+iS3tot(N,xx) = (sum(Sky3(xx,3:end)).*diff(kyy(1:2)));
+iS4tot(N,xx) = (sum(Sky4(xx,3:end)).*diff(kyy(1:2)));
 iS2s(N,xx) = (nansum(S2.Skyi).*diff(S2.kyy(1:2))); % only to 0.2
 iS3s(N,xx) = (nansum(S3.Skyi).*diff(S3.kyy(1:2)));
 iS4s(N,xx) = (nansum(S4.Skyi).*diff(S4.kyy(1:2)));
@@ -134,11 +134,11 @@ wfit4.a(N,xx) = FP4.a;wfit4.b(N,xx) = FP4.b;
 
 % Integrate the Weibul:
 df = diff(S2.lky);
-wfit2.intw(N,xx) = nansum(FP2.line.*[0 df]');
+wfit2.intw(N,xx) = nansum(FP2.line(219:end).*[df(218:end)]');
 df = diff(S3.lky);
-wfit3.intw(N,xx) = nansum(FP3.line.*[0 df]');
+wfit3.intw(N,xx) = nansum(FP3.line(219:end).*[df(218:end)]');
 df = diff(S4.lky);
-wfit4.intw(N,xx) = nansum(FP4.line.*[0 df]');
+wfit4.intw(N,xx) = nansum(FP4.line(219:end).*[df(218:end)]');
 
 mag_wb2_temp(xx) = nansum(FP2.line.*[0 df]');
 mag_wb3_temp(xx) = nansum(FP3.line.*[0 df]');

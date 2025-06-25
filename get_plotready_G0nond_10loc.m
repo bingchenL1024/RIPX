@@ -163,13 +163,17 @@ kh.slp2 = SS.h2.*SS.kl2pm;
 kh.slp3 = SS.h3.*SS.kl3pm;
 kh.slp4 = SS.h4.*SS.kl4pm;
 
-Sk.Sk2_hb_Ir_div = (SS.Dw2./(SS.hb2.^2.*((g.*(SS.h2)).^0.5)))./SS.Irb2;
-Sk.Sk3_hb_Ir_div = (SS.Dw3./(SS.hb3.^2.*((g.*(SS.h3)).^0.5)))./SS.Irb3;
-Sk.Sk4_hb_Ir_div = (SS.Dw4./(SS.hb4.^2.*((g.*(SS.h4)).^0.5)))./SS.Irb4;
+% Sk.Sk2_hb_Ir_div = (SS.Dw2./(SS.hb2.^2.*((g.*(SS.h2)).^0.5)))./SS.Irb2;
+% Sk.Sk3_hb_Ir_div = (SS.Dw3./(SS.hb3.^2.*((g.*(SS.h3)).^0.5)))./SS.Irb3;
+% Sk.Sk4_hb_Ir_div = (SS.Dw4./(SS.hb4.^2.*((g.*(SS.h4)).^0.5)))./SS.Irb4;
 
-G0_nond.slp2 = sqrt(A.wfit2.intw)./Sk.Sk2_hb_Ir_div;
-G0_nond.slp3 = sqrt(A.wfit3.intw)./Sk.Sk3_hb_Ir_div;
-G0_nond.slp4 = sqrt(A.wfit4.intw)./Sk.Sk4_hb_Ir_div;
+Sk.Sk2_hb_beta = (SS.Dw2./(SS.hb2.^2.*((g.*(SS.h2)).^0.5)))./0.02;
+Sk.Sk3_hb_beta = (SS.Dw3./(SS.hb3.^2.*((g.*(SS.h3)).^0.5)))./0.03;
+Sk.Sk4_hb_beta = (SS.Dw4./(SS.hb4.^2.*((g.*(SS.h4)).^0.5)))./0.04;
+
+G0_nond.slp2 = sqrt(A.wfit2.intw)./Sk.Sk2_hb_beta;
+G0_nond.slp3 = sqrt(A.wfit3.intw)./Sk.Sk3_hb_beta;
+G0_nond.slp4 = sqrt(A.wfit4.intw)./Sk.Sk4_hb_beta;
 
 G0_data.slp2 = sqrt(A.wfit2.intw);
 G0_data.slp3 = sqrt(A.wfit3.intw);

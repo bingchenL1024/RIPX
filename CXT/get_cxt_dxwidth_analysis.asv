@@ -157,28 +157,24 @@ binmean2.dx_bincenter = [0,binmean2.dx_bincenter]; %add (0,1) point
 
 %% fit
 close all
-
-% =================> exp fit 
 include = find(~isnan(dx_nond2_5loc_all)&~isnan(cxt_dxwidth_5loc_all)&cxt_dxwidth_5loc_all~=1);
-ftt = strcat('exp(-x/a)*cos(x/b+c)/cos(c)');
-%ftt= strcat('a^x*cos(2*3.1415926*b*x-c)/cos(c)');
+%ftt = strcat('exp(-x/a)*cos(x/b+c)/cos(c)');
+ftt= strcat('a^x*cos(2*3.1415926*b*x-c)/cos(c)');
 %ftt = strcat('sinc(a*x)');
 ft = fittype( sprintf('%s',ftt));
 opts = fitoptions( ft );
 opts.Display = 'Off';
-opts.StartPoint = [0.28 0.55 1.24]; % beginning parameters - amp, mu, std.
-%opts.Lower = [0.001,-inf,-inf];
+opts.StartPoint = [0.03 0.28 1]; % beginning parameters - amp, mu, std.
+opts.Lower = [0.1,-inf,-inf];
 [fit.f,fit.gof]=fit(dx_nond2_5loc_all(include),cxt_dxwidth_5loc_all(include),ft, opts);
 
 %[pfit_p,pfit_s] = polyfitB(dx_nond2_5loc_all(include),cxt_dxwidth_5loc_all(include),5,1);
+
+
 fit.dx_fit = 0:0.01:3;
 %cxt_fit = sinc(f.a*dx_fit);
 fit.cxt_fit = exp(-fit.dx_fit/fit.f.a).*cos(fit.dx_fit/fit.f.b+fit.f.c)/cos(fit.f.c);
 %cxt_pfit = polyval(pfit_p,dx_fit);
-
-
-% ===================> R^x fit 
-
 
 % figure()
 % scatter(dx_nond2_5loc_all,cxt_dxwidth_5loc_all,'k');

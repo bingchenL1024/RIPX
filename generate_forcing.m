@@ -93,7 +93,9 @@ subplot(122)
 plot(lags,acf)
 
 
-%% Method in Jekins and Watts (using 0 mean of x)
+%% AR1 Method in Jekins and Watts (FDA eq 5.2.24) derivation see notebook and photo copy 
+
+
 close all
 clear all 
 
@@ -126,14 +128,14 @@ freq_fromlag = (0:(N-1)/2)./tmax; %
 
 
 
-%% compare with theory 
+% compare with theory 
 t_lag = 0:dt:tau*3;
 auto_pred = exp(-t_lag/tau);
 [acf,lags_num] = autocorr(x,'NumLags',2*(tau/dt));
 lags = lags_num*dt;
 
 
-%% plot 
+% plot 
 linewd = 2;
 figure()
 subplot(121)
@@ -160,3 +162,120 @@ xlim([0,0.3])
 subplot(224)
 loglog(freq_fromlag,spec_covar)
 xlim([0,0.3])
+
+
+%% AR1 method in Jenkins and Watts (discrete AR1 eq 5.2.26)
+close all
+clear all 
+
+a1=0.9;
+tmax = 500;
+t = 0:1:tmax;             % Time vector
+N = length(t);
+N_half= (N-1)/2;
+x = zeros(1,length(t)); % Allocate output vector, set initial condition
+%rng(1);                 % Set random seed
+for i = 1:length(t)-1
+    x(i+1) =a1*x(i) +randn(1,1);
+end
+
+xmean = mean(x);
+x_mean_plot =ones(length(t),1)*xmean;
+x= detrend(x); %demean the data
+
+% compare with theory 
+%t_lag = 0:dt:tau*3;
+%auto_pred = exp(-t_lag/tau);
+[acf,lags] = autocorr(x);
+%lags = lags_num*dt;
+rho_xx=  a1.^lags;
+
+figure()
+subplot(121)
+plot(t,x)
+subplot(122)
+plot(lags,acf)
+hold on 
+plot(t,rho_xx)
+hold off 
+xlim([0,50])
+%% AR2 Method in Jekins and Watts (FDA 5.2.28) 
+
+close all
+clear all 
+
+a1 = 1; % decorrelation time scale in autocrr of e^{-t/tau}
+a2 = -0.5;
+dt = 1;
+tmax = 200;
+t = 0:dt:tmax;             % Time vector
+N = length(t);
+N_half= (N-1)/2;
+x = zeros(1,length(t)); % Allocate output vector, set initial condition
+x(1) = randn(1,1);
+x(2) = randn(1,1);
+%rng(1);                 % Set random seed
+for i = 2:length(t)-1
+    x(i+1) = (dt^2/a2)*randn(1,1)+(2-dt*(a1/a2)+dt^2/a2)*x(i)-(1-dt*(a1/a2))*x(i-1);
+end
+
+xmean = mean(x);
+x_mean_plot =ones(length(t),1)*xmean;
+x= detrend(x); %demean the data
+
+figure()
+plot(x)
+
+
+%% AR2 discrete (5.2.31)
+
+
+close all
+clear all 
+
+a1 = 0.5; % decorrelation time scale in autocrr of e^{-t/tau}
+a2 = -0.1;
+dt = 1;
+tmax = 500;
+t = 0:dt:tmax;             % Time vector
+N = length(t);
+N_half= (N-1)/2;
+x = zeros(1,length(t)); % Allocate output vector, set initial condition
+x(1) = randn(1,1);
+x(2) = randn(1,1);
+%rng(1);                 % Set random seed
+for i = 2:length(t)-1
+    x(i+1) = a1*x(i)+a2*x(i-1)+randn(1,1);
+end
+
+xmean = mean(x);
+x_mean_plot =ones(length(t),1)*xmean;
+x= detrend(x); %demean the data
+
+[acf,lags_num] = autocorr(x);
+lags = lags_num;
+R = (-a2)^0.5;
+omega = acos(a1/(2*R));
+phi = atan((1-R^2)/(1+R^2))*tan(omega);
+rho_xx = R.^(lags).*cos(omega.*lags-phi)./cos(phi);
+
+R_fit = 0.03171;
+omega = 
+x_test= 0:0.1:5;
+rho_xx_c123 = R_fit.^x_test*cos(omega_fit.*x_test-phi_fit)/cos(phi_test);
+%rho_xx_c123 = exp(-x_test/0.84).*cos(x_test/1.65+1.23)./cos(1.23);
+plot(x_test,rho_xx_c123)
+
+figure()
+subplot(211)
+plot(x)
+hold on
+yline(0)
+hold off
+%xlim([0,50])
+subplot(212)
+plot(lags_num,acf)
+hold on 
+plot(lags,rho_xx)
+hold off 
+legend('data','theory')
