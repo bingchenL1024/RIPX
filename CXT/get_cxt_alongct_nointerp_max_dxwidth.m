@@ -256,7 +256,7 @@ end
 
 nonan = ~isnan(c_fit_tot)&~isnan(c_modelh_tot);
 Stats.RMSE_vel = rmse(c_fit_tot(nonan),c_modelh_tot(nonan));
-Stats.c_corr= corrcoef(c_fit_tot(nonan),c_modelh_tot(nonan));
+Stats.c_corr= corrcoef(c_fit_tot(nonan),c_modelh_tot(nonan)).^2;
 %cxt_alongct_ALL = cxt_alongct_ALL';
 %cxt_alongct_mean = cxt_alongct_mean';
 %ind_good_All = ind_good_All';

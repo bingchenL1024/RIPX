@@ -98,10 +98,15 @@ opts = fitoptions( ft );
 opts.Display = 'Off';
 opts.StartPoint = [0.0024, 6.85,1.39]; % beginning parameters - amp, mu, std.
 [f_nond_tau_scale,gof_nond_tau_scale]=fit(G0_nond_tot_5loc(ind_nonan),tau_decoscale_nond_tot_5loc(ind_nonan),ft, opts);
+ind_test = tau_decoscale_nond_tot_5loc<3; %pick only small nond tau to see if change rmse
 tau_nond_fit.G0_nond_fit = 0.1:0.001:1;
 tau_nond_fit.tau_nond_fit = f_nond_tau_scale.a*exp(f_nond_tau_scale.b*tau_nond_fit.G0_nond_fit)+f_nond_tau_scale.c;
+tau_nond_fit.tau_nond_fit_model = f_nond_tau_scale.a*exp(f_nond_tau_scale.b*G0_nond_tot_5loc(ind_nonan))+f_nond_tau_scale.c; %use data x to predict y
 tau_nond_fit.f = f_nond_tau_scale;
 tau_nond_fit.gof= gof_nond_tau_scale;
+tau_nond_fit.fskill= falk_skill(tau_nond_fit.tau_nond_fit_model,tau_decoscale_nond_tot_5loc(ind_nonan))
+tau_nond_fit.tau_nond_fit_model_test = f_nond_tau_scale.a*exp(f_nond_tau_scale.b*G0_nond_tot_5loc(ind_nonan&(ind_test)))+f_nond_tau_scale.c; %use data x to predict y
+tau_nond_fit.rmse= rmse(tau_nond_fit.tau_nond_fit_model_test,tau_decoscale_nond_tot_5loc(ind_nonan&ind_test))
 
 % fit using linear fit to compare with exp fit 
 ftt = strcat('a*x+b');
@@ -110,7 +115,8 @@ opts = fitoptions( ft );
 opts.Display = 'Off';
 opts.StartPoint = [2 1]; % beginning parameters - amp, mu, std.
 [f_linear,gof_linear]=fit(G0_nond_tot_5loc(ind_nonan),tau_decoscale_nond_tot_5loc(ind_nonan),ft, opts);
-
+tau_pred_linear = G0_nond_tot_5loc(ind_nonan)*f_linear.a+f_linear.b;
+Fskill_linear = falk_skill(tau_pred_linear,tau_decoscale_nond_tot_5loc(ind_nonan))
 
 % fit --> test  
 ftt = strcat('exp(-x/a)');

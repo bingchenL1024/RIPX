@@ -72,7 +72,7 @@ cc=(2*c*(2*ny*Aky)*dx/LX).^.5 ;
 
 for b=2:length(x)
 %    AA(:,b)=AA(:,b-1)-AA(:,b-1)/LX * dx + ( 2 * (2*ny*Aky) * dx / LX ).^.5 *2^(-.5) .* (randn(nky,1) + (-1)^.5*randn(nky,1));
-    AA(:,b)=AA(:,b-1)-AA(:,b-1)/LX * dx + cc * 2^(-.5) .* (randn(nky,1) + (-1)^.5*randn(nky,1)); % add white noise that has Weibull spectra shape
+    AA(:,b)=AA(:,b-1)-AA(:,b-1)/LX * dx + cc * 2^(-.5) .* (randn(nky,1) + (-1)^.5*randn(nky,1)); % add white noise that has Weibull spectra shape (information in cc)
     %AA(:,b)=AA(:,b-1)-AA(:,b-1)/LX * dx + cc * 2^(-.5) .* (randn(nky,1)); %BL testing 
 
 end

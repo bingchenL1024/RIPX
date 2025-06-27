@@ -96,6 +96,7 @@ for ind_slp2 = 1:24
 
     end 
 fitpara.slp2{ind_slp2,1}.Hs_interp = interp1(SS.X2,SS.Hs,fitpara.slp2{ind_slp2,1}.x); 
+fitpara.slp2{ind_slp2,1}.Dw_interp = interp1(SS.X2,SS.dECG,fitpara.slp2{ind_slp2,1}.x); 
 
 
 %ind_slp2
@@ -168,6 +169,7 @@ for ind_slp3 = 1:24
         
     end 
 fitpara.slp3{ind_slp3,1}.Hs_interp = interp1(SS.X2,SS.Hs,fitpara.slp3{ind_slp3,1}.x); 
+fitpara.slp3{ind_slp3,1}.Dw_interp = interp1(SS.X2,SS.dECG,fitpara.slp3{ind_slp3,1}.x); 
 
 %ind_slp3
 end 
@@ -232,6 +234,7 @@ for ind_slp4 = 1:24
         
     end 
 fitpara.slp4{ind_slp4,1}.Hs_interp = interp1(SS.X2,SS.Hs,fitpara.slp4{ind_slp4,1}.x); 
+fitpara.slp4{ind_slp4,1}.Dw_interp = interp1(SS.X2,SS.dECG,fitpara.slp4{ind_slp4,1}.x); 
 
 %ind_slp4
 end
