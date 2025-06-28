@@ -42,11 +42,11 @@ phi=2*pi*rand(size(Aky)); %random phase
 Ak=(2*ny*Aky).^.5.*exp(1i*phi); % Fourier component with random phase; Ny is for Matlab fft scaling
 
 %% generate spatial series using the Weibull spectra 
-figure(1)
 clf
 psi0=real(ifft(ifftshift(Ak))); % inverse fft back to space domain and take the real part
 varpsi=var(psi0); % the total variance I actually get, this is now 1
 
+figure(1)
 subplot(3,1,1)
 plot(y,psi0)
 %[ky2,Syy]=fft_data(psi0,dy);
@@ -66,13 +66,15 @@ nky=size(Aky,1);
 AA= zeros(nky,nx); % 2D field 
 AA(:,1)=Ak;
 LX=5;
+tau = 0.75;%decorrelation time scale
+a1= exp(-1/tau);%a1 in discrete AR1, how much info to take from previous step 
 %LX= 1; % BL test 
-c=.5*(4*LX^2-2*dx*LX+dx^2)/(2*LX^2-dx*LX);
-cc=(2*c*(2*ny*Aky)*dx/LX).^.5 ;
+c=.5*(4*LX^2-2*dx*LX+dx^2)/(2*LX^2-dx*LX); %scalar 
+cc=(2*c*(2*ny*Aky)*dx/LX).^.5 ; %loglog(ky,Aky) is the spectra 
 
 for b=2:length(x)
-%    AA(:,b)=AA(:,b-1)-AA(:,b-1)/LX * dx + ( 2 * (2*ny*Aky) * dx / LX ).^.5 *2^(-.5) .* (randn(nky,1) + (-1)^.5*randn(nky,1));
-    AA(:,b)=AA(:,b-1)-AA(:,b-1)/LX * dx + cc * 2^(-.5) .* (randn(nky,1) + (-1)^.5*randn(nky,1)); % add white noise that has Weibull spectra shape
+    AA(:,b)=AA(:,b-1)-AA(:,b-1)/LX * dx + cc * 2^(-.5) .* (randn(nky,1) + (-1)^.5*randn(nky,1)); % add white noise that has Weibull spectra shape (information in cc) --matt version
+    %AA(:,b)=a1*AA(:,b-1) + cc * 2^(-.5) .* (randn(nky,1) + (-1)^.5*randn(nky,1)); %BL version (only works for dx=1)
     %AA(:,b)=AA(:,b-1)-AA(:,b-1)/LX * dx + cc * 2^(-.5) .* (randn(nky,1)); %BL testing 
 
 end
@@ -89,6 +91,7 @@ end
 %     X(b)=X(b-1)-X(b-1)*dt/tau + ( 2 * vx * dt / tau ).^.5 * randn(1);
 % end
 %% BL test 
+cc=(2*c*(2*ny*Aky)*dx/LX).^.5 ;
 noise_Fcomp = cc * 2^(-.5) .* (randn(nky,1) + (-1)^.5*randn(nky,1));
 noise_spac  = real(ifft(ifftshift(noise_Fcomp)));
 [f_noise,S_noise] = fft_data(noise_spac,dy);
@@ -119,13 +122,18 @@ x000=[30:wlength:350];
 
 x000b=[40:5:max(x)-40];
 
-W02_1 = wlength / pi^.5 / lxx; %scalar
+W02_1 = wlength / pi^.5 / lxx;
 dum = exp(.25*lxx^2/LX^2) * ( erf( (lxx^2+wlength*LX)/(2*lxx*LX)) - erf(lxx/(2*LX)) );
 W02_2i = dum;
 W02 = W02_1 / W02_2i;
 
+ct =3; %estimate for c\tau
+%A1 = 8.39;
+%A2 = 
+
 for a=1:length(x000b)
-    Psim2=(W02_1*exp(-(X-x000b(a)).^2 / lxx^2 ) ).^.5;
+    Psim2=(W02_1*exp(-(X-x000b(a)).^2 / lxx^2 ) ).^.5; %matt format
+    %Psim2=(A1/cos(a2ynrow))*exp(-A2*abs(X-x000b(a)))*cos(A3*abs(X-x000b(a))+A4); %BL version    
     %Psim2=(W02*exp(-(X-x000b(a)).^2 / lxx^2 ) ).^.5;
     ii=find(x>=x000b(a)-.5*wlength & x<=x000b(a)+.5*wlength);
     dum=Psim2(:,ii).*Psi0(:,ii);
@@ -150,11 +158,12 @@ for a=1:length(x000)
 end
 Psi=Psim1.*Psim2.*Psi0; %final field. 
 % Psi0: background forcing with given Swb
-% Psim1: G0 forcing profile (alongshore uniform)
-% Psim2: 
+% Psim1: magnitude from G0
+% Psim2: width/envolope function 
 
 %%
 %paperfigure;
+figure()
 subplot(1,2,1)
 contour(x,y,Psi,24)
 axis equal
@@ -168,6 +177,7 @@ colorbar
 
 %%
 %paperfigure;
+figure()
 subplot(2,2,1)
 pcolor(x,y,Psi0)
 mxx2=max(max(abs(Psi0)));
@@ -206,7 +216,7 @@ colorbar
 set(gca,'xlim',[0 400],'ylim',[0 1.5e3])
 title('$G = \nabla \times F_{\mathrm{br}}$')
 
-%% proposal fig 
+%% proposal fig <=========================
 %paperfigure;
 x00=.15;
 y00=.35;
