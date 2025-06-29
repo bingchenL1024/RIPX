@@ -112,11 +112,11 @@ mxx0=.075;
 x00=25;
 bb=x00/2^(1/3);
 aa=mxx0*2^(1/3)*1.5/bb;
-Psim1=aa*X./(1+(X/bb).^3);
+Psim1=aa*X./(1+(X/bb).^3); %G0 magnitude function 
 x01=30;
 x02=130;
 lxx=1.5;
-Psim2=0*Psim1;
+Psim2=0*Psim1; %make Width function pre-allocated with 0
 wlength=60;
 x000=[30:wlength:350];
 
@@ -131,13 +131,13 @@ ct =3; %estimate for c\tau
 %A1 = 8.39;
 %A2 = 
 
-for a=1:length(x000b)
+for a=1:length(x000b) %generate multiple width functions (more than needed to validate) in x individually (not combineed) --> check normalization for all of the humps
     Psim2=(W02_1*exp(-(X-x000b(a)).^2 / lxx^2 ) ).^.5; %matt format
-    %Psim2=(A1/cos(a2ynrow))*exp(-A2*abs(X-x000b(a)))*cos(A3*abs(X-x000b(a))+A4); %BL version    
+    %Psim2=(A1/cos(A4))*exp(-A2*abs(X-x000b(a)))*cos(A3*abs(X-x000b(a))+A4); %BL version    
     %Psim2=(W02*exp(-(X-x000b(a)).^2 / lxx^2 ) ).^.5;
-    ii=find(x>=x000b(a)-.5*wlength & x<=x000b(a)+.5*wlength);
+    ii=find(x>=x000b(a)-.5*wlength & x<=x000b(a)+.5*wlength); %get info around 
     dum=Psim2(:,ii).*Psi0(:,ii);
-    msqdum(a)=mean(dum.^2,'all'); % this should equal 1 for all a
+    msqdum(a)=mean(dum.^2,'all'); % this should equal 1 for all a 
     msqdum0(a)=mean(Psi0(:,ii).^2,'all');
 end
 
@@ -150,9 +150,11 @@ plot(msqdum0,'x')
 xlabel('strip number')
 ylabel('$\langle [W(x-ct) \psi(x-ct,y)]^2 \rangle$','Interpreter','latex')
 legend('individual strips','mean','just \psi')
+title('Normaliztion Check')
+
 
 Psim2=0*Psim2;
-for a=1:length(x000)
+for a=1:length(x000) %combine all the humps 
     Psim2=Psim2+(wlength/pi^.5/lxx*exp(-(X-x000(a)).^2 / lxx^2 ) ).^.5;
     ii=find(x>=x000(a)-.5*wlength & x<=x000(a)+.5*wlength);
 end
