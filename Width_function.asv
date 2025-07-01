@@ -91,9 +91,6 @@ plot(A4_solve,C3_solve)
 hold on 
 yline(C3)
 hold off
-xlabel('A4')
-ylabel('phase shift with A4')
-legend('phase shift using A4','C3')
 
 % plot Falk method solution
 close all 
@@ -109,17 +106,14 @@ x=-10:dx:10;
 W = (A1/cos(A4).*exp(-A2*abs(x)).*cos(A3*abs(x)+A4));
 int_W=  sum(W.^2)*dx;
 
+figure()
+plot(x,W,'LineWidth',1.2)
+x
 
 CX = (1/cos(C3)).*exp(-C1*abs(x/ct)).*cos(C2*abs(x/ct)+C3);
 
 [acf,lags] = xcorr(W);
 acf=acf/(sum(W.^2));
-
-
-figure()
-plot(x,W,'LineWidth',1.2)
-xlabel('$\theta$','Interpreter','latex')
-ylabel('W')
 
 figure()
 plot(lags*dx,acf)
