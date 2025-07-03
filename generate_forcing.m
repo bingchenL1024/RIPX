@@ -102,7 +102,7 @@ clear all
 tau = 2; % decorrelation time scale in autocrr of e^{-t/tau}
 sig = 0.3;
 dt = 1e-3;
-tmax = 200;
+tmax = 2000;
 t = 0:dt:tmax;             % Time vector
 N = length(t);
 N_half= (N-1)/2;
@@ -112,7 +112,9 @@ for i = 1:length(t)-1
     x(i+1) = x(i)-(dt/tau)*x(i)+(dt/tau)*randn(1,1);
 end
 
-xmean = mean(x);
+xmean = mean(x)
+xvar=  var(x)
+
 x_mean_plot =ones(length(t),1)*xmean;
 x= detrend(x); %demean the data
 
@@ -167,16 +169,17 @@ xlim([0,0.3])
 %% AR1 method in Jenkins and Watts (discrete AR1 eq 5.2.26)
 close all
 clear all 
+tau = 10;
 
-a1=0.9;
-tmax = 500;
+a1=1-1/tau;
+tmax = 5000;
 t = 0:1:tmax;             % Time vector
 N = length(t);
 N_half= (N-1)/2;
 x = zeros(1,length(t)); % Allocate output vector, set initial condition
 %rng(1);                 % Set random seed
 for i = 1:length(t)-1
-    x(i+1) =a1*x(i) +randn(1,1);
+    x(i+1) =(1-1/tau)*x(i) +sqrt(2/tau)*randn(1,1);
 end
 
 xmean = mean(x);

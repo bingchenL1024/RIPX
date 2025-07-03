@@ -1,0 +1,91 @@
+% Bingchen Liu July 2, 2025
+% This code plot the schematic for funwaveC simulation including wave maker
+% and sponge
+
+
+% funwavec_bathy_schematic.m
+% -------------------------------------------------------------------------
+% Draw bathymetry + waterline with sponge & wavemaker shading,
+% leaving a white gap between them and x‐ticks from -500 to 0 every 100 m
+% -------------------------------------------------------------------------
+
+close all
+%--- PARAMETERS ----------------------------------------------------------
+h0         = 6.5;            % flat depth [m]
+x_flat1    = -550;           % start of flat region [m]
+x_slope_st = -250;           % where slope begins [m]
+x_wm       = [-300 -280];    % wavemaker region [m]
+gap        = 20;             % white gap width between sponge & wavemaker [m]
+gap_left =30;
+
+% y‐limits for patches
+y_max = 0;
+y_min = -h0;
+
+% compute sponge shading extents (left of the gap)
+x_sponge = [x_flat1+gap_left, x_wm(1)-gap];
+
+%--- PLOTTING ------------------------------------------------------------
+figure('Color','w')
+hold on
+
+% 1) sponge patch (dark grey)
+patch( [x_sponge, fliplr(x_sponge)], ...
+       [y_max, y_max, y_min, y_min], ...
+       [0.6 0.6 0.6], 'EdgeColor','none' )
+
+% 2) wavemaker patch (light grey)
+patch( [x_wm, fliplr(x_wm)], ...
+       [y_max, y_max, y_min, y_min], ...
+       [0.85 0.85 0.85], 'EdgeColor','none' )
+
+% 3) water surface
+plot(linspace(x_flat1+gap_left,0,200), zeros(1,200), 'k', 'LineWidth', 2)
+
+% 4) bathymetry: flat + slope
+plot(linspace(x_flat1+gap_left, x_slope_st, 100), -h0*ones(1,100), 'k', 'LineWidth', 2)
+plot(linspace(x_slope_st, 0,      100), linspace(-h0,0,100),   'k', 'LineWidth', 2)
+
+% 5) labels with corrected property names
+text(mean(x_sponge),  0.1,    'Sponge',    ...
+     'HorizontalAlignment','center', ...
+     'VerticalAlignment','bottom', ...
+     'FontSize',20)
+
+text(mean(x_wm),      0.1,    'Wavemaker', ...
+     'HorizontalAlignment','center', ...
+     'VerticalAlignment','bottom', ...
+     'Rotation',90, ...
+     'FontSize',20)
+
+% …
+% 6) axes formatting
+ax = gca;
+ax.FontSize         = 14;
+ax.LineWidth        = 1.5;
+ax.TickDir          = 'out';
+
+% draw a full box and show ticks on top & right too
+ax.Box              = 'on';
+
+ax.XLim             = [x_flat1+10, 10];
+ax.YLim             = [-8, 1];
+
+% ticks every 100 from -500 to 0
+ax.XTick            = x_flat1:100:50;
+ax.YTick            = -8:2:0;
+ax.XMinorTick       = 'on';
+ax.YMinorTick       = 'on';
+
+grid on
+ax.GridLineStyle      = ':';
+ax.MinorGridLineStyle = ':';
+ax.GridAlpha          = 0.3;
+ax.MinorGridAlpha     = 0.15;
+
+xlabel('$x$ (m)','Interpreter','latex','FontSize',16)
+ylabel('$z$ (m)','Interpreter','latex','FontSize',16)
+
+xlim([x_flat1,50])
+hold off 
+
