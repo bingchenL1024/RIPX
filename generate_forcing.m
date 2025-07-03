@@ -3,6 +3,48 @@
 
 close all
 clear all 
+
+
+%% AR1 method in Jenkins and Watts (discrete AR1 eq 5.2.26)
+close all
+clear all 
+tau = 10;
+
+a1=1-1/tau;
+tmax = 5000;
+dt=1;
+t = 0:dt:tmax;             % Time vector
+N = length(t);
+N_half= (N-1)/2;
+x = zeros(1,length(t)); % Allocate output vector, set initial condition
+%rng(1);                 % Set random seed
+for i = 1:length(t)-1
+    x(i+1) =(1-dt/tau)*x(i) +dt*sqrt(2/tau)*randn(1,1);
+end
+
+xmean = mean(x)
+xvar = var(x)
+x_mean_plot =ones(length(t),1)*xmean;
+x= detrend(x); %demean the data
+
+% compare with theory 
+t_lag = 0:dt:tau*3;
+auto_pred = exp(-t_lag/tau);
+[acf,lags_num] = autocorr(x);
+lags = lags_num*dt;
+rho_xx=  a1.^lags;
+
+figure()
+subplot(121)
+plot(t,x)
+subplot(122)
+plot(lags,acf)
+hold on 
+plot(lags,rho_xx)
+hold off 
+xlim([0,50])
+
+
 %% Gille note 
 clear
 A=randn(1000,100);
@@ -102,7 +144,7 @@ clear all
 tau = 2; % decorrelation time scale in autocrr of e^{-t/tau}
 sig = 0.3;
 dt = 1e-3;
-tmax = 2000;
+tmax = 200;
 t = 0:dt:tmax;             % Time vector
 N = length(t);
 N_half= (N-1)/2;
@@ -112,9 +154,7 @@ for i = 1:length(t)-1
     x(i+1) = x(i)-(dt/tau)*x(i)+(dt/tau)*randn(1,1);
 end
 
-xmean = mean(x)
-xvar=  var(x)
-
+xmean = mean(x);
 x_mean_plot =ones(length(t),1)*xmean;
 x= detrend(x); %demean the data
 
@@ -166,42 +206,7 @@ loglog(freq_fromlag,spec_covar)
 xlim([0,0.3])
 
 
-%% AR1 method in Jenkins and Watts (discrete AR1 eq 5.2.26)
-close all
-clear all 
-tau = 10;
 
-a1=1-1/tau;
-tmax = 5000;
-t = 0:1:tmax;             % Time vector
-N = length(t);
-N_half= (N-1)/2;
-x = zeros(1,length(t)); % Allocate output vector, set initial condition
-%rng(1);                 % Set random seed
-for i = 1:length(t)-1
-    x(i+1) =(1-1/tau)*x(i) +sqrt(2/tau)*randn(1,1);
-end
-
-xmean = mean(x);
-x_mean_plot =ones(length(t),1)*xmean;
-x= detrend(x); %demean the data
-
-% compare with theory 
-%t_lag = 0:dt:tau*3;
-%auto_pred = exp(-t_lag/tau);
-[acf,lags] = autocorr(x);
-%lags = lags_num*dt;
-rho_xx=  a1.^lags;
-
-figure()
-subplot(121)
-plot(t,x)
-subplot(122)
-plot(lags,acf)
-hold on 
-plot(t,rho_xx)
-hold off 
-xlim([0,50])
 %% AR2 Method in Jekins and Watts (FDA 5.2.28) 
 
 close all
