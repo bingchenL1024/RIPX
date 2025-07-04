@@ -230,6 +230,7 @@ ly1=(ly2-dy1)/2;
 axp(2,:)=[x00 y00 lx1 ly1];
 axp(1,:)=axp(2,:)+[0 ly1+dy1 0 0];
 axp(3,:)=axp(2,:)+[lx1+dx1 0 0 -ly1+ly2];
+figure
 axh(1)=axes('position',axp(1,:));
 plot(-x,Psim1(1,:),'k')
 set(gca,'xlim',[-200 0],'ylim',[0 .08],'layer','top','xticklabel',[])

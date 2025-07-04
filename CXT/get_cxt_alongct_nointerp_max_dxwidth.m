@@ -25,6 +25,8 @@ load('/data1/bliu/data/ind_of_diff_bath.mat')
 CXT_threshold = 0; %0.025 previously 
 t_itp = 0:1:5; % HARD CODED
 
+Stats.N_dof_RMSE_dist = 0;%number of DOF for the dist RMSE calculation
+
 for runnum = 1:120
     g = 9.81;
     dim = size(cell2mat(CXT_ALL(runnum)));
@@ -177,6 +179,7 @@ for runnum = 1:120
     dx_max_All{runnum} = dx_max; %location of max CXT
     dx_ct_All{runnum} = dx_ct; % location of ct 
     ind_nonan = ~isnan(dx_max)&~isnan(dx_ct);
+    Stats.N_dof_RMSE_dist = Stats.N_dof_RMSE_dist + sum(ind_nonan(:));
     MSE_dist(runnum) = immse(dx_max(ind_nonan),dx_ct(ind_nonan));
     clear ind_nonan
 

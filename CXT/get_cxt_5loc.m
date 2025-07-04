@@ -116,7 +116,9 @@ opts.Display = 'Off';
 opts.StartPoint = [2 1]; % beginning parameters - amp, mu, std.
 [f_linear,gof_linear]=fit(G0_nond_tot_5loc(ind_nonan),tau_decoscale_nond_tot_5loc(ind_nonan),ft, opts);
 tau_pred_linear = G0_nond_tot_5loc(ind_nonan)*f_linear.a+f_linear.b;
-Fskill_linear = falk_skill(tau_pred_linear,tau_decoscale_nond_tot_5loc(ind_nonan))
+Fskill_linear = falk_skill(tau_pred_linear,tau_decoscale_nond_tot_5loc(ind_nonan));
+corr_linear = corrcoef(G0_nond_tot_5loc(ind_nonan),tau_decoscale_nond_tot_5loc(ind_nonan));
+rsquare_corr = corr_linear.^2;
 
 % fit --> test  
 ftt = strcat('exp(-x/a)');

@@ -161,6 +161,9 @@ end
 
 
 %% combine data with diff slp into one 
+g=9.81;
+
+
 a_tot_all = [a_tot.slp2;a_tot.slp3;a_tot.slp4];
 h_all = [h.slp2;h.slp3;h.slp4];
 Tp_all = [Tp.sl2;Tp.sl3;Tp.sl4];
@@ -170,14 +173,19 @@ kw_all=[kw.slp2;kw.slp3;kw.slp4];
 t_scale_all = [t_scale.slp2;t_scale.slp3;t_scale.slp4];
 x_nond_all = [x_nond_tot.slp2;x_nond_tot.slp3;x_nond_tot.slp4];
 G0_nond_all = [G0_nond.slp2;G0_nond.slp3;G0_nond.slp4];
+
 t_deco_1mres_stats.mean = mean(a_tot_all,'omitmissing');
 t_deco_1mres_stats.std = std(a_tot_all,'omitmissing');
 t_deco_1mres_stats.med = median(a_tot_all,'omitmissing');
 
+ctau_all = sqrt(g.*h_all).*a_tot_all;
+
+ctau_stats.mean = mean(ctau_all,'omitmissing');
+ctau_stats.std = std(ctau_all,'omitmissing');
+ctau_stats.med = median(ctau_all,'omitmissing');
 
 a_nond = a_tot_all./t_scale_all;
 
-g=9.8;
 
 nond_Tph = g.*Tp_all.^2./h_all;
 nond_Hsh = Hs_interp_tot./h_all;

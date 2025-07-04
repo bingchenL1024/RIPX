@@ -105,6 +105,9 @@ opts.StartPoint = [0 0.00025]; % beginning parameters - amp, mu, std.
 
 [f,gof]=fit(ds_all(~isnan(ky0_nond_all)),ky0_nond_all(~isnan(ky0_nond_all)),ft, opts);
 
+corr= corrcoef(ds_all(~isnan(ky0_nond_all)),ky0_nond_all(~isnan(ky0_nond_all)));
+rsquare_ky0 = corr.^2;
+
 ds_model = 0:0.1:15;
 ky0_model = ds_model.* f.A+f.B;
 
@@ -116,6 +119,6 @@ README = [README "Plot ready data, including AFTER qc 'ed'SS','A','ds','sk_ky0'(
 README = splitlines(README)';
 
 
-save('/data1/bliu/data/plotready_ky0_nond_10loc_2025','README','ky0_nond','ky0_nond_all','ds','ds_all','ds_model','ky0_model','f','gof',"ky0_data")
+save('/data1/bliu/data/plotready_ky0_nond_10loc_2025','README','ky0_nond','ky0_nond_all','ds','ds_all','ds_model','ky0_model','f','gof',"ky0_data",'rsquare_ky0')
 
 %save('/data1/bliu/data/plotready_ky0_nond_3loc','README','SS','ds','A','sk_ky0')

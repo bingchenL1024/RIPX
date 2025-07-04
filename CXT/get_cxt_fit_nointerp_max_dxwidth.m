@@ -54,7 +54,9 @@ for ind_slp2 = 1:24
     ds  = SS.sigma_b;
     kw = get_wavenum(2*pi/(Tp),h);
     G0_nond = abs(SS.curlF_std(ind_good))./abs(max(SS.curlF_std(ind_good)));%G0 modification
-    
+    Dw_interp = real(interp1(SS.X2,SS.dECG,x)); 
+    Dw_nond = abs(Dw_interp)/max(Dw_interp);
+
     j = 0;
     for i = 1:xskip:dim_cxt(2) %crossshore scale ----------fit every 1 meter
         j = j+1;
@@ -96,7 +98,6 @@ for ind_slp2 = 1:24
 
     end 
 fitpara.slp2{ind_slp2,1}.Hs_interp = interp1(SS.X2,SS.Hs,fitpara.slp2{ind_slp2,1}.x); 
-fitpara.slp2{ind_slp2,1}.Dw_interp = interp1(SS.X2,SS.dECG,fitpara.slp2{ind_slp2,1}.x); 
 
 
 %ind_slp2

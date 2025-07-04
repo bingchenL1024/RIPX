@@ -198,6 +198,8 @@ opts.StartPoint = [0.5 2]; % beginning parameters - amp, mu, std.
 
 [f,gof]=fit(ds_all(~isnan(G0_nond_all)),G0_nond_all(~isnan(G0_nond_all)),ft, opts);
 
+corr= corrcoef(ds_all(~isnan(G0_nond_all)),G0_nond_all(~isnan(G0_nond_all)));
+rsquare_G0 = corr.^2;
 ds_model = 0:0.1:15;
 G0_model = ds_model.* f.A+f.B;
 %% save 
@@ -208,5 +210,5 @@ README = splitlines(README)';
 
 
 
-save('/data1/bliu/data/plotready_G0_nond_10loc_2025','README','G0_nond','G0_nond_all','G0_model','ds','ds_all','ds_model','f','gof','G0_data')
+save('/data1/bliu/data/plotready_G0_nond_10loc_2025','README','G0_nond','G0_nond_all','G0_model','ds','ds_all','ds_model','f','gof','G0_data','rsquare_G0')
 save('/data1/bliu/data/G0_nond_10loc_allsk_2025','README','SS','ds','A','Sk','kh')
