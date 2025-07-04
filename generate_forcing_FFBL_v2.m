@@ -195,11 +195,11 @@ end
 
 
 
-cFbr=G0.*cF; %final field.
+cFbr=G0.*cFbr_temp; %final field.
 
 head = 'data generated from generate_forcing_FFBL';
 
-save('/data1/bliu/data/parameterization_example','cFbr','G0','W','X','Y',"head")
+%save('/data1/bliu/data/parameterization_example','cFbr','G0','W','X','Y',"head")
 %% %%%%%%%%%%%%%%%%%%% visual of the width function 
 
 figure(10)
