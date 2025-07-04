@@ -11,7 +11,7 @@ clear all
 tau = 10;
 
 a1=1-1/tau;
-tmax = 5000;
+tmax = 50000;
 dt=1;
 t = 0:dt:tmax;             % Time vector
 N = length(t);
@@ -42,7 +42,7 @@ plot(lags,acf)
 hold on 
 plot(lags,rho_xx)
 hold off 
-xlim([0,50])
+xlim([0,lags(end)])
 
 
 %% Gille note 
