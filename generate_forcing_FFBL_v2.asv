@@ -195,39 +195,41 @@ end
 
 
 
-cFbr=G0.*cF; %final field.
+cFbr=G0.*cFbr_temp; %final field.
 
 head = 'data generated from generate_forcing_FFBL';
-
 save('/data1/bliu/data/parameterization_example','cFbr','G0','W','X','Y',"head")
 %% %%%%%%%%%%%%%%%%%%% visual of the width function 
+% 
+% figure(10)
+% for tind = 1:nt
+%     subplot(121)
+%     plot(x,W_tot(1,:,tind))
+%     ylim([-3,3])
+%     ylabel('W(x-ct)*b(t)')
+%     xlabel('x(m)')
+%     cmocean('balance');
+%     caxis([-5,5])
+%     subplot(122)
+%     pcolorcen(X,Y,cFbr(:,:,tind))
+%     cmocean('balance');
+%     caxis([-0.2,0.2])
+%     colorbar
+%     title('$\nabla \times F_{br}$','Interpreter','latex')
+%     drawnow
+%     pause(0.5)
+% end 
+% 
+% 
+% 
+% %%
+% figure()
+% pcolorcen(-X,Y,cFbr(:,:,10))
+% cmocean('balance');
+% caxis([-0.3,0.3])
 
-figure(10)
-for tind = 1:nt
-    subplot(121)
-    plot(x,W_tot(1,:,tind))
-    ylim([-3,3])
-    ylabel('W(x-ct)*b(t)')
-    xlabel('x(m)')
-    cmocean('balance');
-    caxis([-5,5])
-    subplot(122)
-    pcolorcen(X,Y,cFbr(:,:,tind))
-    cmocean('balance');
-    caxis([-0.2,0.2])
-    title('$\nabla \times F_{br}$','Interpreter','latex')
-    drawnow
-    pause(0.5)
-end 
 
-
-
-%%
-figure()
-pcolorcen(-X,Y,cFbr(:,:,10))
-cmocean('balance');
-caxis([-0.3,0.3])
-
+%% function 
 function S_wb=make_WB(ky,ky0)
 % make Weibull spectra using peak wavenumber ky0 and wavenumber vector ky
 beta= 1.4; %modified gamma in the new paper version 

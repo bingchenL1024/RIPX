@@ -34,6 +34,8 @@ opts.Display = 'Off';
 opts.StartPoint = [0.5]; % beginning parameters - amp, mu, std.
 %opts.Upper = [20 20 pi]; %phase shift should be within 2pi
 
+cFbr_symbol = 'Dw_interp./((g*h).^(0)*SS.hb^2)';
+
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% slp2
 
@@ -45,9 +47,10 @@ for ind_slp2 = 1:24
     dim_cxt= size(cxt_alongct_1run);
     
     SS = S(runnum);
-    x = SS.X(ind_good);
+    x = SS.X(ind_good); %x loc only contains good index for CXT 
     x_nond = x/SS.xb;
     h = SS.h(ind_good);
+    h_nond= h./ SS.hb;
     t_scale = sqrt(h/g);
     xb = SS.xb;
     Tp = SS.Tp_T;
@@ -56,6 +59,8 @@ for ind_slp2 = 1:24
     G0_nond = abs(SS.curlF_std(ind_good))./abs(max(SS.curlF_std(ind_good)));%G0 modification
     Dw_interp = real(interp1(SS.X2,SS.dECG,x)); 
     Dw_nond = abs(Dw_interp)/max(Dw_interp);
+    % curlFbr_para = eval(cFbr_symbol);
+    % curlFbr_para_nond = curlFbr_para/max(curlFbr_para);
 
     j = 0;
     for i = 1:xskip:dim_cxt(2) %crossshore scale ----------fit every 1 meter
@@ -68,9 +73,13 @@ for ind_slp2 = 1:24
 %%%%%%%%%%%%%% Quick QC
 % figure(1);plot(t_itp(include)',cxt_data_fit(include)); hold on;plot(t_itp(include)',cxt_fit);hold off;legend('data','fit')
 % pause(0.2)
-        fitpara.slp2{ind_slp2,1}.x(j,1) = x(i);        
+        fitpara.slp2{ind_slp2,1}.x(j,1) = x(i);%all data in fitpara has x dimension in ind_good        
         fitpara.slp2{ind_slp2,1}.x_nond(j,1) = x_nond(i); 
+        fitpara.slp2{ind_slp2,1}.h_nond(j,1) = h_nond(i); 
         fitpara.slp2{ind_slp2,1}.G0_nond(j,1) = G0_nond(i); 
+        fitpara.slp2{ind_slp2,1}.Dw_nond(j,1) = Dw_nond(i); 
+        %fitpara.slp2{ind_slp2,1}.curlFbr_para_nond(j,1) =
+        %curlFbr_para_nond(i); %take care of it get_CXT_scaling2fit
         fitpara.slp2{ind_slp2,1}.xb(j,1) = xb;  
         fitpara.slp2{ind_slp2,1}.Tp(j,1) = Tp;        
         fitpara.slp2{ind_slp2,1}.dirspr(j,1) = ds;        
@@ -116,14 +125,17 @@ for ind_slp3 = 1:24
     x = SS.X(ind_good);
     x_nond = x/SS.xb;
     h = SS.h(ind_good);
+    h_nond= h./ SS.hb;
     t_scale = sqrt(h/g);
     xb = SS.xb;
     Tp = SS.Tp_T;
     ds  = SS.sigma_b;
     kw = get_wavenum(2*pi/(Tp),h);
     G0_nond = abs(SS.curlF_std(ind_good))./abs(max(SS.curlF_std(ind_good)));%G0 modification
-
-
+    Dw_interp = real(interp1(SS.X2,SS.dECG,x)); 
+    Dw_nond = abs(Dw_interp)/max(Dw_interp);
+    % curlFbr_para = eval(cFbr_symbol);
+    % curlFbr_para_nond = curlFbr_para/max(curlFbr_para);
     
     
     j = 0;
@@ -145,7 +157,10 @@ for ind_slp3 = 1:24
         
         fitpara.slp3{ind_slp3,1}.x(j,1) = x(i);        
         fitpara.slp3{ind_slp3,1}.x_nond(j,1) = x_nond(i);  
+        fitpara.slp3{ind_slp3,1}.h_nond(j,1) = h_nond(i); 
         fitpara.slp3{ind_slp3,1}.G0_nond(j,1) = G0_nond(i); 
+        fitpara.slp3{ind_slp3,1}.Dw_nond(j,1) = Dw_nond(i); 
+        %fitpara.slp3{ind_slp3,1}.curlFbr_para_nond(j,1) = curlFbr_para_nond(i); 
         fitpara.slp3{ind_slp3,1}.xb(j,1) = xb;  
         fitpara.slp3{ind_slp3,1}.Tp(j,1) = Tp; 
         fitpara.slp3{ind_slp3,1}.dirspr(j,1) = ds;        
@@ -170,7 +185,6 @@ for ind_slp3 = 1:24
         
     end 
 fitpara.slp3{ind_slp3,1}.Hs_interp = interp1(SS.X2,SS.Hs,fitpara.slp3{ind_slp3,1}.x); 
-fitpara.slp3{ind_slp3,1}.Dw_interp = interp1(SS.X2,SS.dECG,fitpara.slp3{ind_slp3,1}.x); 
 
 %ind_slp3
 end 
@@ -188,14 +202,17 @@ for ind_slp4 = 1:24
     x = SS.X(ind_good);
     x_nond = x/SS.xb;
     h = SS.h(ind_good);
+    h_nond= h./ SS.hb;
     t_scale = sqrt(h/g);
     xb = SS.xb;
     Tp = SS.Tp_T;
     ds  = SS.sigma_b;
     kw = get_wavenum(2*pi/(Tp),h);
     G0_nond = abs(SS.curlF_std(ind_good))./abs(max(SS.curlF_std(ind_good)));%G0 modification
-
-    
+    Dw_interp = real(interp1(SS.X2,SS.dECG,x)); 
+    Dw_nond = abs(Dw_interp)/max(Dw_interp);
+    % curlFbr_para = eval(cFbr_symbol);
+    % curlFbr_para_nond = curlFbr_para/max(curlFbr_para);    
     
     j = 0;
     for i = 1:xskip:dim_cxt(2) 
@@ -212,7 +229,10 @@ for ind_slp4 = 1:24
 
         fitpara.slp4{ind_slp4,1}.x(j,1) = x(i);        
         fitpara.slp4{ind_slp4,1}.x_nond(j,1) = x_nond(i);
+        fitpara.slp4{ind_slp4,1}.h_nond(j,1) = h_nond(i); 
         fitpara.slp4{ind_slp4,1}.G0_nond(j,1) = G0_nond(i); 
+        fitpara.slp4{ind_slp4,1}.Dw_nond(j,1) = Dw_nond(i); 
+        %fitpara.slp4{ind_slp4,1}.curlFbr_para_nond(j,1) = curlFbr_para_nond(i); 
         fitpara.slp4{ind_slp4,1}.xb(j,1) = xb; 
         fitpara.slp4{ind_slp4,1}.Tp(j,1) = Tp;      
         fitpara.slp4{ind_slp4,1}.dirspr(j,1) = ds;        
@@ -235,7 +255,6 @@ for ind_slp4 = 1:24
         
     end 
 fitpara.slp4{ind_slp4,1}.Hs_interp = interp1(SS.X2,SS.Hs,fitpara.slp4{ind_slp4,1}.x); 
-fitpara.slp4{ind_slp4,1}.Dw_interp = interp1(SS.X2,SS.dECG,fitpara.slp4{ind_slp4,1}.x); 
 
 %ind_slp4
 end

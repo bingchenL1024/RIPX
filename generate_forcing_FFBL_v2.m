@@ -13,16 +13,23 @@
 
 addpath(genpath('/home/n2kumar/MAT_Mytoolbox/jlab/'));
 
+
 clearvars -except test
 close all
 
+load('/data1/bliu/data/SS_raw.mat')
+
 %% initial setup
+ind= 14; % use the example in snapshot simulation in paper fig 
+Dw_run14 = S(ind).dECG;
+x_run14 = S(ind).X2;
+xb_run14 = S(ind).xb;
 
 slp =0.02; %beach slope 
 
 Ly=1500;
 dy=1;
-Lsz=350;
+Lsz=xb_run14;
 dx=1;
 t_tot= 100;
 dt=1;
@@ -36,7 +43,7 @@ nt = length(t);
 h_deep = slp*Lsz;
 h=x.*(-slp);
 g= 9.81; %gravitational constant 
-Tp = 14;
+Tp = 8;
 ky0_nond= 1.4*10^(-2);
 Irb=0.2;
 ky0 = ky0_nond./(Irb*h);
@@ -95,20 +102,20 @@ title('IFFT of Fourier compoments')
 
 
 %%%%%%%%%%%%%% check Psi using S_wb --> should be the same 
-[f1,S1] = fft_data(Psi(:,1),dy);
-[f2,S2] = fft_data(Psi(:,280),dy);
-
-figure()
-subplot(121)
-loglog(f1,S1,ky,2*S_wb(:,1))
-legend('loc1','Theory')
-xlabel('k_y(m^{-1})')
-ylabel('Spectra energy')
-subplot(122)
-loglog(f2,S2,ky,2*S_wb(:,280))
-legend('loc1','Theory')
-xlabel('k_y(m^{-1})')
-ylabel('Spectra energy')
+% [f1,S1] = fft_data(Psi(:,1),dy);
+% [f2,S2] = fft_data(Psi(:,280),dy);
+% 
+% figure()
+% subplot(121)
+% loglog(f1,S1,ky,2*S_wb(:,1))
+% legend('loc1','Theory')
+% xlabel('k_y(m^{-1})')
+% ylabel('Spectra energy')
+% subplot(122)
+% loglog(f2,S2,ky,2*S_wb(:,280))
+% legend('loc1','Theory')
+% xlabel('k_y(m^{-1})')
+% ylabel('Spectra energy')
 
 
 %% follow the wave crest and update all var 
@@ -197,38 +204,43 @@ end
 
 cFbr=G0.*cFbr_temp; %final field.
 
+curlF_tstack = squeeze(cFbr(100,:,30:end));
+curlF_snap = squeeze(cFbr(:,:,98));
+
+
 head = 'data generated from generate_forcing_FFBL';
-
-%save('/data1/bliu/data/parameterization_example','cFbr','G0','W','X','Y',"head")
+save('/data1/bliu/data/parameterization_example_realistic','cFbr','curlF_tstack','curlF_snap','G0','X','Y',"head")
 %% %%%%%%%%%%%%%%%%%%% visual of the width function 
+% 
+% figure(10)
+% for tind = 1:nt
+%     subplot(121)
+%     plot(x,W_tot(1,:,tind))
+%     ylim([-3,3])
+%     ylabel('W(x-ct)*b(t)')
+%     xlabel('x(m)')
+%     cmocean('balance');
+%     caxis([-5,5])
+%     subplot(122)
+%     pcolorcen(X,Y,cFbr(:,:,tind))
+%     cmocean('balance');
+%     caxis([-0.2,0.2])
+%     colorbar
+%     title('$\nabla \times F_{br}$','Interpreter','latex')
+%     drawnow
+%     pause(0.5)
+% end 
+% 
+% 
+% 
+% %%
+% figure()
+% pcolorcen(-X,Y,cFbr(:,:,10))
+% cmocean('balance');
+% caxis([-0.3,0.3])
 
-figure(10)
-for tind = 1:nt
-    subplot(121)
-    plot(x,W_tot(1,:,tind))
-    ylim([-3,3])
-    ylabel('W(x-ct)*b(t)')
-    xlabel('x(m)')
-    cmocean('balance');
-    caxis([-5,5])
-    subplot(122)
-    pcolorcen(X,Y,cFbr(:,:,tind))
-    cmocean('balance');
-    caxis([-0.2,0.2])
-    colorbar
-    title('$\nabla \times F_{br}$','Interpreter','latex')
-    drawnow
-    pause(0.5)
-end 
 
-
-
-%%
-figure()
-pcolorcen(-X,Y,cFbr(:,:,10))
-cmocean('balance');
-caxis([-0.3,0.3])
-
+%% function 
 function S_wb=make_WB(ky,ky0)
 % make Weibull spectra using peak wavenumber ky0 and wavenumber vector ky
 beta= 1.4; %modified gamma in the new paper version 

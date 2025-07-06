@@ -2,31 +2,47 @@
 % This code plot the schematic for funwaveC simulation including wave maker
 % and sponge
 
+%% fig setup 
+close all 
+xsize=12;ysize=6;
+x0=0.15; 
+y0=0.25;  
+dx=0.12;
+xw=0.75; yw=0.6;
+x1= x0+xw+dx; 
+pos = [x0 y0 xw yw];
 
-% funwavec_bathy_schematic.m
-% -------------------------------------------------------------------------
-% Draw bathymetry + waterline with sponge & wavemaker shading,
-% leaving a white gap between them and x‐ticks from -500 to 0 every 100 m
-% -------------------------------------------------------------------------
+fig_fontsz= 12;
+text_fontsz= 12;
+subfiglabel_fontsz = 15;
+cbar_fontsize =10;
+cbar_ticksz= 6;
 
-close all
+
+%%
 %--- PARAMETERS ----------------------------------------------------------
-h0         = 6.5;            % flat depth [m]
+h0         = 9;            % flat depth [m]
 x_flat1    = -550;           % start of flat region [m]
-x_slope_st = -250;           % where slope begins [m]
-x_wm       = [-300 -280];    % wavemaker region [m]
+x_slope_st = -225;           % where slope begins [m]
+x_wm       = [-420 -400];    % wavemaker region [m]
 gap        = 20;             % white gap width between sponge & wavemaker [m]
-gap_left =30;
+gap_left =0;
 
 % y‐limits for patches
 y_max = 0;
 y_min = -h0;
 
 % compute sponge shading extents (left of the gap)
-x_sponge = [x_flat1+gap_left, x_wm(1)-gap];
+%x_sponge = [x_flat1+gap_left, x_wm(1)-gap];
+x_sponge = [x_flat1+gap_left,-450];
 
 %--- PLOTTING ------------------------------------------------------------
-figure('Color','w')
+%figure('Color','w')
+figure()
+set(gcf,'PaperUnit','centimeters')
+set(gcf,'papersize',[xsize,ysize],'PaperPosition',[0 0 xsize ysize])
+
+subplot("Position",pos(1,:));
 hold on
 
 % 1) sponge patch (dark grey)
@@ -44,48 +60,51 @@ plot(linspace(x_flat1+gap_left,0,200), zeros(1,200), 'k', 'LineWidth', 2)
 
 % 4) bathymetry: flat + slope
 plot(linspace(x_flat1+gap_left, x_slope_st, 100), -h0*ones(1,100), 'k', 'LineWidth', 2)
-plot(linspace(x_slope_st, 0,      100), linspace(-h0,0,100),   'k', 'LineWidth', 2)
+plot(linspace(x_slope_st, 24.25,100), linspace(-h0,0.97,100),   'k', 'LineWidth', 2)
 
 % 5) labels with corrected property names
 text(mean(x_sponge),  0.1,    'Sponge',    ...
      'HorizontalAlignment','center', ...
      'VerticalAlignment','bottom', ...
-     'FontSize',20)
+     'FontSize',text_fontsz)
 
-text(mean(x_wm),      0.1,    'Wavemaker', ...
+text(-392,      -4.5,    'Wavemaker', ...
      'HorizontalAlignment','center', ...
      'VerticalAlignment','bottom', ...
      'Rotation',90, ...
-     'FontSize',20)
+     'FontSize',text_fontsz)
 
 % …
 % 6) axes formatting
 ax = gca;
-ax.FontSize         = 14;
-ax.LineWidth        = 1.5;
+ax.FontSize         = fig_fontsz;
+ax.LineWidth        = 1;
 ax.TickDir          = 'out';
 
 % draw a full box and show ticks on top & right too
 ax.Box              = 'on';
 
-ax.XLim             = [x_flat1+10, 10];
-ax.YLim             = [-8, 1];
+ax.XLim             = [-600, 50];
+ax.YLim             = [-10, 2];
 
 % ticks every 100 from -500 to 0
-ax.XTick            = x_flat1:100:50;
-ax.YTick            = -8:2:0;
+ax.XTick            =[-600,-500,-400,-300,-200,-100,0,50]; %x_flat1:100:50;
+ax.YTick            = [-10,-8,-6,-4,-2,0,2];
 ax.XMinorTick       = 'on';
 ax.YMinorTick       = 'on';
+%ax.Label.Rotation = 0;
+xtickangle(0);
 
 grid on
 ax.GridLineStyle      = ':';
-ax.MinorGridLineStyle = ':';
-ax.GridAlpha          = 0.3;
+%ax.MinorGridLineStyle = ':';
+ax.GridAlpha          = 0.2;
 ax.MinorGridAlpha     = 0.15;
 
-xlabel('$x$ (m)','Interpreter','latex','FontSize',16)
-ylabel('$z$ (m)','Interpreter','latex','FontSize',16)
+xlabel('$x$ (m)','Interpreter','latex','FontSize',fig_fontsz)
+ylabel('$z$ (m)','Interpreter','latex','FontSize',fig_fontsz)
 
-xlim([x_flat1,50])
+%xlim([600,25])
 hold off 
 
+print -dpdf -painters '/data1/bliu/vortpaper/fig_schematic.pdf'
