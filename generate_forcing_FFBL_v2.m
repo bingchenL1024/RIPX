@@ -19,19 +19,19 @@ close all
 
 load('/data1/bliu/data/SS_raw.mat')
 
-%% initial setup
-ind= 14; % use the example in snapshot simulation in paper fig 
-Dw_run14 = S(ind).dECG;
-x_run14 = S(ind).X2;
-xb_run14 = S(ind).xb;
 
+%% setup the simulation 
+ind= 14; % use the example in snapshot simulation in paper fig 
+SS = S(ind);
+xb_run14 = SS.xb;
 slp =0.02; %beach slope 
+
 
 Ly=1500;
 dy=1;
 Lsz=xb_run14;
 dx=1;
-t_tot= 100;
+t_tot= 120;
 dt=1;
 x_max = -50;%shore line location so that the domain does go to 0 to prevent h=0
 x=-Lsz:dx:x_max;
@@ -44,6 +44,21 @@ h_deep = slp*Lsz;
 h=x.*(-slp);
 g= 9.81; %gravitational constant 
 Tp = 8;
+
+
+%% parameters from given model simulation
+x_run14 = SS.X2;
+Dw_run14 = SS.dECG;
+Dw = interp1(x_run14,Dw_run14,x);
+Irb =slp/(SS.stpb)^0.5;
+dirspr_b= SS.sigma_b;
+ky0_nond = 9.5*10^(-4)*dirspr_b+1.9*10^(-3); % see paper equation
+ky0 = ky0_nond./(Irb*h);
+G0_nond= 0.041*dirspr_b+0.059; % see paper equation
+G0 = G0_nond*(Dw./(h_deep^2*(g.*h).^(1/2))).*(1/slp);
+G0 = repmat(G0,1,1,nt);
+
+%%%%%%%%%%%%%%%%%%%%%%%%% original version (override for test)
 ky0_nond= 1.4*10^(-2);
 Irb=0.2;
 ky0 = ky0_nond./(Irb*h);
@@ -67,14 +82,23 @@ mxx0=.075;
 x00=100;
 bb=x00/2^(1/3);
 aa=mxx0*2^(1/3)*1.5/bb;
-G0=aa*(-X+x_max)./(1+((-X+x_max)/bb).^3); %G0 magnitude function
-G0 = repmat(G0,1,1,nt);
-plot(x,G0(1,:,1))
+G0_matt=aa*(-X+x_max)./(1+((-X+x_max)/bb).^3); %G0 magnitude function
+G0_matt = repmat(G0_matt,1,1,nt);
+% plot(x,G0_matt(1,:,1))
 
 %% ========> generate decorrelation time scale tau and c 
 
 G0_nond = G0(1,:,1)/max(G0(1,:,1));
 tau = sqrt(h/g).*(0.027*exp(4.37*G0_nond)+1.28);
+%tau = sqrt(h/g);
+c_phase = sqrt(g.*h);
+ctau = tau.*c_phase; %c*tau scaling for dx
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%% original version (override for test)
+G0_nond = G0_matt(1,:,1)/max(G0_matt(1,:,1));
+tau = sqrt(h/g).*(0.027*exp(4.37*G0_nond)+1.28);
+tau = 0.75*ones(length(x),1);tau=tau';
 %tau = sqrt(h/g);
 c_phase = sqrt(g.*h);
 ctau = tau.*c_phase; %c*tau scaling for dx
@@ -102,9 +126,9 @@ title('IFFT of Fourier compoments')
 
 
 %%%%%%%%%%%%%% check Psi using S_wb --> should be the same 
-% [f1,S1] = fft_data(Psi(:,1),dy);
-% [f2,S2] = fft_data(Psi(:,280),dy);
-% 
+[f1,S1] = fft_data(Psi(:,1),dy);
+[f2,S2] = fft_data(Psi(:,120),dy);
+
 % figure()
 % subplot(121)
 % loglog(f1,S1,ky,2*S_wb(:,1))
@@ -112,7 +136,7 @@ title('IFFT of Fourier compoments')
 % xlabel('k_y(m^{-1})')
 % ylabel('Spectra energy')
 % subplot(122)
-% loglog(f2,S2,ky,2*S_wb(:,280))
+% loglog(f2,S2,ky,2*S_wb(:,120))
 % legend('loc1','Theory')
 % xlabel('k_y(m^{-1})')
 % ylabel('Spectra energy')
@@ -132,7 +156,7 @@ for ind_wave = 1:nwave %initilize all waves only when it's time (set beginning p
 end 
 
 
-x_wave(:,1)=-350; %initial locaiton of the wave crest 
+x_wave(:,1)=-Lsz; %initial locaiton of the wave crest 
 for ind_wave = 1:nwave
     for tind = 1:nt-1
         if active_wave(ind_wave,tind) == 1 %only propagate wave when it's its turn
@@ -173,8 +197,7 @@ for ind_wave = 1:nwave
     end 
 end 
 
-% then turn b_wave to 3D matrix, b_wave_tot that has dimension same as curlFbr, i.e.,
-% fill in the b_wave_tot with elements in b_wave
+
 
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% W (width function)%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -205,39 +228,59 @@ end
 cFbr=G0.*cFbr_temp; %final field.
 
 curlF_tstack = squeeze(cFbr(100,:,30:end));
-curlF_snap = squeeze(cFbr(:,:,98));
+curlF_snap = squeeze(cFbr(:,:,55));
 
 
+%% test plot 
+
+dim_Hov = size(curlF_tstack);
+x_Hov = -(dim_Hov(1)-1):0;
+t_Hov = 0:dim_Hov(2)-1; %in seconds
+[t_grid_Hov,x_grid_Hov] = meshgrid(t_Hov,x_Hov);
+clim = 0.1;
+figure()
+subplot(211)
+pcolorcen(X,Y,curlF_snap);    
+cmocean('balance');
+caxis([-clim,clim])
+subplot(212)
+pcolorcen(t_grid_Hov,x_grid_Hov,curlF_tstack);    
+cmocean('balance');
+caxis([-clim,clim])
+
+
+
+%% save data 
 head = 'data generated from generate_forcing_FFBL';
 save('/data1/bliu/data/parameterization_example_realistic','cFbr','curlF_tstack','curlF_snap','G0','X','Y',"head")
 %% %%%%%%%%%%%%%%%%%%% visual of the width function 
-% 
-% figure(10)
-% for tind = 1:nt
-%     subplot(121)
-%     plot(x,W_tot(1,:,tind))
-%     ylim([-3,3])
-%     ylabel('W(x-ct)*b(t)')
-%     xlabel('x(m)')
-%     cmocean('balance');
-%     caxis([-5,5])
-%     subplot(122)
-%     pcolorcen(X,Y,cFbr(:,:,tind))
-%     cmocean('balance');
-%     caxis([-0.2,0.2])
-%     colorbar
-%     title('$\nabla \times F_{br}$','Interpreter','latex')
-%     drawnow
-%     pause(0.5)
-% end 
-% 
-% 
-% 
-% %%
-% figure()
-% pcolorcen(-X,Y,cFbr(:,:,10))
-% cmocean('balance');
-% caxis([-0.3,0.3])
+
+figure(10)
+for tind = 1:nt
+    subplot(121)
+    plot(x,W_tot(1,:,tind))
+    ylim([-3,3])
+    ylabel('W(x-ct)*b(t)')
+    xlabel('x(m)')
+    cmocean('balance');
+    caxis([-5,5])
+    subplot(122)
+    pcolorcen(X,Y,cFbr(:,:,tind))
+    cmocean('balance');
+    caxis([-0.2,0.2])
+    colorbar
+    title('$\nabla \times F_{br}$','Interpreter','latex')
+    drawnow
+    pause(0.5)
+end 
+
+
+
+%%
+figure()
+pcolorcen(-X,Y,cFbr(:,:,10))
+cmocean('balance');
+caxis([-0.3,0.3])
 
 
 %% function 
