@@ -10,18 +10,18 @@ clear all
 %% AR1 method in Jenkins and Watts (discrete AR1 eq 5.2.26) -- explicit FDA
 close all
 clear all 
-tau = 0.75;
+tau = 15;
 
+a1=1-1/tau;
 tmax = 50000;
-dt=0.1;
-t = 0:dt:tmax;% Time vector
-a1=1-dt/tau;
+dt=1;
+t = 0:dt:tmax;             % Time vector
 N = length(t);
 N_half= (N-1)/2;
 x = zeros(1,length(t)); % Allocate output vector, set initial condition
 %rng(1);                 % Set random seed
 for i = 1:length(t)-1
-    x(i+1) =a1*x(i) + sqrt(2*dt/tau)*randn(1,1);
+    x(i+1) =a1*x(i) +dt*sqrt(2/tau)*randn(1,1);
 end
 
 xmean = mean(x)
@@ -30,12 +30,11 @@ x_mean_plot =ones(length(t),1)*xmean;
 x= detrend(x); %demean the data
 
 % compare with theory 
-%[acf,lags_num] = autocorr(x);
-[acf,lags_num] =xcorr(x-mean(x),'biased');
-
-acf= acf./acf(lags_num==0);
+t_lag = 0:dt:tau*3;
+auto_pred = exp(-t_lag/tau);
+[acf,lags_num] = autocorr(x);
 lags = lags_num*dt;
-rho_xx=  a1.^lags_num;
+rho_xx=  a1.^lags;
 rho_theory = exp(-lags/tau);
 figure()
 subplot(121)
@@ -43,32 +42,31 @@ plot(t,x)
 xlim([0,100])
 subplot(122)
 plot(lags,acf)
-% hold on 
-% plot(lags,rho_xx)
+hold on 
+plot(lags,rho_xx)
 hold on 
 plot(lags,rho_theory)
 hold off 
-xlim([0,3*tau])
-legend('data','theory')
+xlim([0,lags(end)])
+legend('data','theory1','theor2')
 
 
 %% AR1 method in Jenkins and Watts (discrete AR1 eq 5.2.26) -- implicit FDA
 close all
 clear all 
-tau = 0.75;
+tau = 15;
 
+a1=1/(1+dt/tau);
 tmax = 50000;
-dt=0.01;
+dt=1;
 t = 0:dt:tmax;             % Time vector
 N = length(t);
 N_half= (N-1)/2;
 x = zeros(1,length(t)); % Allocate output vector, set initial condition
 %rng(1);                 % Set random seed
-
-a1=1/(1+dt/tau);
 for i = 1:length(t)-1
-    x(i+1) =a1*x(i) +sqrt(2*dt/tau)*randn(1,1)*a1;
-end 
+    x(i+1) =a1*x(i) +dt*sqrt(2/tau)*randn(1,1);
+end
 
 xmean = mean(x)
 xvar = var(x)
@@ -76,11 +74,11 @@ x_mean_plot =ones(length(t),1)*xmean;
 x= detrend(x); %demean the data
 
 % compare with theory 
-[acf,lags_num] =xcorr(x-mean(x),'biased');
-
-acf= acf./acf(lags_num==0);
+t_lag = 0:dt:tau*3;
+auto_pred = exp(-t_lag/tau);
+[acf,lags_num] = autocorr(x);
 lags = lags_num*dt;
-rho_xx=  a1.^lags_num;
+rho_xx=  a1.^lags;
 rho_theory = exp(-lags/tau);
 figure()
 subplot(121)
@@ -89,10 +87,12 @@ xlim([0,100])
 subplot(122)
 plot(lags,acf)
 hold on 
+plot(lags,rho_xx)
+hold on 
 plot(lags,rho_theory)
 hold off 
-xlim([0,3*tau])
-legend('data','theory')
+xlim([0,lags(end)])
+legend('data','theory1','theor2')
 
 
 
