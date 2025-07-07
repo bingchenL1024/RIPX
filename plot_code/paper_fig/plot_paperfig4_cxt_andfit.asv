@@ -1,0 +1,223 @@
+% Bingchen Liu Nov 22, 2024
+% This code plot the cxt function and its fit for paper
+
+
+clear
+load('/data1/bliu/data/cxt_alongct_nointerp')
+load('/data1/bliu/data/cxt_ind_good.mat')
+load ('/data1/bliu/data/raw/CXT_ALL_norm_and_var_21dx10dt_Bingchen.mat')
+load('/data1/bliu/data/SS_raw.mat')
+load('/data1/bliu/data/cxt_ind_good')
+load('/data1/bliu/data/cxt_alongct_nointerp_fitpara_qced_3loc.mat')
+load('/data1/bliu/data/ind_of_diff_bath.mat')
+
+
+co = [0 0.4470 0.7410;0.9290 0.6940 0.1250;0.4660 0.6740 0.1880]; % blue-yellow-green
+linewidth = 1.5;
+fig_fontsize = 28;
+subfiglabel_fontsz = 38;
+subfiglabel = {'(a)','(b)','(c)'};
+%=================== runpara
+runnum = 1;
+i = 59;
+
+
+g = 9.81;
+dim = size(cell2mat(CXT_ALL(runnum)));
+SS = S(runnum);
+x = SS.X;
+h = SS.h;
+xb= SS.xb;
+x_nond = x./xb;
+cxt = cell2mat(CXT_ALL(runnum));
+
+x_lag = 0:dim(2)-1; % in meters
+t_lag = -10:10; %in seconds
+[dt,dx] = meshgrid(t_lag,x_lag);
+
+ind_good = ind_good_All{runnum};
+h_xloc = h(ind_good(i));
+c = sqrt(g*h_xloc);
+cxt_atx = squeeze(cxt(ind_good(i),:,:));
+ct = c.*t_lag;
+
+
+
+
+runnum = 5;
+xind_skip = 5;
+runnum_good = [indbath.slp2;indbath.slp3;indbath.slp4];
+
+
+
+%============================  plot ================
+close all 
+figure()
+
+xsize=70;ysize=25;
+set(gcf,'PaperUnit','centimeters')
+set(gcf,'papersize',[xsize,ysize],'PaperPosition',[0 0 xsize ysize])
+
+subplot(131)
+pcolorcen(dt,dx,cxt_atx);
+hold on 
+plot(t_lag,ct,'LineWidth',2,'color','k')
+%shading interp
+col=colorbar('e');
+cmocean('balance');
+%caxis([-abs(max(abs(cxt_atx(:)),[],'all')),abs(max(abs(cxt_atx(:)),[],'all'))])
+caxis([-1,1])
+col.Label.Interpreter = 'latex';
+col.Label.String = '$\tilde{C}_{XT}$';
+col.Label.FontSize = 28;
+col.Label.FontWeight = 'bold';
+%col.Label.Position = [0,-2.5,0];
+col.Position = [0.15, 0.8,0.07,0.02];
+xticks(-10:2:10)
+ylabel('$\Delta x$ (m)','Interpreter','latex')
+xlabel('$\Delta t$ (s)','Interpreter','latex')
+%title(['xlocation = ',num2str(x_nond(ind_good(i))),' dimensionless sz loc'])
+%axis equal
+ylim([0,dim(2)-1])
+xlim([0,10])
+niceplot_nobold_nomintick(fig_fontsize)
+hold off 
+text(8.35,19,subfiglabel{1},'FontSize',subfiglabel_fontsz)
+col.TickDirection = 'in';
+
+
+
+% ================================= sub 2 =================================
+subplot(132)
+for i = 1:24
+    % for loc =1:3
+    % plot(fitpara_3loc.slp2(i).t_itp{loc},fitpara_3loc.slp2(i).cxt_data{loc},'Color',[.5 .5 .5],'LineWidth',linewidth)
+    % hold on 
+    % end 
+    % for loc =1:3
+    % plot(fitpara_3loc.slp3(i).t_itp{loc},fitpara_3loc.slp3(i).cxt_data{loc},'Color',[.5 .5 .5],'LineWidth',linewidth)
+    % hold on 
+    % end 
+    % for loc =1:3
+    % plot(fitpara_3loc.slp4(i).t_itp{loc},fitpara_3loc.slp4(i).cxt_data{loc},'Color',[.5 .5 .5],'LineWidth',linewidth)
+    % hold on 
+    % end 
+    
+    loc =1;
+    h1=plot(fitpara_3loc.slp2(i).t_itp{loc},fitpara_3loc.slp2(i).cxt_data{loc},'Color',co(1,:),'LineWidth',linewidth);
+    loc =2 ;
+    h2=plot(fitpara_3loc.slp2(i).t_itp{loc},fitpara_3loc.slp2(i).cxt_data{loc},'Color',co(2,:),'LineWidth',linewidth);
+    hold on 
+    loc =3 ;
+    h3=plot(fitpara_3loc.slp2(i).t_itp{loc},fitpara_3loc.slp2(i).cxt_data{loc},'Color',co(3,:),'LineWidth',linewidth);
+    hold on 
+    loc =1 ;
+    plot(fitpara_3loc.slp3(i).t_itp{loc},fitpara_3loc.slp3(i).cxt_data{loc},'Color',co(1,:),'LineWidth',linewidth)
+    hold on 
+    loc =2 ;
+    plot(fitpara_3loc.slp3(i).t_itp{loc},fitpara_3loc.slp3(i).cxt_data{loc},'Color',co(2,:),'LineWidth',linewidth)
+    hold on 
+    loc =3 ;
+    plot(fitpara_3loc.slp3(i).t_itp{loc},fitpara_3loc.slp3(i).cxt_data{loc},'Color',co(3,:),'LineWidth',linewidth)
+    hold on 
+    loc =1 ;
+    plot(fitpara_3loc.slp4(i).t_itp{loc},fitpara_3loc.slp4(i).cxt_data{loc},'Color',co(1,:),'LineWidth',linewidth)
+    hold on 
+    loc =2 ;
+    plot(fitpara_3loc.slp4(i).t_itp{loc},fitpara_3loc.slp4(i).cxt_data{loc},'Color',co(2,:),'LineWidth',linewidth)
+    hold on 
+    loc =3 ;
+    plot(fitpara_3loc.slp4(i).t_itp{loc},fitpara_3loc.slp4(i).cxt_data{loc},'Color',co(3,:),'LineWidth',linewidth)
+    hold on 
+
+end 
+xlim([0,7])
+ylim([-0.1,1])
+ylabel('$\tilde{C}_{XT}$','Interpreter','latex')
+xlabel('$\Delta t (s)$','Interpreter','latex')
+leg = legend([h1 h2 h3],{'0.75 L_{sz}','0.5 L_{sz}','0.3 L_{sz}'},'FontSize',22);
+leg.Position = [0.45,0.74,0.2,0.2];
+set(gca,'XTick',0:1:7)
+set(gca,'YTick',[-0.1,0:0.2:1])
+grid on
+hold off 
+niceplot_nobold_nomintick(fig_fontsize)
+text(6.2,0.96,subfiglabel{2},'FontSize',subfiglabel_fontsz)
+
+
+% ================================= sub 3 =================================
+
+ 
+subplot(133)
+for i = 1:24
+    for loc =1:3
+    plot(fitpara_3loc.slp2(i).t_nond_diva{loc},fitpara_3loc.slp2(i).cxt_data{loc},'Color',[.5 .5 .5],'LineWidth',linewidth)
+    hold on 
+    end 
+    for loc =1:3
+    plot(fitpara_3loc.slp3(i).t_nond_diva{loc},fitpara_3loc.slp3(i).cxt_data{loc},'Color',[.5 .5 .5],'LineWidth',linewidth)
+    hold on 
+    end 
+    for loc =1:3
+    plot(fitpara_3loc.slp4(i).t_nond_diva{loc},fitpara_3loc.slp4(i).cxt_data{loc},'Color',[.5 .5 .5],'LineWidth',linewidth)
+    hold on 
+    end 
+
+end 
+xlim([0,12])
+ylim([-0.1,1])
+ylabel('$\tilde{C}_{XT}$','Interpreter','latex')
+xlabel('$\Delta t / \tau$','Interpreter','latex')
+%legend([h1 h2 h3],{'0.75 L_{sz}','0.5 L_{sz}','0.3 L_{sz}'},'FontSize',22,'Location','northeast')
+set(gca,'XTick',0:2:12)
+set(gca,'YTick',[-0.1,0:0.2:1])
+grid on 
+hold off 
+niceplot_nobold_nomintick(fig_fontsize)
+text(10.5,0.96,subfiglabel{3},'FontSize',subfiglabel_fontsz)
+
+
+% 
+% colormap = cmocean('solar',length(fitpara.slp2(runnum).cxt_data)); 
+% subplot(122)
+% % for i = 1:24
+% %     runnum = runnum_good(i);
+%     for xloc = 1:xind_skip:length(fitpara.slp2(runnum).cxt_data)
+%         plot(fitpara.slp2(runnum).t_itp{xloc}, fitpara.slp2(runnum).cxt_data{xloc},'LineWidth',1.5,'Color',colormap(xloc,:))
+%         hold on 
+%         plot(fitpara.slp2(runnum).t_itp{xloc},fitpara.slp2(runnum).cxt_fit{xloc},'--','LineWidth',1.5,'Color',colormap(xloc,:))
+%         hold on 
+%         legend('Data','AR1 Model Fit')
+%      end 
+% % end 
+% clear colormap
+% sub2 = gca;
+% colormap(sub2,cmocean('solar',length(ind_good)));
+% %legend([p1, p2, p3],'Mean', '25 percentile','75 percentile')
+% xlabel('$\Delta t (s)$','Interpreter','latex')
+% ylabel('$\tilde{C}_{XT}$','Interpreter','latex')
+% %title(['Run',num2str(runnum)])
+% colorbar
+% col=colorbar;
+% col.Label.FontSize = 22;
+% caxis([fitpara.slp2(runnum).x_nond(1),fitpara.slp2(runnum).x_nond(end)])
+% col.Label.Interpreter = 'latex';
+% col.Label.String = 'Non-dimensional Cross-shore Location $\frac{x}{x_{b}}$';
+% %xlim([0,9])
+% niceplot_nobold_nomintick(18);
+% grid on 
+% hold off 
+
+
+
+
+
+
+
+
+
+
+
+print -dpdf '/data1/bliu/671bffbfef862a8d6adeaebb/fig_cxtandfit.pdf'
+
+close all

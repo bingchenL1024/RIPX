@@ -1,0 +1,20 @@
+% Bingchen Liu May 13, 2025
+% This code plot c_T vs dt that uses cxt interp on c_{fit} velocity that is
+% the fit of locations of max cxt
+
+load('/data1/bliu/data/ind_of_diff_bath.mat')
+
+
+ind_slp234 = [indbath.slp2;indbath.slp3;indbath.slp4];
+
+for i = 1:72
+    ct_interp{i} = cxt_alongct_itp_ALL{ind_slp234(i)};
+end 
+
+figure()
+for runind = 1:72
+    plot(0:5,ct_interp{runind},'LineWidth',1)
+    hold on 
+end 
+hold off 
+xlabel()

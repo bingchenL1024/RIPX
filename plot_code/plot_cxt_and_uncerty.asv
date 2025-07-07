@@ -1,0 +1,213 @@
+% Bingchen Liu Jan 13,2025
+% This code plot cxt and its uncertainty using different creteria to inform
+% how to choose what cxt to pick along dx = sqrt(gh) dt
+tic
+clear
+load('/data1/bliu/data/raw/CXT_ALL_norm_and_var_21dx10dt_Bingchen.mat')
+load('/data1/bliu/data/cxt_ind_good.mat')
+load('/data1/bliu/data/SS_raw.mat') 
+load('/data1/bliu/data/runnum_72run')
+
+uncerty_lim1= 0.4;
+uncerty_lim2= 0.5;
+toc
+%%
+for runnum = goodrunnum(1):goodrunnum(end)
+
+    ind_good = ind_good_All{runnum};
+    for i = 1:5:length(ind_good)
+
+        g = 9.81;
+        dim = size(cell2mat(CXT_ALL(runnum)));
+        SS = S(runnum);
+        x = SS.X;
+        h = SS.h;
+        xb= SS.xb;
+        x_nond = x./xb;
+        G0 = SS.curlF_std;%G0 modification
+        G0_nond = abs(G0)/abs(max(G0));
+        cxt = cell2mat(CXT_ALL(runnum));
+        cxt_std = cell2mat(CXT_std_ALL(runnum));
+        cxt_uncerty = cell2mat(CXT_uncert_ALL(runnum));
+        fig_fontsize = 13;
+        x_lag = 0:dim(2)-1; % in meters
+        t_lag = -10:10; %in seconds
+        [dt,dx] = meshgrid(t_lag,x_lag);
+        
+        ind_good = ind_good_All{runnum};
+        h_xloc = h(ind_good(i));
+        c = sqrt(g*h_xloc);
+        cxt_atx = squeeze(cxt(ind_good(i),:,:));
+        cxt_std_atx = squeeze(cxt_std(ind_good(i),:,:));
+        cxt_std_norm_atx = squeeze(cxt_std(ind_good(i),:,:))./(abs(cxt_atx)*sqrt(11)); %12 come from 12 alongshore transects 
+        cxt_uncerty_atx = squeeze(cxt_uncerty(ind_good(i),:,:));
+        cxt_uncerty_norm_atx = cxt_uncerty_atx./abs(cxt_atx);
+        
+        
+        
+        ct = c.*t_lag;
+        %%
+        subplot(151)
+        pcolorcen(dt,dx,cxt_atx);
+        hold on 
+        plot(t_lag,ct,'LineWidth',2,'color','magenta','LineStyle','--')
+        %shading interp
+        col=colorbar('southoutside');
+        cmocean('balance');
+        %caxis([-abs(max(abs(cxt_atx(:)),[],'all')),abs(max(abs(cxt_atx(:)),[],'all'))])
+        caxis([-1,1])
+        col.Label.Interpreter = 'latex';
+        col.Label.String = '$\tilde{C}_{XT}$';
+        col.Label.FontSize = 20;
+        col.Label.FontWeight = 'bold';
+        %col.Label.Position = [0,-4.5,0];
+        %col.Position = [0.11, 0.8,0.07,0.02];
+        xticks(-10:2:10)
+        ylabel('$\Delta x$ (m)','Interpreter','latex')
+        xlabel('$\Delta t$ (s)','Interpreter','latex')
+        %title(['xlocation = ',num2str(x_nond(ind_good(i))),' dimensionless sz loc'])
+        %axis equal
+        ylim([0,dim(2)-1])
+        xlim([0,10])
+        xtickangle(0)
+        title(['run',num2str(runnum),' G0/G0_{max} = ',num2str(G0_nond(ind_good(i)))])
+        niceplot_nobold_nomintick(fig_fontsize)
+        hold off 
+        col.TickDirection = 'in';
+        
+        
+        
+        subplot(152)
+        pcolorcen(dt,dx,cxt_std_norm_atx);
+        hold on 
+        plot(t_lag,ct,'LineWidth',2,'color','magenta','LineStyle','--')
+        %shading interp
+        col=colorbar('southoutside');
+        cmocean('dense');
+        %caxis([-abs(max(abs(cxt_atx(:)),[],'all')),abs(max(abs(cxt_atx(:)),[],'all'))])
+        caxis([0,uncerty_lim1])
+        col.Label.Interpreter = 'latex';
+        col.Label.String = '$ \sigma_{CXT}$';
+        col.Label.FontSize = 20;
+        col.Label.FontWeight = 'bold';
+        %col.Ticks = linspace(0,0.3,3);
+        col.TickDirection = 'in';
+        %col.Label.Position = [0,-4.5,0];
+        %col.Position = [0.11, 0.8,0.07,0.02];
+        xticks(-10:2:10)
+        ylabel('$\Delta x$ (m)','Interpreter','latex')
+        xlabel('$\Delta t$ (s)','Interpreter','latex')
+        %title(['xlocation = ',num2str(x_nond(ind_good(i))),' dimensionless sz loc'])
+        %axis equal
+        ylim([0,dim(2)-1])
+        xlim([0,10])
+        xtickangle(0)
+        niceplot_nobold_nomintick(fig_fontsize)
+        title(['$std(cxt_y)/(|CXT| \sqrt{11})$'],'Interpreter','latex')
+        hold off 
+        
+        
+        
+        subplot(153)
+        pcolorcen(dt,dx,cxt_uncerty_norm_atx);
+        hold on 
+        plot(t_lag,ct,'LineWidth',2,'color','magenta','LineStyle','--')
+        %shading interp
+        col=colorbar('southoutside');
+        cmocean('dense');
+        %caxis([-abs(max(abs(cxt_atx(:)),[],'all')),abs(max(abs(cxt_atx(:)),[],'all'))])
+        caxis([0,uncerty_lim1])
+        col.Label.Interpreter = 'latex';
+        col.Label.String = '$ \sigma_{CXT}$';
+        col.Label.FontSize = 20;
+        col.Label.FontWeight = 'bold';
+        %col.Ticks = linspace(0,0.35,3);
+        %col.Label.Position = [0,-4.5,0];
+        %col.Position = [0.11, 0.8,0.07,0.02];
+        xticks(-10:2:10)
+        ylabel('$\Delta x$ (m)','Interpreter','latex')
+        xlabel('$\Delta t$ (s)','Interpreter','latex')
+        %title(['xlocation = ',num2str(x_nond(ind_good(i))),' dimensionless sz loc'])
+        %axis equal
+        ylim([0,dim(2)-1])
+        xlim([0,10])
+        xtickangle(0)
+        niceplot_nobold_nomintick(fig_fontsize)
+        title(['(CXT_{upper} - CXT_{lower})/abs(CXT)'])
+        hold off 
+        col.TickDirection = 'in';
+        
+        
+        subplot(235)
+        pcolorcen(dt,dx,cxt_std_norm_atx);
+        hold on 
+        plot(t_lag,ct,'LineWidth',2,'color','magenta','LineStyle','--')
+        %shading interp
+        col=colorbar('southoutside');
+        cmocean('dense');
+        %caxis([-abs(max(abs(cxt_atx(:)),[],'all')),abs(max(abs(cxt_atx(:)),[],'all'))])
+        caxis([0,uncerty_lim2])
+        col.Label.Interpreter = 'latex';
+        col.Label.String = '$ \sigma_{CXT}$';
+        col.Label.FontSize = 20;
+        col.Label.FontWeight = 'bold';
+        %col.Ticks = linspace(0,0.3,3);
+        col.TickDirection = 'in';
+        %col.Label.Position = [0,-4.5,0];
+        %col.Position = [0.11, 0.8,0.07,0.02];
+        xticks(-10:2:10)
+        ylabel('$\Delta x$ (m)','Interpreter','latex')
+        xlabel('$\Delta t$ (s)','Interpreter','latex')
+        %title(['xlocation = ',num2str(x_nond(ind_good(i))),' dimensionless sz loc'])
+        %axis equal
+        ylim([0,dim(2)-1])
+        xlim([0,10])
+        xtickangle(0)
+        niceplot_nobold_nomintick(fig_fontsize)
+        title(['$std(cxt_y)/(|CXT| \sqrt{11})$'],'Interpreter','latex')
+        hold off 
+        
+        
+        
+        subplot(236)
+        pcolorcen(dt,dx,cxt_uncerty_norm_atx);
+        hold on 
+        plot(t_lag,ct,'LineWidth',2,'color','magenta','LineStyle','--')
+        %shading interp
+        col=colorbar('southoutside');
+        cmocean('dense');
+        %caxis([-abs(max(abs(cxt_atx(:)),[],'all')),abs(max(abs(cxt_atx(:)),[],'all'))])
+        caxis([0,uncerty_lim2])
+        col.Label.Interpreter = 'latex';
+        col.Label.String = '$ \sigma_{CXT}$';
+        col.Label.FontSize = 20;
+        col.Label.FontWeight = 'bold';
+        %col.Ticks = linspace(0,0.35,3);
+        %col.Label.Position = [0,-4.5,0];
+        %col.Position = [0.11, 0.8,0.07,0.02];
+        xticks(-10:2:10)
+        ylabel('$\Delta x$ (m)','Interpreter','latex')
+        xlabel('$\Delta t$ (s)','Interpreter','latex')
+        %title(['xlocation = ',num2str(x_nond(ind_good(i))),' dimensionless sz loc'])
+        %axis equal
+        ylim([0,dim(2)-1])
+        xlim([0,10])
+        xtickangle(0)
+        niceplot_nobold_nomintick(fig_fontsize)
+        title(['(CXT_{upper} - CXT_{lower})/abs(CXT)'])
+        hold off 
+        col.TickDirection = 'in';
+
+    width= 10;
+    height = 15;
+    set(gcf,'Units','inches','Position',[0,0,width,height])
+    set(gcf,'visible','off') 
+    filename = sprintf('run%.0f_Gnond_%.2f',runnum,G0_nond(ind_good(i)));
+    filename = strrep(filename,'.','p');
+
+    %G0_name = num2str(G0_nond(ind_good(i)));
+    saveas(gcf,['/data1/bliu/figures/cxt_uncerty/',filename,'.png'])
+    %saveas(gcf,['/data1/bliu/figures/cxt_uncerty/','run',num2str(runnum),'_Gnond_0p',num2str(G0_name(3:4)),'.png'])
+
+    end 
+end 

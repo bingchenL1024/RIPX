@@ -1,0 +1,77 @@
+% Bingchen Liu Nov 27, 2024
+% This code plot a snopshot of vorticity and curlF field for paper
+clear
+close all
+load('/data1/bliu/data/snap_vort_curlF_field')
+load('/data1/bliu/data/SS_raw.mat')
+
+ind=44;
+xb = S(ind).xb;
+
+vort_snap = flip(vort_snap,2);
+curlF_snap = flip(curlF_snap,2);
+
+
+dim= size(curlF_snap');
+x = 0:dim(1)-1;
+y = 0:dim(2)-1; %in seconds
+[x_grid,y_grid] = meshgrid(x,y);
+% for t = 2000:2100;
+
+
+
+figure()
+subplot(211)
+pcolorcen(y_grid,x_grid,curlF_snap);
+plot
+col=colorbar;
+cmocean('balance');
+%caxis([-abs(max(abs(cxt_atx(:)),[],'all')),abs(max(abs(cxt_atx(:)),[],'all'))])
+caxis([-0.5,0.5])
+%col.Limits = [-0.35,0.35];
+col.Label.Interpreter = 'latex';
+col.Label.String = '$\nabla \times \vec{F}_{br} \, (s^{-2})$';
+col.Label.FontSize = 22;
+%col.Label.FontWeight = 'bold';
+col.Ticks = linspace(-0.5,0.5,5);
+%col.TickLabels=-0.5:0.1:0.5;
+ylabel('x (m)','Interpreter','latex')
+xlabel('y (m)','Interpreter','latex')
+% width= 25;
+% height = 10;
+% set(gcf,'Units','inches','Position',[0,0,width,height]);
+% set(gcf,'visible','off');
+%set(gca,'YDir','reverse')
+axis equal
+ylim([1,dim(1)])
+xlim([0,350])
+xtick(0:50:350)
+ytick(0:30:90)
+niceplot(22)
+
+
+subplot(212)
+pcolorcen(y_grid,x_grid,vort_snap);
+col=colorbar;
+cmocean('balance');
+%caxis([-abs(max(abs(cxt_atx(:)),[],'all')),abs(max(abs(cxt_atx(:)),[],'all'))])
+caxis([-0.1,0.1])
+col.Label.Interpreter = 'latex';
+col.Label.String = '$\nabla \times \vec{u} \, (s^{-1})$';
+col.Label.FontSize = 22;
+col.Label.FontWeight = 'bold';
+ylabel('x (m)','Interpreter','latex')
+xlabel('y (m)','Interpreter','latex')
+%title([runpara.wave,runpara.bath])
+% width= 22;
+% height = 18;
+% set(gcf,'Units','inches','Position',[0,0,width,height]);
+% set(gcf,'visible','off');
+%ylim([dim(1)-100,dim(1)])
+%set(gca,'YDir','reverse')
+axis equal
+ylim([1,dim(1)])
+xlim([0,350])
+xtick(0:50:350)
+ytick(0:30:90)
+niceplot(22)

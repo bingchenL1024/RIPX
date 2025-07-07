@@ -1,0 +1,268 @@
+% Bingchen Liu, Jan 9, 2025
+% This code plot all the nondimensional spectra with Weibull fit to
+% evaluate the best choice of exponential in the Weibull fit 
+
+
+clearvars -except expo
+close all 
+
+%expo=1.25;
+expo_name_temp = num2str(expo);
+expo_name  = [expo_name_temp(1),'p',expo_name_temp(3:end)];
+
+
+% load(['/data1/bliu/data/Sky_nond_',expo_name])
+% load(['/data1/bliu/data/Sky_binmean_',expo_name])
+
+load(['/data1/bliu/data/Sky_nond_10loc_',expo_name])
+load(['/data1/bliu/data/Sky_binmean_10loc_',expo_name])
+
+
+%load('/data1/bliu/data/Sky_WBfit_qced')
+
+
+%% plot diff expo separately 
+fig_fontsize = 18;
+legend_size = 8;
+subfiglabel_fontsz = 14;
+subfiglabel = {'(a)','(b)'};
+sub1_linewidth = 0.5;
+sub2_linewidth = 0.5;
+wb_linewidth  = 3;
+
+figure
+subplot(131)
+
+%% background all runtest to test if binmean works 
+x_num = length(A.iS2s(1,:));
+x_nond = linspace(-0.75,-0.25,5);
+
+clear col
+col = cmocean('ice',x_num);
+
+for xloc =length(ky2_nond(1,:,1)):-1:1
+
+for N =1:24
+h3=loglog(squeeze(ky2_nond(N,xloc,:))',squeeze(Sky2_nond_kym_S0(N,xloc,:))','Color',col(xloc,:),'LineWidth',sub2_linewidth);
+hold on 
+loglog(squeeze(ky3_nond(N,xloc,:))',squeeze(Sky3_nond_kym_S0(N,xloc,:))','Color',col(xloc,:),'LineWidth',sub2_linewidth)
+hold on 
+loglog(squeeze(ky4_nond(N,xloc,:))',squeeze(Sky4_nond_kym_S0(N,xloc,:))','Color',col(xloc,:),'LineWidth',sub2_linewidth)
+hold on 
+end
+
+end 
+
+%%
+errorbar(ky_bincenter,Sky_binmean,error_binmean,'s','LineWidth',2,'MarkerSize',9,'MarkerFaceColor','green','color','green')
+set(gca,'XScale','log','YScale','log')
+hold on 
+plot(ky_nond,Sky_nond_analyt,'LineWidth',3,'Color','r','LineStyle','--')
+hold on 
+scatter(ky_bincenter,Sky_logbinmean,80,'yellow','diamond','filled')
+
+ylabel('$S_{\nabla \times \mathbf{F}_{\mathrm{br}}} \, k_{y0}/ {\int_{0}^{\infty} \, S_{WB} \, dk_{y}}$','Interpreter','latex')
+xlabel('$k_{y}/k_{y0}$','Interpreter','latex')
+%xlim([-inf 10])
+%title(['Expo = ',expo_name])
+set(gca,'XTick',[0.001,0.01,0.1,1,10])
+grid on 
+axis([0.03 10 0.01 1])
+% clear col
+% colormap(cmocean('ice',x_num))
+% cbar = colorbar;
+% caxis([x_nond(1),x_nond(end)])
+title({['r^2=',num2str(R_square)],['RMSE=',num2str(rmse_bin,2),', RMSE_{logbin}=',num2str(rmse_logbin,2)],['linRMSE_{linmean}=',num2str(rmse_lin,2),', linRMSE_{logbin} =', num2str(rmse_lin_logbin,2)]})
+niceplot_nobold_nomintick(fig_fontsize)
+%leg=legend([h1,h2,h3],{'$-0.75 \, L_{sz}$','$-0.5 \, L_{sz}$','$-0.33 \, L_{sz}$'},'FontSize',legend_size,'Location','northeast','Interpreter','latex');
+%leg.ItemTokenSize(1) = 12;
+%leg.ItemTokenSize(2) = 2;
+%leg=legend([h1(1,1),h2(1,1),h3(1,1)],{'$exp = 1.15$','$exp = 1.2$','$exp = 1.25$'},'FontSize',legend_size,'Interpreter','latex');
+%set(leg,'FontSize',20)
+hold off
+
+%% plot one-to-one plot of G0 and ky0 to compare fit with data
+
+markersz= 80;
+clear col
+col = cmocean('ice',x_num);
+
+subplot(132)
+for xind = 1:x_num
+scatter(A.iS2s(:,xind),A.wfit2.intw(:,xind),markersz,col(xind,:),'filled')
+hold on 
+scatter(A.iS3s(:,xind),A.wfit3.intw(:,xind),markersz,col(xind,:),'filled')
+hold on 
+scatter(A.iS4s(:,xind),A.wfit4.intw(:,xind),markersz,col(xind,:),'filled')
+hold on 
+end 
+plot_oneone 
+niceplot_nobold(fig_fontsize)
+hold off 
+ylabel('${\int_{0.001}^{0.2} \, S_{WB} \, dk_{y}} (s^{-4})$','interpreter','latex')
+xlabel('${\int_{0.001}^{0.2} \, S_{\nabla \times \mathbf{F}_{\mathrm{br}}} \, dk_{y}} (s^{-4})$','interpreter','latex')
+%axis equal
+xlim([0 0.002])
+ylim([0 0.002])
+%xtick(0:0.0005:0.003);
+%ytick(0:0.0005:0.003);
+xtickangle(0)
+% clear col
+% colormap(cmocean('ice',x_num))
+% cbar=colorbar;
+% caxis([x_nond(1),x_nond(end)])
+% cbar.Label.FontSize = 25;
+% cbar.Label.Interpreter = 'latex';
+% cbar.Label.String = '$\mathrm{outer} \leftarrow \frac{x}{x_{b}} \rightarrow \mathrm{inner}$';
+ax=gca;
+%ax.YTickMode = "manual";
+grid on 
+%set(ax.XLabel,'Position',[ax.XLabel.Position(1),ax.XLabel.Position(2),ax.XLabel.Position(3)])
+%set(ax.XLabel,'Position',[0.5000,-0.0690,0])
+title(['Expo = ',num2str(expo)])
+
+
+
+clear col
+col = cmocean('ice',x_num);
+
+subplot(133)
+for xind = 1:x_num
+scatter(A.kym2(:,xind),A.wkym2(:,xind),markersz,col(xind,:),'filled')
+hold on 
+scatter(A.kym3(:,xind),A.wkym3(:,xind),markersz,col(xind,:),'filled')
+hold on 
+scatter(A.kym4(:,xind),A.wkym4(:,xind),markersz,col(xind,:),'filled')
+hold on 
+ylabel('$\mathrm{Fit} \; k_{y0}  (\mathrm{cpm})$','interpreter','latex','fontsize',16);
+xlabel('$\mathrm{Model} \; k_{y0}  (\mathrm{cpm})$','interpreter','latex');
+%title('$k_{y0}$ from Data VS Weibull Fit','interpreter','latex')
+end 
+hold off 
+niceplot_nobold(fig_fontsize)
+grid off 
+%axis equal
+%xlim([0 0.15])
+%ylim([0 0.15])
+clear col
+colormap(cmocean('ice',x_num))
+cbar = colorbar;
+caxis([x_nond(1),x_nond(end)])
+cbar.Label.FontSize = 25;
+cbar.Label.Interpreter = 'latex';
+cbar.Label.String = '$\mathrm{outer} \leftarrow \frac{x}{x_{b}} \rightarrow \mathrm{inner}$';
+niceplot_nobold_nomintick(18);
+xtick(0:0.03:0.25)
+ytick(0:0.03:0.25)
+xtickangle(0)
+plot_oneone 
+grid on 
+ax=gca;
+
+
+
+
+
+%% put diff exp on the same plot 
+
+% figure()
+% 
+% load('/data1/bliu/data/Sky_nond_1p15')
+% 
+% for N =1:24
+% h1=loglog(squeeze(ky2_nond_wb(N,:,:))',squeeze(Sky2_nond_kym_wb_S0(N,:,:))','LineWidth',wb_linewidth,'Color','r','LineStyle','--');
+% hold on
+% loglog(squeeze(ky3_nond_wb(N,:,:))',squeeze(Sky3_nond_kym_wb_S0(N,:,:))','LineWidth',wb_linewidth,'Color','r','LineStyle','--')
+% hold on 
+% loglog(squeeze(ky4_nond_wb(N,:,:))',squeeze(Sky4_nond_kym_wb_S0(N,:,:))','LineWidth',wb_linewidth,'Color','r','LineStyle','--')
+% hold on 
+% end
+% 
+% load('/data1/bliu/data/Sky_nond_1p2')
+% 
+% for N =1:24
+% h2=loglog(squeeze(ky2_nond_wb(N,:,:))',squeeze(Sky2_nond_kym_wb_S0(N,:,:))','LineWidth',wb_linewidth,'Color','g','LineStyle','--');
+% hold on
+% loglog(squeeze(ky3_nond_wb(N,:,:))',squeeze(Sky3_nond_kym_wb_S0(N,:,:))','LineWidth',wb_linewidth,'Color','g','LineStyle','--')
+% hold on 
+% loglog(squeeze(ky4_nond_wb(N,:,:))',squeeze(Sky4_nond_kym_wb_S0(N,:,:))','LineWidth',wb_linewidth,'Color','g','LineStyle','--')
+% hold on 
+% end
+% 
+% load('/data1/bliu/data/Sky_nond_1p25')
+% 
+% for N =1:24
+% h3=loglog(squeeze(ky2_nond_wb(N,:,:))',squeeze(Sky2_nond_kym_wb_S0(N,:,:))','LineWidth',wb_linewidth,'Color','b','LineStyle','--');
+% hold on
+% loglog(squeeze(ky3_nond_wb(N,:,:))',squeeze(Sky3_nond_kym_wb_S0(N,:,:))','LineWidth',wb_linewidth,'Color','b','LineStyle','--')
+% hold on 
+% loglog(squeeze(ky4_nond_wb(N,:,:))',squeeze(Sky4_nond_kym_wb_S0(N,:,:))','LineWidth',wb_linewidth,'Color','b','LineStyle','--')
+% hold on 
+% end
+% 
+% ylabel('$S_{\nabla \times \mathbf{F}_{\mathrm{br}}} \, k_{y0}/ {\int_{0}^{\infty} \, S_{WB} \, dk_{y}}$','Interpreter','latex')
+% xlabel('$k_{y}/k_{y0}$','Interpreter','latex')
+% %xlim([-inf 10])
+% %title(['Expo = ',expo_name])
+% set(gca,'XTick',[0.001,0.01,0.1,1,10])
+% grid on 
+% axis([0.03 10 0.01 1])
+% niceplot_nobold_nomintick(fig_fontsize)
+% %leg=legend([h1,h2,h3],{'$-0.75 \, L_{sz}$','$-0.5 \, L_{sz}$','$-0.33 \, L_{sz}$'},'FontSize',legend_size,'Location','northeast','Interpreter','latex');
+% %leg.ItemTokenSize(1) = 12;
+% %leg.ItemTokenSize(2) = 2;
+% 
+% leg=legend([h1(1,1),h2(1,1),h3(1,1)],{'$exp = 1.15$','$exp = 1.2$','$exp = 1.25$'},'FontSize',legend_size,'Interpreter','latex');
+% set(leg,'FontSize',20)
+% hold off
+
+
+%% old version of one2one plot 
+% 
+% 
+% subplot(132)
+% plot_vfrc_scatter_col_slp(A.iS2s,A.wfit2.intw,1)
+% plot_vfrc_scatter_col_slp(A.iS3s,A.wfit3.intw,2)
+% plot_vfrc_scatter_col_slp(A.iS4s,A.wfit4.intw,3)
+% ylabel('${\int_{0.001}^{0.2} \, S_{WB} \, dk_{y}} (s^{-4})$','interpreter','latex')
+% xlabel('${\int_{0.001}^{0.2} \, S_{\nabla \times \mathbf{F}_{\mathrm{br}}} \, dk_{y}} (s^{-4})$','interpreter','latex')
+% %title('With Cutoff','interpreter','latex')
+% niceplot_nobold(fig_fontsize)
+% grid off
+% %axis equal
+% %xlim([0 0.003])
+% %ylim([0 0.003])
+% xtick(0:0.0005:0.003);
+% ytick(0:0.0005:0.003);
+% xtickangle(0)
+% ax=gca;
+% %ax.YTickMode = "manual";
+% plot_oneone 
+% grid on 
+% %set(ax.XLabel,'Position',[ax.XLabel.Position(1),ax.XLabel.Position(2),ax.XLabel.Position(3)])
+% %set(ax.XLabel,'Position',[0.5000,-0.0690,0])
+% title(['Expo = ',expo_name])
+% 
+% 
+% 
+% 
+% subplot(133)
+% plot_vfrc_scatter_col_slp(A.kym2,A.wkym2,1)
+% plot_vfrc_scatter_col_slp(A.kym3,A.wkym3,2)
+% plot_vfrc_scatter_col_slp(A.kym4,A.wkym4,3)
+% ylabel('$\mathrm{Fit} \; k_{y0}  (\mathrm{cpm})$','interpreter','latex','fontsize',16);
+% xlabel('$\mathrm{Model} \; k_{y0}  (\mathrm{cpm})$','interpreter','latex');
+% %title('$k_{y0}$ from Data VS Weibull Fit','interpreter','latex')
+% niceplot_nobold(fig_fontsize)
+% grid off 
+% %axis equal
+% %xlim([0 0.15])
+% %ylim([0 0.15])
+% xtick(0:0.03:0.25)
+% ytick(0:0.03:0.25)
+% xtickangle(0)
+% plot_oneone 
+% grid on 
+% ax=gca;
+
+

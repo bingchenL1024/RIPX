@@ -1,0 +1,38 @@
+% Bingchen Liu, Aug 14, 2024
+% This code plot the cxt and its fit parameters
+% and evaluate the fit parameters with dimensionless number 
+clear
+load('/data1/bliu/data/cxt_alongct_fitpara.mat')
+
+%%
+figure()
+for run = 1:4:24
+plot(fitpara.slp2{run}.x,fitpara.slp2{run}.a)
+hold on 
+end 
+hold off 
+%%
+
+runnum = 1;
+clear colormap
+colormap = colormap(cmocean('haline',length(fitpara.slp2{runnum}.t_itp_fit)));
+close all
+figure()
+for xloc = 1:length(fitpara.slp2{runnum}.t_itp_fit)
+plot(fitpara.slp2{runnum}.t_itp_fit{xloc},fitpara.slp2{runnum}.cxt_fit{xloc},'--','LineWidth',1.5,'Color',colormap(xloc,:))
+hold on 
+plot(fitpara.slp2{runnum}.t_itp_fit{xloc},fitpara.slp2{runnum}.cxt_data{xloc},'LineWidth',1.5,'Color',colormap(xloc,:))
+legend('fit','data')
+end 
+clear colormap
+colormap(cmocean('halin',length(ind_subset)));
+xlabel('Time Lag (s)--along x=ct')
+ylabel('Cross Correlation')
+colorbar
+col=colorbar;
+caxis([x_nond(ind_good(1)),x_nond(ind_good(end))])
+col.Label.String = 'Dimensionless cross-shore location (0 is shoreline)';
+xlim([0,5])
+niceplot_nobold_nomintick(18);
+grid on 
+hold off 

@@ -1,0 +1,127 @@
+% Bingchen Liu July 12, 2024
+% Good quality figure
+% include 4 panels
+% Weibull profile of G0 and ky0 and nondim G0 and ky0 collapse figure
+clear
+close all
+addpath(genpath('/data1/nkumar/RIPX/M_Files'))
+addpath(genpath('/data1/bliu'))
+addpath(genpath('/home/ffeddersen/matlab'))
+
+
+
+load('/data1/bliu/data/Profs_fit_to0p2_BL');
+
+load('/data1/bliu/data/qa_qc_RIPX_NK.mat') %load qa_qc_RIPX_NK.mat
+load('/data1/bliu/data/plotready_G0_nond_3loc')
+
+load('/data1/bliu/data/plotready_ky0_nond_3loc.mat')
+
+%% find the runnumber or plot that we want to pull out (the one with good fit --> pick 1)
+%slp = 2; 
+%fname = struct();
+% 
+% for N = 1:24;
+% eval(sprintf('pf = Al_s%1.0f.a%1.0f;',slp,N))
+% fieldname = ['run', num2str(N)];
+% fname.(fieldname) = sprintf('sl%1.0f_hs%1.1fm_tp%1.0fs_ds%2.0fd',slp,A.Hs(1),A.inp.tp,A.inp.dsp);
+% stit = sprintf('sl=%1.0f hs=%1.1fm tp=%1.0fs ds=%2.0fd',slp,A.Hs(1),A.inp.tp,A.inp.dsp);
+% Sk1 = (pf.Dw)./(((9.81.*(pf.h)).^.5.*pf.hb.^2.*pf.beta)); % scaling with hb (for hb^2)
+% %Sk3 = (A.kp.^2.*A.Dw)./(((9.81.*(A.h)).^.5));
+% kh = A.kp.*A.h;
+% end 
+
+%-------------------------> the run we want (good WB profile fit is run 6 in sl1)
+
+
+%% plot 4 panel plots 
+N = 6;
+slp = 2;
+slope = 0.02;
+eval(sprintf('pf = Al_s%1.0f.a%1.0f;',slp,N))
+fname = sprintf('sl%1.0f_hs%1.1fm_tp%1.0fs_ds%2.0fd',slp,pf.Hs(1),pf.inp.tp,pf.inp.dsp);
+stit = sprintf('slope=%.2f Hs=%1.1fm tp=%1.0fs ds=%2.0fd',slope,pf.Hs(1),pf.inp.tp,pf.inp.dsp);
+%Sk3 = (A.kp.^2.*
+Sk1 = (pf.Dw)./(((9.81.*(pf.h)).^.5.*pf.hb.^2.*pf.beta)); % scaling with hb (for hb^2)
+kh = pf.kp.*pf.h;
+ky0sk = 1./(pf.h*0.02);
+
+xl = min(pf.X);fs = 22;
+set(gcf,'color','w','position',[7 36 515 664])
+
+figure(1)
+subplot(2,2,1)
+yyaxis left;
+plot(pf.X,sqrt(pf.raw.is),'k','linewidth',2)
+hold on 
+plot(pf.X,sqrt(pf.web.is),'k','linewidth',2)
+ax= gca;
+ax.YColor = 'k';
+ylabel('$\sqrt{\int^{full} \, S_{ky} \, dk_{y}} \, (s^{-2})$','interpreter','latex');
+xlabel('Cross-shore Location (m)')
+yyaxis right
+plot(pf.X, Sk1,'b','linewidth',2)
+ylabel('$\frac{D_{w}(x)}{c_{l} h_{b}^2} \frac{1}{Ir} \, (s^{-2})$','interpreter','latex');
+ax= gca;
+ax.YColor = 'b';
+ylim([0,0.045]);
+legend('Model','WB Fit','Scaling','location','northwest')
+xlim([xl 0]);grid on;
+niceplot_nobold_nomintick(fs);
+title(stit)
+
+subplot(2,2,3)
+yyaxis left;
+plot(pf.X,pf.raw.kyo,'k','linewidth',2)
+hold on
+plot(pf.X,pf.web.kyo,'k','linewidth',2)
+ax= gca;
+ax.YColor = 'k';
+ylabel('$k_{y0} (m^{-1})$','interpreter','latex');
+xlabel('Cross-shore Location (m)')
+hold off
+
+yyaxis right
+plot(pf.X, ky0sk ,'b','linewidth',2)
+ylabel('$(h \beta)^{-1} (m^{-1})$','interpreter','latex');
+ylim([0,200]);
+%ax.YLim = [0,400];
+ax.XLim = [-120,0];
+ax= gca;
+ax.YColor = 'b';
+legend('Model','WB Fit','Scaling','location','northwest')
+grid on;
+niceplot_nobold_nomintick(fs);
+title(stit)
+
+
+subplot(2,2,2)
+plot_vfrc_scatter_col_slp(repmat(ds.sigtb2,[3 1])',(sqrt(A.wfit2.intw)./Sk.Sk2_hb_Ir_div),1)
+plot_vfrc_scatter_col_slp(repmat(ds.sigtb3,[3 1])',(sqrt(A.wfit3.intw)./Sk.Sk3_hb_Ir_div),2)
+plot_vfrc_scatter_col_slp(repmat(ds.sigtb4,[3 1])',(sqrt(A.wfit4.intw)./Sk.Sk4_hb_Ir_div),3)
+ylabel('$\frac{G_{0} (gh)^{1/2} h_{b}^2}{D_\mathrm{w}} \, \mathrm{Ir}$','interpreter','latex','fontsize',16);
+xlabel('$\sigma_\theta$~(deg)','interpreter','latex');
+title('$G_{0} = \sqrt{\int^{k_{max}} \, S_{\mathrm{WB}} \, dk_{y}}$','interpreter','latex')
+niceplot_nobold_nomintick(24)
+ax= gca;
+ax.YLim = [0 inf];
+xlim([0,15])
+
+subplot(2,2,4)
+plot_vfrc_scatter_col_slp(repmat(ds.sigtb2,[3 1])',A.wkym2./sk_ky0.Sk2_h_beta_div,1)
+plot_vfrc_scatter_col_slp(repmat(ds.sigtb3,[3 1])',A.wkym3./sk_ky0.Sk3_h_beta_div,2)
+plot_vfrc_scatter_col_slp(repmat(ds.sigtb4,[3 1])',A.wkym4./sk_ky0.Sk4_h_beta_div,3)
+ylabel('$$k_{y0} \, h \, \beta$$','interpreter','latex','fontsize',16);
+xlabel('$\sigma_\theta$~(deg)','interpreter','latex');
+title('Weibull Fit $k_{y0}$','interpreter','latex')
+xlim([0,15])
+%ylim([0,0.1])
+niceplot_nobold_nomintick(24)
+
+
+width= 30;
+height = 15;
+set(gcf,'Units','inches','Position',[0,0,width,height])
+%set(gcf,'visible','off')
+saveas(gcf,['/data1/bliu/figures/paper_figures/','nond_G0ky0_WBprofile_G0ky0.png'])
+%close all 

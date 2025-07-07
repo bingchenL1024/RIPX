@@ -1,0 +1,64 @@
+% Bingchen Liu Aug 5, 2024
+% This code plot the cxt along x= ct and it includes:
+%       * all cross-shore locations
+%       * every 10 m 
+
+load('/data1/bliu/data/SS_raw.mat') 
+load('/data1/bliu/data/cxt_alongct.mat')
+
+
+for runnum = 1:120
+
+runpar= get_runpara(runnum);
+cxt_alongct = cxt_alongct_ALL{runnum};
+cxt_alongct_mean = cxt_alongct_mean{runnum};
+
+SS = S(runnum);
+x = SS.X;
+x_nond = x/SS.xb;
+ind_good = ind_good_All{runnum};
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% every 10m
+ind_subset = 1:10:length(ind_good);
+%ind_subset = 70;
+
+clear colormap
+colormap = colormap(cmocean('haline',length(ind_subset)));
+figure()
+sgtitle([runpar.wave,runpar.bath],'Fontsize',20)
+for i = 1:length(ind_subset)
+    plot(t_itp, cxt_alongct(:,ind_subset(i)),'LineWidth',1.5,'Color',colormap(i,:))
+    hold on 
+end 
+clear colormap
+colormap(cmocean('halin',length(ind_subset)));
+xlabel('Time Lag (s)--along x=ct')
+ylabel('Cross Correlation')
+colorbar
+col=colorbar;
+caxis([x_nond(ind_good(1)),x_nond(ind_good(end))])
+col.Label.String = 'Dimensionless cross-shore location (0 is shoreline)';
+xlim([0,5])
+niceplot_nobold_nomintick(18);
+grid on 
+hold off 
+
+width= 15;
+height = 15;
+set(gcf,'Units','inches','Position',[0,0,width,height])
+set(gcf,'visible','off')
+close figure 1
+%saveas(gcf,['/data1/bliu/figures/RIPX_allrun/cxt/res10m/','run_',num2str(runnum),'.png'])
+clf
+close all 
+runnum
+end 
+
+
+
+
+

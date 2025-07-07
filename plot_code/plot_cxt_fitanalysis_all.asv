@@ -1,0 +1,894 @@
+% Bingchen Liu, Aug 15, 2024
+% including all the test plot 
+% This code analyze the a, b, c free parameters and try to develop their
+% scaling
+clear
+load('/data1/bliu/data/cxt_x_fitanalysis')
+%load('/data1/bliu/data/cxt_x_maxvar_fitanalysis')
+load('/data1/bliu/data/SS_raw.mat') 
+load('/data1/bliu/data/cxt_runinfo')
+
+
+% a_tot_all = [a_tot.slp2;a_tot.slp3;a_tot.slp4];
+% b_tot_all = [b_tot.slp2;b_tot.slp3;b_tot.slp4];
+% c_tot_all = [c_tot.slp2;c_tot.slp3;c_tot.slp4];
+% h_all = [h.slp2;h.slp3;h.slp4];
+% Tp_all = [Tp.sl2;Tp.sl3;Tp.sl4];
+% runnum_tot_all = cell2mat([runnum_tot.slp2;runnum_tot.slp3;runnum_tot.slp4]);
+% Hs_interp_tot = [Hs_interp.slp2;Hs_interp.slp3;Hs_interp.slp4];
+% 
+% g=9.8;
+% 
+% nond = g.*Tp_all.^2./h_all;
+% nond2 = Hs_interp_tot./h_all;
+% %nond= h_all./(g.*Tp_all.^2);
+% % ================================================= Tp
+% for i = 1:length(runinfo_tot)
+%     ind_Tp8(i,1)=  contains(runinfo_tot(i).wave,'Tp8.0');
+% end 
+% 
+% for i = 1:length(runinfo_tot)
+%     ind_Tp14(i,1)=  contains(runinfo_tot(i).wave,'Tp14.0');
+% end 
+% 
+% % ================================================= Hs
+% for i = 1:length(runinfo_tot)
+%     ind_Hs0p5(i,1)=  contains(runinfo_tot(i).wave,'Hs0.5');
+% end 
+% 
+% for i = 1:length(runinfo_tot)
+%     ind_Hs0p8(i,1)=  contains(runinfo_tot(i).wave,'Hs0.8');
+% end 
+% 
+% for i = 1:length(runinfo_tot)
+%     ind_Hs1p1(i,1)=  contains(runinfo_tot(i).wave,'Hs1.1');
+% end 
+% 
+% % ================================================= ds
+% for i = 1:length(runinfo_tot)
+%     ind_ds2p5(i,1)=  contains(runinfo_tot(i).wave,'ds2.5');
+% end 
+% 
+% for i = 1:length(runinfo_tot)
+%     ind_ds5(i,1)=  contains(runinfo_tot(i).wave,'ds5.0');
+% end 
+% 
+% for i = 1:length(runinfo_tot)
+%     ind_ds10(i,1)=  contains(runinfo_tot(i).wave,'ds10.0');
+% end 
+% 
+% for i = 1:length(runinfo_tot)
+%     ind_ds20(i,1)=  contains(runinfo_tot(i).wave,'ds20.0');
+% end 
+% 
+% 
+% % ================================================= bathy
+% for i = 1:length(runinfo_tot)
+%     ind_slp2(i,1)=  contains(runinfo_tot(i).bath,'002');
+% end 
+% 
+% for i = 1:length(runinfo_tot)
+%     ind_slp3(i,1)=  contains(runinfo_tot(i).bath,'003');
+% end 
+% 
+% for i = 1:length(runinfo_tot)
+%     ind_slp4(i,1)=  contains(runinfo_tot(i).bath,'004');
+% end 
+% 
+
+
+% for i = 1:length(runnum_tot_all)
+%     runinfo_tot(i) = get_runpara(cell2mat(runnum_tot_all(i)));
+% end 
+%% a and b vs x 
+
+% figure()
+% subplot(1,3,1)
+% scatter(x_nond_tot.slp2,a_tot.slp2,45,'filled')
+% hold on 
+% scatter(x_nond_tot.slp3,a_tot.slp3,45,'filled')
+% hold on 
+% scatter(x_nond_tot.slp4,a_tot.slp4,45,'filled')
+% niceplot(18)
+% 
+% xlabel('Dimensionless surfzone location (x/xb)')
+% ylabel('Fit para a (decay rate)')
+% legend('slp2','slp3','slp4')
+% xlim([-1,0])
+% title('$cxt_{fit} = \exp{(-\frac{x}{a})} \cos{(\frac{x}{b} +c)}/\cos{c}$','interpreter','latex')
+% hold off 
+% 
+% subplot(1,3,2)
+% scatter(x_nond_tot.slp2,b_tot.slp2,45,'filled')
+% hold on 
+% scatter(x_nond_tot.slp3,b_tot.slp3,45,'filled')
+% hold on 
+% scatter(x_nond_tot.slp4,b_tot.slp4,45,'filled')
+% niceplot(18)
+% xlabel('Dimensionless surfzone location (x/xb)')
+% ylabel('Fit para b (oscillation freq)')
+% legend('slp2','slp3','slp4')
+% %xlim([-1,0])
+% %ylim([-inf 0.5])
+% hold off 
+% 
+% subplot(1,3,3)
+% scatter(x_nond_tot.slp2,c_tot.slp2,45,'filled')
+% hold on 
+% scatter(x_nond_tot.slp3,c_tot.slp3,45,'filled')
+% hold on 
+% scatter(x_nond_tot.slp4,c_tot.slp4,45,'filled')
+% niceplot(18)
+% xlabel('Dimensionless surfzone location (x/xb)')
+% ylabel('Fit para c (phase shift)')
+% legend('slp2','slp3','slp4')
+% hold off 
+
+%% a, b, and c VS h+Hs (colored by runnum)
+% clear colormap
+% colormap = colormap(cmocean('haline',120));
+% close all
+% figure()
+% subplot(1,2,1)
+% for i = 1:length(a_tot_all)
+%     scatter(h_all(i)+Hs_interp_tot(i),a_tot_all(i),45,'filled','MarkerFaceColor',colormap(runnum_tot_all(i),:),'MarkerFaceAlpha',0.3)
+%     hold on
+% end 
+% hold off
+% colorbar
+% col=colorbar;
+% col.Label.String = 'Run Number';
+% niceplot(18)
+% 
+% subplot(1,2,2)
+% for i = 1:length(a_tot_all)
+%     scatter(h_all(i)+Hs_interp_tot(i),b_tot_all(i),45,'filled','MarkerFaceColor',colormap(runnum_tot_all(i),:),'MarkerFaceAlpha',0.3)
+%     hold on
+% end 
+% hold off
+% colorbar
+% col=colorbar;
+% col.Label.String = 'Run Number';
+% niceplot(18)
+% 
+% 
+
+
+
+%% a, b, and c VS h+Hs (colored by different slope)
+
+figure()
+subplot(1,3,1)
+scatter(h.slp2+Hs_interp.slp2,a_tot.slp2,45,'filled')
+hold on 
+scatter(h.slp3+Hs_interp.slp3,a_tot.slp3,45,'filled')
+hold on 
+scatter(h.slp4+Hs_interp.slp4,a_tot.slp4,45,'filled')
+niceplot(18)
+xlabel('$h+Hs (m)$','interpreter','latex')
+ylabel('Fit parameter a (m) (decay rate)')
+legend('slp2','slp3','slp4')
+xlim([0,inf])
+ylim([0,inf])
+title('$cxt_{fit} = \exp{(-\frac{x}{a})} \cos{(\frac{x}{b} +c)}/\cos{c}$','interpreter','latex')
+hold off 
+
+subplot(1,3,2)
+scatter(h.slp2+Hs_interp.slp2,b_tot.slp2,45,'filled')
+hold on 
+scatter(h.slp3+Hs_interp.slp3,b_tot.slp3,45,'filled')
+hold on 
+scatter(h.slp4+Hs_interp.slp4,b_tot.slp4,45,'filled')
+niceplot(18)
+xlabel('$h+Hs (m)$','interpreter','latex')
+ylabel('Fit parameter b (m) (oscillation freq)')
+legend('slp2','slp3','slp4')
+xlim([0,inf])
+ylim([0,inf])
+hold off 
+
+subplot(1,3,3)
+scatter(h.slp2+Hs_interp.slp2,c_tot.slp2,45,'filled')
+hold on 
+scatter(h.slp3+Hs_interp.slp3,c_tot.slp3,45,'filled')
+hold on 
+scatter(h.slp4+Hs_interp.slp4,c_tot.slp4,45,'filled')
+niceplot(18)
+xlabel('$h+Hs (m)$','interpreter','latex')
+ylabel('Fit parameter c (phase shift)')
+legend('slp2','slp3','slp4')
+xlim([0,inf])
+ylim([0,inf])
+hold off 
+
+%% a, b, and c VS Hs(colored by different slope)
+figure()
+subplot(1,3,1)
+scatter(Hs_interp.slp2,a_tot.slp2,45,'filled')
+hold on 
+scatter(Hs_interp.slp3,a_tot.slp3,45,'filled')
+hold on 
+scatter(Hs_interp.slp4,a_tot.slp4,45,'filled')
+niceplot(18)
+xlabel('$Hs (m)$','interpreter','latex')
+ylabel('Fit parameter a (m) (decay rate)')
+legend('slp2','slp3','slp4')
+xlim([0,inf])
+ylim([0,inf])
+title('$cxt_{fit} = \exp{(-\frac{x}{a})} \cos{(\frac{x}{b} +c)}/\cos{c}$','interpreter','latex')
+hold off 
+
+subplot(1,3,2)
+scatter(Hs_interp.slp2,b_tot.slp2,45,'filled')
+hold on 
+scatter(Hs_interp.slp3,b_tot.slp3,45,'filled')
+hold on 
+scatter(Hs_interp.slp4,b_tot.slp4,45,'filled')
+niceplot(18)
+xlabel('$Hs (m)$','interpreter','latex')
+ylabel('Fit parameter b (m) (oscillation freq)')
+legend('slp2','slp3','slp4')
+xlim([0,inf])
+ylim([0,inf])
+hold off 
+
+subplot(1,3,3)
+scatter(h,c_tot.slp2,45,'filled')
+hold on 
+scatter(h.slp3+Hs_interp.slp3,c_tot.slp3,45,'filled')
+hold on 
+scatter(h.slp4+Hs_interp.slp4,c_tot.slp4,45,'filled')
+niceplot(18)
+xlabel('$h+Hs (m)$','interpreter','latex')
+ylabel('Fit parameter c (phase shift)')
+legend('slp2','slp3','slp4')
+xlim([0,inf])
+ylim([0,inf])
+hold off 
+
+
+%% a, b, and c VS h (colored by different slope) - 6 panel
+
+% figure()
+% scatter(t_scale.slp2,a_tot.slp2,45,'filled')
+% hold on 
+% scatter(t_scale.slp3,a_tot.slp3,45,'filled')
+% hold on 
+% scatter(t_scale.slp4,a_tot.slp4,45,'filled')
+% niceplot(18)
+% xlabel('Time scale ($\sqrt{h/g}$)','interpreter','latex')
+% ylabel('Fit parameter a (decay rate)')
+% legend('slp2','slp3','slp4')
+% hold off 
+
+% figure()
+% scatter(sqrt(g.*h.slp2).*Tp.sl2,a_tot.slp2,45,'filled')
+% hold on 
+% scatter(sqrt(g.*h.slp3).*Tp.sl3,a_tot.slp3,45,'filled')
+% hold on 
+% scatter(sqrt(g.*h.slp4).*Tp.sl4,a_tot.slp4,45,'filled')
+% niceplot(18)
+% xlabel('Length scale ($\sqrt{gh} T_{p}$)','interpreter','latex')
+% ylabel('Fit parameter a (decay rate)')
+% legend('slp2','slp3','slp4')
+% hold off 
+
+
+figure()
+subplot(2,3,1)
+scatter(h.slp2,a_tot.slp2,45,'filled')
+hold on 
+scatter(h.slp3,a_tot.slp3,45,'filled')
+hold on 
+scatter(h.slp4,a_tot.slp4,45,'filled')
+niceplot(18)
+xlabel('Water Depth(m)','interpreter','latex')
+ylabel('a (m) (decay rate)')
+legend('slp2','slp3','slp4')
+xlim([0,inf])
+ylim([0,inf])
+title('$cxt_{fit} = \exp{(-\frac{x}{a})} \cos{(\frac{x}{b} +c)}/\cos{c}$','interpreter','latex')
+hold off 
+
+subplot(2,3,2)
+scatter(h.slp2,b_tot.slp2,45,'filled')
+hold on 
+scatter(h.slp3,b_tot.slp3,45,'filled')
+hold on 
+scatter(h.slp4,b_tot.slp4,45,'filled')
+niceplot(18)
+xlabel('Water Depth(m)','interpreter','latex')
+ylabel('b (m) (oscillation freq)')
+legend('slp2','slp3','slp4')
+xlim([0,inf])
+ylim([0,inf])
+hold off 
+
+subplot(2,3,3)
+scatter(h.slp2,c_tot.slp2,45,'filled')
+hold on 
+scatter(h.slp3,c_tot.slp3,45,'filled')
+hold on 
+scatter(h.slp4,c_tot.slp4,45,'filled')
+niceplot(18)
+xlabel('Water Depth(m)','interpreter','latex')
+ylabel('c (phase shift)')
+legend('slp2','slp3','slp4')
+xlim([0,inf])
+%ylim([0,inf])
+hold off 
+
+subplot(2,3,4)
+scatter(h.slp2+Hs_interp.slp2,a_tot.slp2,45,'filled')
+hold on 
+scatter(h.slp3+Hs_interp.slp3,a_tot.slp3,45,'filled')
+hold on 
+scatter(h.slp4+Hs_interp.slp4,a_tot.slp4,45,'filled')
+niceplot(18)
+xlabel('$h+Hs (m)$','interpreter','latex')
+ylabel('a (m) (decay rate)')
+legend('slp2','slp3','slp4')
+xlim([0,inf])
+ylim([0,inf])
+title('$cxt_{fit} = \exp{(-\frac{x}{a})} \cos{(\frac{x}{b} +c)}/\cos{c}$','interpreter','latex')
+hold off 
+
+subplot(2,3,5)
+scatter(h.slp2+Hs_interp.slp2,b_tot.slp2,45,'filled')
+hold on 
+scatter(h.slp3+Hs_interp.slp3,b_tot.slp3,45,'filled')
+hold on 
+scatter(h.slp4+Hs_interp.slp4,b_tot.slp4,45,'filled')
+niceplot(18)
+xlabel('$h+Hs (m)$','interpreter','latex')
+ylabel('b (m) (oscillation freq)')
+legend('slp2','slp3','slp4')
+xlim([0,inf])
+ylim([0,inf])
+hold off 
+
+subplot(2,3,6)
+scatter(h.slp2+Hs_interp.slp2,c_tot.slp2,45,'filled')
+hold on 
+scatter(h.slp3+Hs_interp.slp3,c_tot.slp3,45,'filled')
+hold on 
+scatter(h.slp4+Hs_interp.slp4,c_tot.slp4,45,'filled')
+niceplot(18)
+xlabel('$h+Hs (m)$','interpreter','latex')
+ylabel('c (phase shift)')
+legend('slp2','slp3','slp4')
+xlim([0,inf])
+%ylim([0,inf])
+hold off 
+
+
+figure()
+subplot(1,3,1)
+scatter(Hs_interp.slp2,a_tot.slp2,45,'filled')
+hold on 
+scatter(Hs_interp.slp3,a_tot.slp3,45,'filled')
+hold on 
+scatter(Hs_interp.slp4,a_tot.slp4,45,'filled')
+niceplot(18)
+xlabel('$Hs (m)$','interpreter','latex')
+ylabel('a (m) (decay rate)')
+legend('slp2','slp3','slp4')
+xlim([0,inf])
+ylim([0,inf])
+title('$cxt_{fit} = \exp{(-\frac{x}{a})} \cos{(\frac{x}{b} +c)}/\cos{c}$','interpreter','latex')
+hold off 
+
+subplot(1,3,2)
+scatter(Hs_interp.slp2,b_tot.slp2,45,'filled')
+hold on 
+scatter(Hs_interp.slp3,b_tot.slp3,45,'filled')
+hold on 
+scatter(Hs_interp.slp4,b_tot.slp4,45,'filled')
+niceplot(18)
+xlabel('$Hs (m)$','interpreter','latex')
+ylabel('b (m) (oscillation freq)')
+legend('slp2','slp3','slp4')
+xlim([0,inf])
+ylim([0,inf])
+hold off 
+
+subplot(1,3,3)
+scatter(Hs_interp.slp2,c_tot.slp2,45,'filled')
+hold on 
+scatter(Hs_interp.slp3,c_tot.slp3,45,'filled')
+hold on 
+scatter(Hs_interp.slp4,c_tot.slp4,45,'filled')
+niceplot(18)
+xlabel('$Hs (m)$','interpreter','latex')
+ylabel('c (phase shift)')
+legend('slp2','slp3','slp4')
+xlim([0,inf])
+%ylim([0,inf])
+hold off 
+
+
+
+%% a, b, and c VS h (colored by different Tp)
+
+figure()
+subplot(1,3,1)
+scatter(h_all(ind_Tp8),a_tot_all(ind_Tp8),45,'filled')
+hold on 
+scatter(h_all(ind_Tp14),a_tot_all(ind_Tp14),45,'filled')
+niceplot(18)
+xlabel('Water Depth(m)','interpreter','latex')
+ylabel('Fit parameter a (m) (decay rate)')
+legend('Tp = 8 s','Tp = 14 s')
+xlim([0,inf])
+ylim([0,inf])
+title('$cxt_{fit} = \exp{(-\frac{x}{a})} \cos{(\frac{x}{b} +c)}/\cos{c}$','interpreter','latex')
+hold off 
+
+subplot(1,3,2)
+scatter(h_all(ind_Tp8),b_tot_all(ind_Tp8),45,'filled')
+hold on 
+scatter(h_all(ind_Tp14),b_tot_all(ind_Tp14),45,'filled')
+niceplot(18)
+xlabel('Water Depth(m)','interpreter','latex')
+ylabel('Fit parameter b (m) (oscillation freq)')
+legend('Tp = 8 s','Tp = 14 s')
+xlim([0,inf])
+ylim([0,inf])
+hold off 
+
+subplot(1,3,3)
+scatter(h_all(ind_Tp8),c_tot_all(ind_Tp8),45,'filled')
+hold on 
+scatter(h_all(ind_Tp14),c_tot_all(ind_Tp14),45,'filled')
+niceplot(18)
+xlabel('Water Depth(m)','interpreter','latex')
+ylabel('Fit parameter c (phase shift)')
+legend('Tp = 8 s','Tp = 14 s')
+xlim([0,inf])
+ylim([0,inf])
+hold off 
+
+%% a, b, and c VS h (colored by different Hs)
+
+figure()
+subplot(1,3,1)
+scatter(h_all(ind_Hs0p5),a_tot_all(ind_Hs0p5),45,'filled')
+hold on 
+scatter(h_all(ind_Hs0p8),a_tot_all(ind_Hs0p8),45,'filled')
+hold on 
+scatter(h_all(ind_Hs1p1),a_tot_all(ind_Hs1p1),45,'filled')
+niceplot(18)
+xlabel('Water Depth(m)','interpreter','latex')
+ylabel('Fit parameter a (m) (decay rate)')
+legend('Hs = 0.5 m','Hs = 0.8 m','Hs = 1.1 m')
+xlim([0,inf])
+ylim([0,inf])
+title('$cxt_{fit} = \exp{(-\frac{x}{a})} \cos{(\frac{x}{b} +c)}/\cos{c}$','interpreter','latex')
+hold off 
+
+subplot(1,3,2)
+scatter(h_all(ind_Hs0p5),b_tot_all(ind_Hs0p5),45,'filled')
+hold on 
+scatter(h_all(ind_Hs0p8),b_tot_all(ind_Hs0p8),45,'filled')
+hold on 
+scatter(h_all(ind_Hs1p1),b_tot_all(ind_Hs1p1),45,'filled')
+niceplot(18)
+xlabel('Water Depth(m)','interpreter','latex')
+ylabel('Fit parameter b (m) (oscillation freq)')
+legend('Hs = 0.5 m','Hs = 0.8 m','Hs = 1.1 m')
+xlim([0,inf])
+ylim([0,inf])
+hold off 
+
+subplot(1,3,3)
+scatter(h_all(ind_Hs0p5),c_tot_all(ind_Hs0p5),45,'filled')
+hold on 
+scatter(h_all(ind_Hs0p8),c_tot_all(ind_Hs0p8),45,'filled')
+hold on 
+scatter(h_all(ind_Hs1p1),c_tot_all(ind_Hs1p1),45,'filled')
+niceplot(18)
+xlabel('Water Depth(m)','interpreter','latex')
+ylabel('Fit parameter c (phase shift)')
+legend('Hs = 0.5 m','Hs = 0.8 m','Hs = 1.1 m')
+xlim([0,inf])
+ylim([0,inf])
+hold off 
+
+
+%% a, b, and c VS h (colored by different ds)
+
+figure()
+subplot(1,3,1)
+scatter(h_all(ind_ds2p5),a_tot_all(ind_ds2p5),45,'filled')
+hold on 
+scatter(h_all(ind_ds5),a_tot_all(ind_ds5),45,'filled')
+hold on 
+scatter(h_all(ind_ds10),a_tot_all(ind_ds10),45,'filled')
+hold on 
+scatter(h_all(ind_ds20),a_tot_all(ind_ds20),45,'filled')
+niceplot(18)
+xlabel('Water Depth(m)','interpreter','latex')
+ylabel('Fit parameter a (m) (decay rate)')
+legend('$\theta = 2.5 ^{\circ}$','$\theta = 5 ^{\circ}$','$\theta = 10 ^{\circ}$','$\theta = 20 ^{\circ}$','interpreter','latex')
+xlim([0,inf])
+ylim([0,inf])
+title('$cxt_{fit} = \exp{(-\frac{x}{a})} \cos{(\frac{x}{b} +c)}/\cos{c}$','interpreter','latex')
+hold off 
+
+subplot(1,3,2)
+scatter(h_all(ind_ds2p5),b_tot_all(ind_ds2p5),45,'filled')
+hold on 
+scatter(h_all(ind_ds5),b_tot_all(ind_ds5),45,'filled')
+hold on 
+scatter(h_all(ind_ds10),b_tot_all(ind_ds10),45,'filled')
+hold on 
+scatter(h_all(ind_ds20),b_tot_all(ind_ds20),45,'filled')
+niceplot(18)
+xlabel('Water Depth(m)','interpreter','latex')
+ylabel('Fit parameter b (m) (oscillation freq)')
+legend('$\theta = 2.5 ^{\circ}$','$\theta = 5 ^{\circ}$','$\theta = 10 ^{\circ}$','$\theta = 20 ^{\circ}$','interpreter','latex')
+xlim([0,inf])
+ylim([0,inf])
+hold off 
+
+subplot(1,3,3)
+scatter(h_all(ind_ds2p5),c_tot_all(ind_ds2p5),45,'filled')
+hold on 
+scatter(h_all(ind_ds5),c_tot_all(ind_ds5),45,'filled')
+hold on 
+scatter(h_all(ind_ds10),c_tot_all(ind_ds10),45,'filled')
+hold on 
+scatter(h_all(ind_ds20),c_tot_all(ind_ds20),45,'filled')
+niceplot(18)
+xlabel('Water Depth(m)','interpreter','latex')
+ylabel('Fit parameter c (phase shift)')
+legend('$\theta = 2.5 ^{\circ}$','$\theta = 5 ^{\circ}$','$\theta = 10 ^{\circ}$','$\theta = 20 ^{\circ}$','interpreter','latex')
+xlim([0,inf])
+ylim([0,inf])
+hold off 
+
+%% nond a b and c colored by slp
+figure()
+subplot(1,3,1)
+scatter(nond(ind_slp2),a_tot.slp2(ind_slp2)./h_all(ind_slp2),45,'filled')
+hold on
+scatter(nond(ind_slp3),a_tot_all(ind_slp3)./h_all(ind_slp3),45,'filled')
+hold on
+scatter(nond(ind_slp4),a_tot_all(ind_slp4)./h_all(ind_slp4),45,'filled')
+xlabel('$\frac{g T^2}{h}$','interpreter','latex')
+ylabel('Nond Fit Parameter a/h (decay rate)')
+legend('slp2','slp3','slp4')
+niceplot(18)
+
+subplot(1,3,2)
+scatter(nond(ind_slp2),b_tot_all(ind_slp2)./h_all(ind_slp2),45,'filled')
+hold on
+scatter(nond(ind_slp3),b_tot_all(ind_slp3)./h_all(ind_slp3),45,'filled')
+hold on
+scatter(nond(ind_slp4),b_tot_all(ind_slp4)./h_all(ind_slp4),45,'filled')
+xlabel('$\frac{g T^2}{h}$','interpreter','latex')
+ylabel('Nond Fit Parameter b/h (oscillation frequency)')
+legend('slp2','slp3','slp4')
+niceplot(18)
+
+subplot(1,3,3)
+scatter(nond(ind_slp2),c_tot_all(ind_slp2),45,'filled')
+hold on 
+scatter(nond(ind_slp3),c_tot_all(ind_slp3),45,'filled')
+hold on 
+scatter(nond(ind_slp4),c_tot_all(ind_slp4),45,'filled')
+xlabel('$\frac{g T^2}{h}$','interpreter','latex')
+ylabel('Nond Fit Parameter c')
+legend('slp2','slp3','slp4')
+niceplot(18)
+
+%% nond a b and c colored by ds
+figure()
+subplot(1,3,1)
+scatter(nond(ind_ds2p5),a_tot_all(ind_ds2p5)./h_all(ind_ds2p5),45,'filled')
+hold on
+scatter(nond(ind_ds5),a_tot_all(ind_ds5)./h_all(ind_ds5),45,'filled')
+hold on
+scatter(nond(ind_ds10),a_tot_all(ind_ds10)./h_all(ind_ds10),45,'filled')
+hold on 
+scatter(nond(ind_ds20),a_tot_all(ind_ds20)./h_all(ind_ds20),45,'filled')
+xlabel('$\frac{g T^2}{h}$','interpreter','latex')
+ylabel('Nond Fit Parameter a/h (decay rate)')
+legend('$\theta = 2.5 ^{\circ}$','$\theta = 5 ^{\circ}$','$\theta = 10 ^{\circ}$','$\theta = 20 ^{\circ}$','interpreter','latex')
+niceplot(18)
+
+subplot(1,3,2)
+scatter(nond(ind_ds2p5),b_tot_all(ind_ds2p5)./h_all(ind_ds2p5),45,'filled')
+hold on
+scatter(nond(ind_ds5),b_tot_all(ind_ds5)./h_all(ind_ds5),45,'filled')
+hold on
+scatter(nond(ind_ds10),b_tot_all(ind_ds10)./h_all(ind_ds10),45,'filled')
+hold on 
+scatter(nond(ind_ds20),b_tot_all(ind_ds20)./h_all(ind_ds20),45,'filled')
+xlabel('$\frac{g T^2}{h}$','interpreter','latex')
+ylabel('Nond Fit Parameter b/h (oscillation frequency)')
+legend('$\theta = 2.5 ^{\circ}$','$\theta = 5 ^{\circ}$','$\theta = 10 ^{\circ}$','$\theta = 20 ^{\circ}$','interpreter','latex')
+niceplot(18)
+
+subplot(1,3,3)
+scatter(nond(ind_ds2p5),c_tot_all(ind_ds2p5),45,'filled')
+hold on
+scatter(nond(ind_ds5),c_tot_all(ind_ds5),45,'filled')
+hold on
+scatter(nond(ind_ds10),c_tot_all(ind_ds10),45,'filled')
+hold on 
+scatter(nond(ind_ds20),c_tot_all(ind_ds20),45,'filled')
+xlabel('$\frac{g T^2}{h}$','interpreter','latex')
+ylabel('Nond Fit Parameter b/h (oscillation frequency)')
+legend('$\theta = 2.5 ^{\circ}$','$\theta = 5 ^{\circ}$','$\theta = 10 ^{\circ}$','$\theta = 20 ^{\circ}$','interpreter','latex')
+niceplot(18)
+
+
+%% nond a, b, and c VS h (colored by different Tp)
+
+figure()
+subplot(2,3,1)
+scatter(nond(ind_Tp8),a_tot_all(ind_Tp8)./h_all(ind_Tp8),45,'filled')
+hold on 
+scatter(nond(ind_Tp14),a_tot_all(ind_Tp14)./h_all(ind_Tp14),45,'filled')
+niceplot(18)
+xlabel('$\frac{g T^2}{h}$','interpreter','latex')
+ylabel('a/h (decay rate)')
+legend('Tp = 8 s','Tp = 14 s')
+xlim([0,inf])
+ylim([0,inf])
+title('$cxt_{fit} = \exp{(-\frac{x}{a})} \cos{(\frac{x}{b} +c)}/\cos{c}$','interpreter','latex')
+hold off 
+
+subplot(2,3,2)
+scatter(nond(ind_Tp8),b_tot_all(ind_Tp8)./h_all(ind_Tp8),45,'filled')
+hold on 
+scatter(nond(ind_Tp14),b_tot_all(ind_Tp14)./h_all(ind_Tp14),45,'filled')
+niceplot(18)
+xlabel('$\frac{g T^2}{h}$','interpreter','latex')
+ylabel('b/h(oscillation freq)')
+legend('Tp = 8 s','Tp = 14 s')
+xlim([0,inf])
+ylim([0,inf])
+hold off 
+
+subplot(2,3,3)
+scatter(nond(ind_Tp8),c_tot_all(ind_Tp8),45,'filled')
+hold on 
+scatter(nond(ind_Tp14),c_tot_all(ind_Tp14),45,'filled')
+niceplot(18)
+xlabel('$\frac{g T^2}{h}$','interpreter','latex')
+ylabel('Fit parameter c (phase shift)')
+legend('Tp = 8 s','Tp = 14 s')
+xlim([0,inf])
+%ylim([0,inf])
+hold off 
+
+subplot(2,3,4)
+scatter(nond(ind_Tp8),a_tot_all(ind_Tp8)./(h_all(ind_Tp8)+Hs_interp_tot(ind_Tp8)),45,'filled')
+hold on 
+scatter(nond(ind_Tp14),a_tot_all(ind_Tp14)./(h_all(ind_Tp14)+Hs_interp_tot(ind_Tp14)),45,'filled')
+niceplot(18)
+xlabel('$\frac{g T^2}{h}$','interpreter','latex')
+ylabel('a/(h+Hs) (decay rate)')
+legend('Tp = 8 s','Tp = 14 s')
+xlim([0,inf])
+ylim([0,inf])
+title('$cxt_{fit} = \exp{(-\frac{x}{a})} \cos{(\frac{x}{b} +c)}/\cos{c}$','interpreter','latex')
+hold off 
+
+subplot(2,3,5)
+scatter(nond(ind_Tp8),b_tot_all(ind_Tp8)./(h_all(ind_Tp8)+Hs_interp_tot(ind_Tp8)),45,'filled')
+hold on 
+scatter(nond(ind_Tp14),b_tot_all(ind_Tp14)./(h_all(ind_Tp14)+Hs_interp_tot(ind_Tp14)),45,'filled')
+niceplot(18)
+xlabel('$\frac{g T^2}{h}$','interpreter','latex')
+ylabel('b/(h+Hs)(oscillation freq)')
+legend('Tp = 8 s','Tp = 14 s')
+xlim([0,inf])
+ylim([0,inf])
+hold off 
+
+subplot(2,3,6)
+scatter(nond(ind_Tp8),c_tot_all(ind_Tp8),45,'filled')
+hold on 
+scatter(nond(ind_Tp14),c_tot_all(ind_Tp14),45,'filled')
+niceplot(18)
+xlabel('$\frac{g T^2}{h}$','interpreter','latex')
+ylabel('Fit parameter c (phase shift)')
+legend('Tp = 8 s','Tp = 14 s')
+xlim([0,inf])
+%ylim([0,inf])
+hold off 
+%% nond a, b, and c VS a/h+Hs
+figure()
+subplot(2,3,1)
+scatter(nond2,a_tot_all./(h_all+Hs_interp_tot),45,'filled')
+xlabel('Hs/h')
+ylabel('a/(h+Hs) (decay rate)')
+title('$cxt_{fit} = \exp{(-\frac{x}{a})} \cos{(\frac{x}{b} +c)}/\cos{c}$','interpreter','latex')
+niceplot(18)
+xlim([0,Inf])
+
+subplot(2,3,2)
+scatter(nond2,b_tot_all./(h_all+Hs_interp_tot),45,'filled')
+xlabel('Hs/h')
+ylabel('b/(h+Hs) (oscillation)')
+title('$cxt_{fit} = \exp{(-\frac{x}{a})} \cos{(\frac{x}{b} +c)}/\cos{c}$','interpreter','latex')
+niceplot(18)
+xlim([0,Inf])
+
+subplot(2,3,3)
+scatter(nond2,c_tot_all,45,'filled')
+xlabel('Hs/h')
+ylabel('c')
+sgtitle('$cxt_{fit} = \exp{(-\frac{x}{a})} \cos{(\frac{x}{b} +c)}/\cos{c}$','interpreter','latex')
+niceplot(18)
+xlim([0,Inf])
+
+
+subplot(2,3,4)
+scatter(nond2,a_tot_all./(h_all),45,'filled')
+xlabel('Hs/h')
+ylabel('a/(h (decay rate)')
+title('$cxt_{fit} = \exp{(-\frac{x}{a})} \cos{(\frac{x}{b} +c)}/\cos{c}$','interpreter','latex')
+niceplot(18)
+xlim([0,Inf])
+
+subplot(2,3,5)
+scatter(nond2,b_tot_all./(h_all),45,'filled')
+xlabel('Hs/h')
+ylabel('b/h (oscillation)')
+title('$cxt_{fit} = \exp{(-\frac{x}{a})} \cos{(\frac{x}{b} +c)}/\cos{c}$','interpreter','latex')
+niceplot(18)
+xlim([0,Inf])
+
+subplot(2,3,6)
+scatter(nond2,c_tot_all,45,'filled')
+xlabel('Hs/h')
+ylabel('c')
+title('$cxt_{fit} = \exp{(-\frac{x}{a})} \cos{(\frac{x}{b} +c)}/\cos{c}$','interpreter','latex')
+niceplot(18)
+xlim([0,Inf])
+
+
+%% nond a, b, and c VS a/h (colored by slp) -------with linear fit 
+figure()
+subplot(1,3,1)
+scatter(nond2(ind_slp2),a_tot_all(ind_slp2)./(h_all(ind_slp2)),45,'filled')
+hold on 
+scatter(nond2(ind_slp3),a_tot_all(ind_slp3)./(h_all(ind_slp3)),45,'filled')
+hold on 
+scatter(nond2(ind_slp4),a_tot_all(ind_slp4)./(h_all(ind_slp4)),45,'filled')
+hold on 
+plot(Hs_nond_model,a_nond_model,'LineWidth',3.5,'Color','k')
+hold off
+xlabel('Hs/h')
+ylabel('a/h (decay rate)')
+%title('$cxt_{fit} = \exp{(-\frac{x}{a})} \cos{(\frac{x}{b} +c)}/\cos{c}$','interpreter','latex')
+title({['a/h = ',num2str(f_a_nond.A),'*Hs/h +',num2str(f_a_nond.B)],[' r^2 = ',num2str(gof_a_nond.rsquare)]},'interpreter','latex')
+legend('slp2','slp3','slp4')
+niceplot(18)
+xlim([0,Inf])
+ylim([0,Inf])
+
+subplot(1,3,2)
+scatter(nond2(ind_slp2),b_tot_all(ind_slp2)./(h_all(ind_slp2)),45,'filled')
+hold on 
+scatter(nond2(ind_slp3),b_tot_all(ind_slp3)./(h_all(ind_slp3)),45,'filled')
+hold on 
+scatter(nond2(ind_slp4),b_tot_all(ind_slp4)./(h_all(ind_slp4)),45,'filled')
+hold on 
+plot(Hs_nond_model,b_nond_model,'LineWidth',3.5,'Color','k')
+hold off 
+xlabel('Hs/h')
+ylabel('b/h (decay rate)')
+%title('$cxt_{fit} = \exp{(-\frac{x}{a})} \cos{(\frac{x}{b} +c)}/\cos{c}$','interpreter','latex')
+title({['b/h = ',num2str(f_b_nond.A),'*Hs/h +',num2str(f_b_nond.B)],[' r^2 = ',num2str(gof_b_nond.rsquare)]},'interpreter','latex')
+legend('slp2','slp3','slp4')
+niceplot(18)
+xlim([0,Inf])
+ylim([0,Inf])
+
+subplot(1,3,3)
+scatter(nond2(ind_slp2),c_tot_all(ind_slp2),45,'filled')
+hold on 
+scatter(nond2(ind_slp3),c_tot_all(ind_slp3),45,'filled')
+hold on 
+scatter(nond2(ind_slp4),c_tot_all(ind_slp4),45,'filled')
+hold on 
+plot(Hs_nond_model,c_nond_model,'LineWidth',3.5,'Color','k')
+xlabel('Hs/h')
+ylabel('c (phase shift)')
+legend('slp2','slp3','slp4')
+title({['b = ',num2str(f_c_nond.A),'*Hs/h +',num2str(f_c_nond.B)],[' r^2 = ',num2str(gof_c_nond.rsquare)]},'interpreter','latex')
+niceplot(18)
+xlim([0,Inf])
+ylim([0,Inf])
+
+%% a and b with linear fit 
+
+figure()
+subplot(1,2,1)
+scatter(h_all,a_tot_all,45,'filled')
+hold on 
+plot(h_model,a_model,'LineWidth',5)
+hold off
+legend('Data','Linear Fit')
+title({['a = ',num2str(f_a.A),'*h+',num2str(f_a.B)],[' r^2 = ',num2str(gof_a.rsquare)]},'interpreter','latex')
+xlabel('h(m)')
+ylabel('Fit Parameter a (m)')
+ylim([0,Inf])
+niceplot(18)
+
+subplot(1,2,2)
+scatter(h_all,b_tot_all,45,'filled')
+hold on 
+plot(h_model,b_model,'LineWidth',5)
+hold off
+legend('Data','Linear Fit')
+title({['b = ',num2str(f_b.A),'*h+',num2str(f_b.B)],[' r^2 = ',num2str(gof_b.rsquare)]},'interpreter','latex')
+xlabel('h(m)')
+ylabel('Fit Parameter b (m)')
+niceplot(18)
+
+%% y(x=0) removed version of a and b 
+
+a_rm0 = a_tot_all - f_a.B;
+b_rm0 = b_tot_all - f_b.B;
+
+
+
+subplot(1,2,1)
+scatter(nond2,a_rm0./(h_all),45,'filled')
+xlabel('Hs/h')
+ylabel('(a-a(h=0))/(h (decay rate)')
+title('$cxt_{fit} = \exp{(-\frac{x}{a})} \cos{(\frac{x}{b} +c)}/\cos{c}$','interpreter','latex')
+niceplot(18)
+xlim([0,Inf])
+
+subplot(1,2,2)
+scatter(nond2,b_rm0./(h_all),45,'filled')
+xlabel('Hs/h')
+ylabel('(b-b(h=0))/h (oscillation)')
+title('$cxt_{fit} = \exp{(-\frac{x}{a})} \cos{(\frac{x}{b} +c)}/\cos{c}$','interpreter','latex')
+niceplot(18)
+xlim([0,Inf])
+
+
+
+%% a b c VS 1/kw
+
+figure()
+subplot(1,2,1)
+scatter(h.slp2+Hs_interp.slp2,a_tot.slp2,45,'filled')
+hold on 
+scatter(h.slp3+Hs_interp.slp3,a_tot.slp3,45,'filled')
+hold on 
+scatter(h.slp4+Hs_interp.slp4,a_tot.slp4,45,'filled')
+niceplot(18)
+xlabel('$h+Hs (m)$','interpreter','latex')
+ylabel('Fit parameter a (m) (decay rate)')
+legend('slp2','slp3','slp4')
+xlim([0,inf])
+ylim([0,inf])
+title('$cxt_{fit} = \exp{(-\frac{x}{a})} \cos{(\frac{x}{b} +c)}/\cos{c}$','interpreter','latex')
+hold off 
+
+subplot(1,2,2)
+scatter(h.slp2+Hs_interp.slp2,b_tot.slp2,45,'filled')
+hold on 
+scatter(h.slp3+Hs_interp.slp3,b_tot.slp3,45,'filled')
+hold on 
+scatter(h.slp4+Hs_interp.slp4,b_tot.slp4,45,'filled')
+niceplot(18)
+xlabel('$h+Hs (m)$','interpreter','latex')
+ylabel('Fit parameter b (m) (oscillation freq)')
+legend('slp2','slp3','slp4')
+xlim([0,inf])
+ylim([0,inf])
+hold off 
+
+
+
+
