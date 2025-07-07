@@ -35,7 +35,7 @@ x= detrend(x); %demean the data
 
 acf= acf./acf(lags_num==0);
 lags = lags_num*dt;
-rho_xx=  a1.^lags_num;
+%rho_xx=  a1.^lags_num;
 rho_theory = exp(-lags/tau);
 figure()
 subplot(121)

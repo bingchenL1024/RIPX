@@ -138,7 +138,7 @@ for a=1:length(x000b) %generate multiple width functions (more than needed to va
     ii=find(x>=x000b(a)-.5*wlength & x<=x000b(a)+.5*wlength); %get info around 
     dum=Psim2(:,ii).*Psi0(:,ii);
     msqdum(a)=mean(dum.^2,'all'); % this should equal 1 for all a same as var(dum)=1
-    msqdum0(a)=mean(Psi0(:,ii).^2,'all'); %should =1, same as var(Psi0)=1
+    msqdum0(a)=mean(Psim2(:,ii).^2,'all'); %should =1, same as var(Psi0)=1
 end
 
 figure(2)
