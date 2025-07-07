@@ -6,7 +6,7 @@
 clear
 close all 
 
-ct=1:3;
+ct=[2.5,3.5,4.5] ;%1:3;
 for ind = 1:length(ct)
     [A1(ind),A2(ind),A3(ind),A4(ind),residue(ind)] = coef_solver(ct(ind));
 end 
