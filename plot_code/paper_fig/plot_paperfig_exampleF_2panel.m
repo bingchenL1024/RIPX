@@ -5,19 +5,19 @@
 
 clear
 close all
-%load('/data1/bliu/data/parameterization_example')
+%load('/data1/bliu/data/parameterization_example') %using Matt G0 function 
 load('/data1/bliu/data/parameterization_example_realistic.mat')
 load('/data1/bliu/data/SS_raw.mat')
 
 X= X_full;
 Y=Y_full;
 %%
-xsize=12;ysize=18;
+xsize=12;ysize=13;
 x0=0.1536; 
-y0=0.075;  
-dy=0.03;
+y0=0.1;  
+dy=0.035;
 xw=0.75; 
-yw=xw*(xsize/ysize)*0.8; %ratio of xlim and ylim
+yw=xw*(xsize/ysize)*0.539; %ratio of xlim and ylim
 y1= y0+yw+dy+y0; y2 = y1+dy+yw;
 pos = [x0 y0 xw yw; x0 y1 xw yw];
 
@@ -63,7 +63,7 @@ set(gcf,'papersize',[xsize,ysize],'PaperPosition',[0 0 xsize ysize])
 
 subplot("Position",pos(2,:));
 pcolorcen(y_grid,x_grid,curlF_snap);
-xline(10,'k-.','LineWidth',2)
+xline(13,'k-.','LineWidth',2)
 yline(-xb,'k--','LineWidth',2)
 hold off 
 col=colorbar;
@@ -77,12 +77,12 @@ col.Label.FontSize = col_fontsz;
 %col.Label.FontWeight = 'bold';
 col.Ticks = linspace(-clim,clim,5);
 ylim([-dim(1),0]) %modified
-xlim([0,300]) %modified
-xtick(0:100:300) %modified
-ytick(-300:100:0) %modified
+xlim([0,350]) %modified
+xtick(0:50:300) %modified
+ytick(-250:50:0) %modified
 set(gca,'YDir','reverse') %modified
 niceplot_nobold(fig_fontsz)
-text(10,-280,subfiglabel{1},'FontSize',subfiglabel_fontsz,'Interpreter','latex')
+text(10,-240,subfiglabel{1},'FontSize',subfiglabel_fontsz,'Interpreter','latex')
 ylabel('$x$ (m)','Interpreter','latex','FontSize',axfont_sz)
 xlabel('$y$ (m)','Interpreter','latex','FontSize',axfont_sz)
 ax2=gca;
@@ -106,11 +106,9 @@ col.Ticks = linspace(-clim,clim,5);
 niceplot_nobold(fig_fontsz)
 ylabel('$x$ (m)','Interpreter','latex','FontSize',axfont_sz)
 xlabel('$t$ (s)','Interpreter','latex','FontSize',axfont_sz)
-xtick(0:10:70) %modified
-ytick(-300:100:0) %modified
-ylim([-dim(1),0]) %modified
-xlim([0,70])
-text(3,-280,subfiglabel{2},'FontSize',subfiglabel_fontsz,'Interpreter','latex')
+xtick(0:25:75) %modified
+xlim([0,80])
+text(3,-240,subfiglabel{2},'FontSize',subfiglabel_fontsz,'Interpreter','latex')
 set(gca,'Layer','top')
 
 set(gcf,'PaperUnit','centimeters')

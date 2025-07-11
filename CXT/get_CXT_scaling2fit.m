@@ -17,9 +17,12 @@ g=9.81;
 t_scaleexpr = '(h/g).^(1/2)';
 %t_scaleexpr2 = 'g.*h.^2.*Dw_interp.^(-1)';
 %t_scaleexpr2 = 'h.*Dw_interp.^(-1/3)';
-t_scaleexpr2 = 'Dw_interp.^(1/3)/g';
+%t_scaleexpr2 = 'Dw_interp.^(1/3)/(g)'; % best so far 
+%t_scaleexpr2 = 'Dw_interp.^(2/3).*h.^(-1/2).*(g)^(-3/2)*beta^(-2)'; % BL method 
 %t_scaleexpr2 = 'dirspr_loc';
-cFbr_symbol = 'Dw_interp./((g*h).^(0.5)*SS.hb^2)';
+t_scaleexpr2 = '(Hsb/g).^(1/2)';
+
+cFbr_symbol = 'Dw_interp.*(0.041*SS.sigma_b+0.059)./((g*h).^(0.5)*SS.hb^2*beta)';
 
 
 for ind_slp2 = 1:24
@@ -33,11 +36,14 @@ for ind_slp2 = 1:24
     x = SS.X(ind_good);
     x_nond = x/SS.xb;
     h = SS.h(ind_good);
+    hb = SS.hb;
+    Hsb = SS.Hs_b;
+    Hs = interp1(SS.X2,SS.Hs,x);
     Ir_br= 0.02/(SS.stpb)^0.5;
     Dw_interp = real(interp1(SS.X2,SS.dECG,x)); 
     dirspr_loc = interp1(SS.X2,SS.sigma_th,x)/SS.sigma_b;
-
-
+    dirspr_b = SS.sigma_b;
+    
     %t_scale = sqrt(h/g);
     t_scale = eval(t_scaleexpr);
     t_scale2 = eval(t_scaleexpr2);
@@ -53,9 +59,11 @@ for ind_slp2 = 1:24
     for i = 1:xskip:dim_cxt(2) %crossshore scale ----------fit every 1 meter
         j = j+1;      
         fitpara.slp2(ind_slp2,1).t_scale(j,1) = t_scale(i);  
-        fitpara.slp2(ind_slp2,1).t_scale2(j,1) = t_scale2(i);  
+        %fitpara.slp2(ind_slp2,1).t_scale2(j,1) = t_scale2(i);  
+        fitpara.slp2(ind_slp2,1).t_scale2(j,1) = t_scale2;   % for cross-shore constant scaling       
         fitpara.slp2(ind_slp2,1).curlFbr_para_nond(j,1) = curlFbr_para_nond(i); 
         fitpara.slp2(ind_slp2,1).dirspr_loc(j,1) = dirspr_loc(i); 
+        fitpara.slp2(ind_slp2,1).dirspr_b(j,1) = dirspr_b; 
 
     end 
 end 
@@ -74,9 +82,14 @@ for ind_slp3 = 1:24
     x = SS.X(ind_good);
     x_nond = x/SS.xb;
     h = SS.h(ind_good);
+    hb = SS.hb;
+    Hsb = SS.Hs_b;
+    Hs = interp1(SS.X2,SS.Hs,x);
     Ir_br= 0.03/(SS.stpb)^0.5;
     Dw_interp = real(interp1(SS.X2,SS.dECG,x)); 
     dirspr_loc = interp1(SS.X2,SS.sigma_th,x)/SS.sigma_b;
+    dirspr_b = SS.sigma_b;
+
 
     %t_scale = sqrt(h/g);
     t_scale = eval(t_scaleexpr);
@@ -94,9 +107,12 @@ for ind_slp3 = 1:24
     for i = 1:xskip:dim_cxt(2) 
         j = j+1;      
         fitpara.slp3(ind_slp3,1).t_scale(j,1) = t_scale(i); 
-        fitpara.slp3(ind_slp3,1).t_scale2(j,1) = t_scale2(i);  
+        %fitpara.slp3(ind_slp3,1).t_scale2(j,1) = t_scale2(i);  
+        fitpara.slp3(ind_slp3,1).t_scale2(j,1) = t_scale2;  
         fitpara.slp3(ind_slp3,1).curlFbr_para_nond(j,1) = curlFbr_para_nond(i); 
         fitpara.slp3(ind_slp3,1).dirspr_loc(j,1) = dirspr_loc(i); 
+        fitpara.slp3(ind_slp3,1).dirspr_b(j,1) = dirspr_b; 
+
 
     end 
 end 
@@ -112,9 +128,14 @@ for ind_slp4 = 1:24
     x = SS.X(ind_good);
     x_nond = x/SS.xb;
     h = SS.h(ind_good);
+    Hsb = SS.Hs_b;
+    Hs = interp1(SS.X2,SS.Hs,x);
+    hb = SS.hb;
     Ir_br= 0.04/(SS.stpb)^0.5;
     Dw_interp = real(interp1(SS.X2,SS.dECG,x)); 
     dirspr_loc = interp1(SS.X2,SS.sigma_th,x)/SS.sigma_b;
+    dirspr_b = SS.sigma_b;
+
 
     beta = 0.04;
     %t_scale = sqrt(h/g);
@@ -134,9 +155,11 @@ for ind_slp4 = 1:24
     for i = 1:xskip:dim_cxt(2) 
         j = j+1;            
         fitpara.slp4(ind_slp4,1).t_scale(j,1) = t_scale(i);
-        fitpara.slp4(ind_slp4,1).t_scale2(j,1) = t_scale2(i);  
+        %fitpara.slp4(ind_slp4,1).t_scale2(j,1) = t_scale2(i);  
+        fitpara.slp4(ind_slp4,1).t_scale2(j,1) = t_scale2;  
         fitpara.slp4(ind_slp4,1).curlFbr_para_nond(j,1) = curlFbr_para_nond(i); 
         fitpara.slp4(ind_slp4,1).dirspr_loc(j,1) = dirspr_loc(i); 
+        fitpara.slp4(ind_slp4,1).dirspr_b(j,1) = dirspr_b; 
 
     end 
 end

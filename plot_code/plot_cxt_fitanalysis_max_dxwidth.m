@@ -10,6 +10,80 @@ load('/data1/bliu/data/cxt_nointerp_runinfo_G0lim0p15.mat')
 load('/data1/bliu/data/cxt_alongct_max_dxwidth_fitpara_qced_5loc') %'get_cxt_5loc'
 G0=load('/data1/bliu/data/plotready_G0_nond_10loc_2025.mat');
 
+runnum = load('runnum_slp.mat');
+
+
+%% July 9 new plot 
+% plot individual run to see overall pattern 
+close all hidden
+figure()
+%subplot(211)
+for runind = 1:24
+        clf
+        subplot(311)
+        runind
+        scatter(fitpara.slp2(runind).x_nond,fitpara.slp2(runind).a,60,'r','filled','Marker','o','MarkerEdgeColor','k')
+        hold on 
+        scatter(fitpara.slp3(runind).x_nond,fitpara.slp3(runind).a,60,'g','filled','Marker','square','MarkerEdgeColor','k')
+        hold on 
+        scatter(fitpara.slp4(runind).x_nond,fitpara.slp4(runind).a,60,'b','filled','Marker','^','MarkerEdgeColor','k')
+        hold off
+        ylim([0.3,2])
+        runparaslp2 = get_runpara(runnum.runnum_slp.slp2(runind))
+        runparaslp3 = get_runpara(runnum.runnum_slp.slp3(runind))
+        runparaslp4 = get_runpara(runnum.runnum_slp.slp4(runind))
+        % hb_slp2 = S(runnum.runnum_slp.slp2(runind)).hb
+        % hb_slp3 = S(runnum.runnum_slp.slp3(runind)).hb
+        % hb_slp4 = S(runnum.runnum_slp.slp4(runind)).hb
+        xlabel('x/L_{sz}','FontSize',26)
+        ylabel('$\tau$ (s)','interpreter','latex','FontSize',26)
+        title(runparaslp2.wave,'FontSize',30)
+        subplot(312)
+        scatter(fitpara.slp2(runind).x_nond,fitpara.slp2(runind).G0,60,'r','filled','Marker','o','MarkerEdgeColor','k')
+        hold on 
+        scatter(fitpara.slp3(runind).x_nond,fitpara.slp3(runind).G0,60,'g','filled','Marker','square','MarkerEdgeColor','k')
+        hold on 
+        scatter(fitpara.slp4(runind).x_nond,fitpara.slp4(runind).G0,60,'b','filled','Marker','^','MarkerEdgeColor','k')
+        hold off
+        xlabel('x/L_{sz}','FontSize',26)
+        ylabel('$G_{0} (m^{-2})$','interpreter','latex','FontSize',26)
+
+        subplot(313)
+        scatter(fitpara.slp2(runind).x_nond,fitpara.slp2(runind).Dw,60,'r','filled','Marker','o','MarkerEdgeColor','k')
+        hold on 
+        scatter(fitpara.slp3(runind).x_nond,fitpara.slp3(runind).Dw,60,'g','filled','Marker','square','MarkerEdgeColor','k')
+        hold on 
+        scatter(fitpara.slp4(runind).x_nond,fitpara.slp4(runind).Dw,60,'b','filled','Marker','^','MarkerEdgeColor','k')
+        hold off
+        xlabel('x/L_{sz}','FontSize',26)
+        ylabel('$D_{w} (m^3 s^{-3})$','interpreter','latex','FontSize',26)
+
+        width= 15;
+        height = 15;
+        set(gcf,'Units','inches','Position',[0,0,width,height])
+        set(gcf,'visible','off') 
+  
+        saveas(gcf,['/data1/bliu/figures/RIPX_allrun/tau/','run_',num2str(runind),'.png'])
+end 
+
+
+%% July 9 plot tau vs skill 
+% plot individual run to see overall pattern 
+figure()
+%subplot(211)
+for runind = 1:24
+        
+        scatter(fitpara.slp2(runind).rsq,fitpara.slp2(runind).a,60,'r','filled','Marker','o','MarkerEdgeColor','k')
+        hold on 
+        scatter(fitpara.slp3(runind).rsq,fitpara.slp3(runind).a,60,'g','filled','Marker','square','MarkerEdgeColor','k')
+        hold on 
+        scatter(fitpara.slp4(runind).rsq,fitpara.slp4(runind).a,60,'b','filled','Marker','^','MarkerEdgeColor','k')
+        hold on
+        
+end 
+hold off 
+xlabel('fit skill','FontSize',26)
+ylabel('$\tau$ (s)','Interpreter','latex','FontSize',26)
 %% tau/\sqrt(h/g) VS nond G0 
 col = cmocean('thermal',5);
 

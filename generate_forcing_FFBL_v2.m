@@ -47,6 +47,7 @@ h_br = slp*Lsz;
 h=x.*(-slp);
 g= 9.81; %gravitational constant 
 Tp = 8;
+Hsb = SS.Hs_b;
 
 
 %% parameters from given model simulation
@@ -57,7 +58,7 @@ Irb =slp/(SS.stpb)^0.5;
 dirspr_b= SS.sigma_b;
 ky0_nond = 9.5*10^(-4)*dirspr_b+1.9*10^(-3); % see paper equation
 ky0 = ky0_nond./(Irb*h);
-ky0_max =0.1; %cutoff for max ky0 allowed. Note ky0 blows up @h=0
+ky0_max =0.146; %cutoff for max ky0 allowed. Note ky0 blows up @h=0
 ky0(ky0>ky0_max)  = ky0_max;
 G0_nond= 0.041*dirspr_b+0.059; % see paper equation
 G0 = G0_nond*(Dw./(h_br^2*(g.*h).^(1/2))).*(1/slp);
@@ -104,10 +105,10 @@ G0_matt = repmat(G0_matt,1,1,nt);
 %% ========> generate decorrelation time scale tau and c 
 
 G0_ratio = G0(1,:,1)/max(G0(1,:,1));
-%tau = sqrt(h/g).*(0.027*exp(4.37*G0_ratio)+1.28);
-tau = 0.75*ones(length(x),1);tau=tau'; %constant tau parameterization 
+tau = sqrt(Hsb/g) *(4.6*10^(-3)*exp(5.61*G0_ratio)+1.9); %constant tau parameterization 
+%tau = 0.75*ones(length(x),1);tau=tau'; %constant tau parameterization 
 %tau = sqrt(h/g);
-c_phase = sqrt(g.*h);
+c_phase = 1.1*sqrt(g.*h);
 ctau = tau.*c_phase; %c*tau scaling for dx
 
 
@@ -152,7 +153,7 @@ ylabel('var(Psi)')
 
 
 %%%%%%%%%%%%%% check Psi using S_wb --> should be the same 
-xloc= 119;
+xloc= 150;
 [f1,S1] = fft_data(Psi(:,1),dy);
 [f2,S2] = fft_data(Psi(:,xloc),dy);
 figure()
@@ -241,7 +242,7 @@ for tind = 1:nt %@each time step
            x_wave_snap=round(x_wave_snap);
            ctau_loc = interp1(x,ctau,x_wave_snap); %local ctau scaling 
            c_loc = interp1(x,c_phase,x_wave_snap); %local ctau scaling 
-           lambda_crest = 1.1*Tp*c_loc;%separation between wave crest 1.1 is the scaling factor in eq in paper
+           lambda_crest = Tp*c_loc;%separation between wave crest 1.1 is the scaling factor in eq in paper
            %test_amp = (A1/(cos(A4)*sqrt(ctau_loc)));
            %W_wave = (A1/(cos(A4)*sqrt(ctau_loc))).*exp(-A2.*abs(X-x_wave_snap)/ctau_loc).*cos(A3.*(abs(X-x_wave_snap)/ctau_loc)+A4); %testing 
            W_wave = b_wave(ind_wave,tind)*(A1*sqrt(lambda_crest)/(cos(A4)*sqrt(ctau_loc))).*exp(-A2.*abs(X-x_wave_snap)/ctau_loc).*cos(A3.*abs(X-x_wave_snap)/ctau_loc+A4);%%correct one 
@@ -287,8 +288,6 @@ cFbr(:,find(x_full ==x(1)):find(x_full==x(end)),:) = cFbr_sz; %put in the cFbr i
 
 
 %% get data stats 
-curlF_tstack = squeeze(cFbr(10,:,30:end));
-curlF_snap = squeeze(cFbr(:,:,55));
 
 dim_para= size(cFbr_sz);
 for xind = 1:dim_para(2)
@@ -310,6 +309,10 @@ plot(x,cFbr_para_stats)
 xlabel('x(m)')
 ylabel('mean_{t}(var_{y}(cFbr_{para}))')
 %% test plot for paperfig 
+
+
+curlF_tstack = squeeze(cFbr(13,:,30:end));
+curlF_snap = squeeze(cFbr(:,:,65));
 
 dim_Hov = size(curlF_tstack);
 x_Hov = -(dim_Hov(1)-1):0;

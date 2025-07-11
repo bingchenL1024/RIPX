@@ -56,6 +56,7 @@ for ind_slp2 = 1:24
     Tp = SS.Tp_T;
     ds  = SS.sigma_b;
     kw = get_wavenum(2*pi/(Tp),h);
+    G0 = abs(SS.curlF_std(ind_good));
     G0_nond = abs(SS.curlF_std(ind_good))./abs(max(SS.curlF_std(ind_good)));%G0 modification
     Dw_interp = real(interp1(SS.X2,SS.dECG,x)); 
     Dw_nond = abs(Dw_interp)/max(Dw_interp);
@@ -78,6 +79,8 @@ for ind_slp2 = 1:24
         fitpara.slp2{ind_slp2,1}.h_nond(j,1) = h_nond(i); 
         fitpara.slp2{ind_slp2,1}.G0_nond(j,1) = G0_nond(i); 
         fitpara.slp2{ind_slp2,1}.Dw_nond(j,1) = Dw_nond(i); 
+        fitpara.slp2{ind_slp2,1}.G0(j,1) = G0(i); 
+        fitpara.slp2{ind_slp2,1}.Dw(j,1) = Dw_interp(i); 
         %fitpara.slp2{ind_slp2,1}.curlFbr_para_nond(j,1) =
         %curlFbr_para_nond(i); %take care of it get_CXT_scaling2fit
         fitpara.slp2{ind_slp2,1}.xb(j,1) = xb;  
@@ -95,7 +98,9 @@ for ind_slp2 = 1:24
 
         if sum(~isnan(cxt_data_fit))>=3 % only include fit tau if there are more than 3 data pt
             fitpara.slp2{ind_slp2,1}.a(j,1) = f.a;
-            fitpara.slp2{ind_slp2,1}.rsq(j,1) = gof.rsquare;        
+            %fitpara.slp2{ind_slp2,1}.rsq(j,1) = gof.rsquare; %use rsquare in cfit function  
+            fitpara.slp2{ind_slp2,1}.rsq(j,1) = get_skill_expfit(t_itp(include)',cxt_data_fit(include),f); %use Falk fit skill        
+
         else 
             fitpara.slp2{ind_slp2,1}.a(j,1) = NaN;
             fitpara.slp2{ind_slp2,1}.rsq(j,1) = NaN;        
@@ -131,6 +136,7 @@ for ind_slp3 = 1:24
     Tp = SS.Tp_T;
     ds  = SS.sigma_b;
     kw = get_wavenum(2*pi/(Tp),h);
+    G0 = abs(SS.curlF_std(ind_good));
     G0_nond = abs(SS.curlF_std(ind_good))./abs(max(SS.curlF_std(ind_good)));%G0 modification
     Dw_interp = real(interp1(SS.X2,SS.dECG,x)); 
     Dw_nond = abs(Dw_interp)/max(Dw_interp);
@@ -160,6 +166,8 @@ for ind_slp3 = 1:24
         fitpara.slp3{ind_slp3,1}.h_nond(j,1) = h_nond(i); 
         fitpara.slp3{ind_slp3,1}.G0_nond(j,1) = G0_nond(i); 
         fitpara.slp3{ind_slp3,1}.Dw_nond(j,1) = Dw_nond(i); 
+        fitpara.slp3{ind_slp3,1}.G0(j,1) = G0(i); 
+        fitpara.slp3{ind_slp3,1}.Dw(j,1) = Dw_interp(i); 
         %fitpara.slp3{ind_slp3,1}.curlFbr_para_nond(j,1) = curlFbr_para_nond(i); 
         fitpara.slp3{ind_slp3,1}.xb(j,1) = xb;  
         fitpara.slp3{ind_slp3,1}.Tp(j,1) = Tp; 
@@ -175,7 +183,9 @@ for ind_slp3 = 1:24
 
         if sum(~isnan(cxt_data_fit))>=3 % only include fit tau if there are more than 3 data pt
             fitpara.slp3{ind_slp3,1}.a(j,1) = f.a;
-            fitpara.slp3{ind_slp3,1}.rsq(j,1) = gof.rsquare;        
+            %fitpara.slp3{ind_slp3,1}.rsq(j,1) = gof.rsquare; 
+            fitpara.slp3{ind_slp3,1}.rsq(j,1) = get_skill_expfit(t_itp(include)',cxt_data_fit(include),f); %use Falk fit skill        
+
         else 
             fitpara.slp3{ind_slp3,1}.a(j,1) = NaN;
             fitpara.slp3{ind_slp3,1}.rsq(j,1) = NaN;        
@@ -208,6 +218,7 @@ for ind_slp4 = 1:24
     Tp = SS.Tp_T;
     ds  = SS.sigma_b;
     kw = get_wavenum(2*pi/(Tp),h);
+    G0 = abs(SS.curlF_std(ind_good));
     G0_nond = abs(SS.curlF_std(ind_good))./abs(max(SS.curlF_std(ind_good)));%G0 modification
     Dw_interp = real(interp1(SS.X2,SS.dECG,x)); 
     Dw_nond = abs(Dw_interp)/max(Dw_interp);
@@ -232,6 +243,8 @@ for ind_slp4 = 1:24
         fitpara.slp4{ind_slp4,1}.h_nond(j,1) = h_nond(i); 
         fitpara.slp4{ind_slp4,1}.G0_nond(j,1) = G0_nond(i); 
         fitpara.slp4{ind_slp4,1}.Dw_nond(j,1) = Dw_nond(i); 
+        fitpara.slp4{ind_slp4,1}.G0(j,1) = G0(i); 
+        fitpara.slp4{ind_slp4,1}.Dw(j,1) = Dw_interp(i); 
         %fitpara.slp4{ind_slp4,1}.curlFbr_para_nond(j,1) = curlFbr_para_nond(i); 
         fitpara.slp4{ind_slp4,1}.xb(j,1) = xb; 
         fitpara.slp4{ind_slp4,1}.Tp(j,1) = Tp;      
@@ -246,7 +259,9 @@ for ind_slp4 = 1:24
 
         if sum(~isnan(cxt_data_fit))>=3 % only include fit tau if there are more than 3 data pt
             fitpara.slp4{ind_slp4,1}.a(j,1) = f.a;
-            fitpara.slp4{ind_slp4,1}.rsq(j,1) = gof.rsquare;        
+            %fitpara.slp4{ind_slp4,1}.rsq(j,1) = gof.rsquare;        
+            fitpara.slp4{ind_slp4,1}.rsq(j,1) = get_skill_expfit(t_itp(include)',cxt_data_fit(include),f); %use Falk fit skill        
+
         else 
             fitpara.slp4{ind_slp4,1}.a(j,1) = NaN;
             fitpara.slp4{ind_slp4,1}.rsq(j,1) = NaN;        

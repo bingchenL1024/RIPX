@@ -35,50 +35,7 @@ for i = 1:120
 end 
 
 
-% Specific wavefield (requires user input) --- uncomment if need to change run parameter
 
-% dir_ds = '/data1/nkumar/RIPX/M_Files/Important_Files/RIPX_bath_guide.mat';
-% varname_ds = 'runlist.amp.amp_';
-% dir_bath= '/data1/nkumar/RIPX/M_Files/Important_Files/RIPX_bath_guide.mat';
-% varname_bath= 'runlist.bath.bath_';
-% 
-% 
-% % index with specific wave height and peak period, NOT general 
-%     input_Hs= sprintf('%.1f',input('Enter the significant wave height you want (e.g.1.1): '));
-%     input_Tp= sprintf('%.1f',input('Enter the peak period you want (e.g. 14.0): '));
-%     input_bath= input('Enter the slope of the bathymetry you want (e.g. 004):','s');
-% 
-%     ind_2_5_spec=data_filter(dir_ds,varname_ds,['Hs',input_Hs,'_Tp',input_Tp,'_ds2.5'])';
-%     ind_5_spec=data_filter(dir_ds,varname_ds,['Hs',input_Hs,'_Tp',input_Tp,'_ds5.0'])';
-%     ind_10_spec=data_filter(dir_ds,varname_ds,['Hs',input_Hs,'_Tp',input_Tp,'_ds10.0'])';
-%     ind_20_spec=data_filter(dir_ds,varname_ds,['Hs',input_Hs,'_Tp',input_Tp,'_ds20.0'])';
-% 
-%     ind_bath_temp=data_filter(dir_bath,varname_bath,input_bath)';
-% 
-%     ind_2_5_bath_ds_specific = ind_2_5_spec(ismember(ind_2_5_spec,ind_bath_temp));
-%     ind_5_bath_ds_specific = ind_5_spec(ismember(ind_5_spec,ind_bath_temp));
-%     ind_10_bath_ds_specific = ind_10_spec(ismember(ind_10_spec,ind_bath_temp));
-%     ind_20_bath_ds_specific = ind_20_spec(ismember(ind_20_spec,ind_bath_temp));
-%     ind_col1 = [ind_2_5_bath_ds_specific,ind_5_bath_ds_specific,ind_10_bath_ds_specific,ind_20_bath_ds_specific]; %index for specific plot use, include specific bathy
-%     input_Hs= sprintf('%.1f',input('Enter the significant wave height you want (e.g.1.1): '));
-%     input_Tp= sprintf('%.1f',input('Enter the peak period you want (e.g. 14.0): '));
-%     input_bath= input('Enter the slope of the bathymetry you want (e.g. 004):','s');
-% 
-%     ind_2_5_spec=data_filter(dir_ds,varname_ds,['Hs',input_Hs,'_Tp',input_Tp,'_ds2.5'])';
-%     ind_5_spec=data_filter(dir_ds,varname_ds,['Hs',input_Hs,'_Tp',input_Tp,'_ds5.0'])';
-%     ind_10_spec=data_filter(dir_ds,varname_ds,['Hs',input_Hs,'_Tp',input_Tp,'_ds10.0'])';
-%     ind_20_spec=data_filter(dir_ds,varname_ds,['Hs',input_Hs,'_Tp',input_Tp,'_ds20.0'])';
-% 
-%     ind_bath_temp=data_filter(dir_bath,varname_bath,input_bath)';
-% 
-%     ind_2_5_bath_ds_specific = ind_2_5_spec(ismember(ind_2_5_spec,ind_bath_temp));
-%     ind_5_bath_ds_specific = ind_5_spec(ismember(ind_5_spec,ind_bath_temp));
-%     ind_10_bath_ds_specific = ind_10_spec(ismember(ind_10_spec,ind_bath_temp));
-%     ind_20_bath_ds_specific = ind_20_spec(ismember(ind_20_spec,ind_bath_temp));
-%     ind_col2 = [ind_2_5_bath_ds_specific,ind_5_bath_ds_specific,ind_10_bath_ds_specific,ind_20_bath_ds_specific]; %index for specific plot use, include specific bathy
-% 
-%     ind = [ind_col1,ind_col2];
-% 
 
 % load the input from above 
  ind = [93     9     7     8   105    45    43    44];
@@ -105,6 +62,15 @@ end
     xb_lim_2(2) = max(xb_ind(1:4));
     xb_lim_4(1) = min(xb_ind(5:8));
     xb_lim_4(2) = max(xb_ind(5:8));
+
+    leftpatch_x = [-200,0,0];
+    leftpatch_y = [4,4,0];
+    rightpatch_x = [-100,0,0];
+    rightpatch_y = [4,4,0];
+    
+    trans=0.5;
+    trans_bathy=0.98;
+    shade_bathy = 0.39;
 %% plot
 xsize=13.5;ysize=16;
 
@@ -115,7 +81,7 @@ x1 = x0+xw+dx;
 y0=0.07;  
 yw=0.20; 
 dy=0.025;
-trans=0.5;
+
 y1 = y0+dy+yw;  y2 = y1+dy+yw;  y3 = y2+dy+yw;
 pos = [x0 y3 xw yw; x0 y2 xw yw; x0 y1 xw yw; x0 y0 xw yw
     x1 y3 xw yw; x1 y2 xw yw; x1 y1 xw yw; x1 y0 xw yw];
@@ -133,7 +99,7 @@ figfont_large = 12;
 
 legend_size = 7.5;
 fig_xlim = [-200 0];
-fig_xlim2=[-100,0];
+fig_xlim2=[-200,0];
 fig_vort_ylim = [0 0.05];
 fig_curlF_ylim = [0 0.05];
 linewidth = 1.5;
@@ -225,9 +191,11 @@ xlabel('$x$ (m)','Fontsize',figfont_large,'Interpreter','latex')
 ylabel('$h$ (m)','Fontsize',figfont_large,'Interpreter','latex')
 text(-200+5,0.5,subfiglabel{7},'FontSize',subfiglabel_fontsz,'Interpreter','latex')
 yl = ylim;
+ylim([0,4])
 patch([xb_lim_2(1),xb_lim_2(1),xb_lim_2(2),xb_lim_2(2)],[yl(1),yl(2),yl(2),yl(1)],[0.5,0.5,0.5],'FaceAlpha',trans,'EdgeColor','none')
 hold off
 grid on 
+patch(leftpatch_x,leftpatch_y,[shade_bathy,shade_bathy,shade_bathy],'FaceAlpha',trans_bathy,'EdgeColor','none')
 
 
 % =============================== second colomn
@@ -245,7 +213,7 @@ xlim([fig_xlim2(1),fig_xlim2(2)])
 ylim([0 1])
 niceplot_nobold(fig_fontsize)
 title('$\beta = 0.04$','Interpreter','latex','FontSize',titlefont_sz)
-text(-11,0.88,subfiglabel{2},'FontSize',subfiglabel_fontsz,'Interpreter','latex')
+text(-22,0.88,subfiglabel{2},'FontSize',subfiglabel_fontsz,'Interpreter','latex')
 yticks([0,0.5,1])
 hold off
 set(gca,'XTickLabel',[])
@@ -269,7 +237,7 @@ xlim([fig_xlim2(1),fig_xlim2(2)])
 ylim([fig_vort_ylim(1), fig_vort_ylim(2)])
 yticks([0:0.025:0.05])
 niceplot_nobold(fig_fontsize)
-text(-100+2.5,0.045,subfiglabel{4},'FontSize',subfiglabel_fontsz,'Interpreter','latex')
+text(-195,0.045,subfiglabel{4},'FontSize',subfiglabel_fontsz,'Interpreter','latex')
 hold off
 set(gca,'XTickLabel',[])
 set(gca,'YTickLabel',[])
@@ -291,7 +259,7 @@ xlim([fig_xlim2(1),fig_xlim2(2)])
 ylim([fig_curlF_ylim(1), fig_curlF_ylim(2)])
 yticks([0:0.025:0.05])
 niceplot_nobold(fig_fontsize)
-text(-100+2.5,0.045,subfiglabel{6},'FontSize',subfiglabel_fontsz,'Interpreter','latex')
+text(-195,0.045,subfiglabel{6},'FontSize',subfiglabel_fontsz,'Interpreter','latex')
 %sgtitle(['Hs = ',input_Hs,' m',', Tp = ',input_Tp,' s',', beach slope = 0.04' ],'Fontsize',20)
 grid on 
 yl = ylim;
@@ -303,18 +271,21 @@ set(gca,'YTickLabel',[])
 
 
 subplot("Position",pos(8,:))
-plot(x_ind{6},h_ind{6},'Linewidth',linewidth,'Color','black')
+plot(x2_ind{8},h2_ind{8},'Linewidth',linewidth,'Color','black')
 %ylabel('$h$ (m)','Fontsize',16,'Interpreter','latex')
 set(gca,'ydir','reverse')
 xlim([fig_xlim2(1),fig_xlim2(2)])
 niceplot_nobold(fig_fontsize)
 xlabel('$x$ (m)','Fontsize',figfont_large,'Interpreter','latex')
-text(-100+2.5,0.5,subfiglabel{8},'FontSize',subfiglabel_fontsz,'Interpreter','latex')
+text(-195,0.5,subfiglabel{8},'FontSize',subfiglabel_fontsz,'Interpreter','latex')
 yl = ylim;
 patch([xb_lim_4(1),xb_lim_4(1),xb_lim_4(2),xb_lim_4(2)],[yl(1),yl(2),yl(2),yl(1)],[0.5,0.5,0.5],'FaceAlpha',trans,'EdgeColor','none')
 hold off
 set(gca,'YTickLabel',[])
+ylim([0,4])
 grid on 
+patch(rightpatch_x,rightpatch_y,[shade_bathy,shade_bathy,shade_bathy],'FaceAlpha',trans_bathy,'EdgeColor','none')
+
 
 
 
